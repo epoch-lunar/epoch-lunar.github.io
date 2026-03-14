@@ -78,9 +78,9 @@
 
         body {
             background:
-                radial-gradient(ellipse at 20% 30%, rgba(20,20,20,0.8) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(15,15,15,0.6) 0%, transparent 50%),
-                #050505;
+                radial-gradient(ellipse at 20% 30%, rgba(25,20,15,0.8) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(20,15,10,0.6) 0%, transparent 50%),
+                #080706;
             color: var(--red-glow);
             font-family: 'Share Tech Mono', monospace;
             display: flex;
@@ -100,11 +100,11 @@
                 linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.3) 50%, transparent 100%),
                 repeating-linear-gradient(
                     90deg,
-                    #1a1a1a 0px,
-                    #1c1c1c 1px,
-                    #1a1a1a 2px
+                    #1c1a18 0px,
+                    #1e1c1a 1px,
+                    #1c1a18 2px
                 ),
-                linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 30%, #0a0a0a 70%, #0f0f0f 100%);
+                linear-gradient(180deg, #1c1a18 0%, #121110 30%, #0c0b0a 70%, #121110 100%);
             border-radius: 8px;
             border: 2px solid #0a0a0a;
             padding: 4px;
@@ -123,7 +123,7 @@
         .clock-inner {
             background:
                 linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.01) 50%, transparent 52%),
-                linear-gradient(180deg, #0f0f0f 0%, #080808 50%, #0a0a0a 100%);
+                linear-gradient(180deg, #111010 0%, #0a0908 50%, #0c0b0a 100%);
             background-size: 20px 20px, 100% 100%;
             border-radius: 6px;
             padding: 32px 40px 28px;
@@ -147,16 +147,17 @@
 
         .brand-name {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            letter-spacing: 6px;
-            color: #888;
+            font-size: 22px;
+            letter-spacing: 10px;
+            color: #999;
             text-transform: uppercase;
+            font-weight: bold;
         }
 
         .brand-tagline {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 2px;
+            font-size: 10px;
+            letter-spacing: 3px;
             color: #555;
             text-transform: uppercase;
         }
@@ -313,9 +314,102 @@
            ============================================ */
 
         .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #333, transparent);
-            margin: 20px 4px 16px;
+            height: 5px;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                #2a2220 1px,
+                #2a2220 2px
+            );
+            margin: 18px 4px 16px;
+            opacity: 0.6;
+        }
+
+        /* ============================================
+           AUXILIARY STATUS STRIP
+           ============================================ */
+
+        .aux-strip {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding: 8px 0 0;
+            border-top: 1px solid #1a1a1a;
+            position: relative;
+            z-index: 2;
+        }
+
+        .aux-readout {
+            text-align: center;
+            flex: 1;
+        }
+
+        .aux-label {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        .aux-value {
+            font-family: 'DSEG7', monospace;
+            font-size: clamp(14px, 2.5vw, 18px);
+            opacity: 0.6;
+            text-shadow: none;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           SEGMENTED DRIFT BAR
+           ============================================ */
+
+        .drift-bar-container {
+            margin-top: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .drift-bar-label {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .drift-bar-track {
+            display: flex;
+            gap: 2px;
+            height: 16px;
+        }
+
+        .drift-seg {
+            flex: 1;
+            background: var(--lun-d);
+            border-radius: 1px;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .drift-seg.lit {
+            background: var(--lun);
+            box-shadow: 0 0 4px rgba(255, 170, 0, 0.4);
+        }
+
+        .drift-seg.lit-bright {
+            background: var(--lun);
+            box-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+        }
+
+        .drift-bar-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            color: #444;
+            letter-spacing: 1px;
+            margin-top: 3px;
+            padding: 0 1px;
         }
 
         /* ============================================
@@ -503,6 +597,27 @@
         }
 
         /* ============================================
+           LED INDICATOR DOTS
+           ============================================ */
+
+        .led {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--led-color);
+            opacity: 0.2;
+            margin-right: 4px;
+            vertical-align: middle;
+            transition: opacity 0.15s, box-shadow 0.15s;
+        }
+
+        .sw-slot.on .led {
+            opacity: 1;
+            box-shadow: 0 0 6px var(--led-color), 0 0 12px var(--led-color);
+        }
+
+        /* ============================================
            RESPONSIVE
            ============================================ */
 
@@ -528,6 +643,12 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
+            }
+            .aux-strip {
+                margin-top: 10px;
+            }
+            .drift-bar-container {
+                margin-top: 10px;
             }
         }
 
@@ -608,18 +729,17 @@
             padding: 0 4px;
         }
         .brand-name {
-            font-size: 16px;
-            letter-spacing: 6px;
-            color: #666;
+            font-size: 22px;
+            letter-spacing: 10px;
+            color: #999;
             text-transform: uppercase;
-            opacity: 0.7;
+            font-weight: bold;
         }
         .brand-tag {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #444;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #555;
             text-transform: uppercase;
-            opacity: 0.6;
         }
 
         /* === LCD === */
@@ -649,13 +769,21 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(
-                ellipse at center,
-                transparent 0%,
-                transparent 60%,
-                rgba(0,0,0,0.2) 80%,
-                rgba(0,0,0,0.5) 100%
-            );
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    transparent 0%,
+                    transparent 60%,
+                    rgba(0,0,0,0.2) 80%,
+                    rgba(0,0,0,0.5) 100%
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 39px,
+                    rgba(255,255,255,0.015) 39px,
+                    rgba(255,255,255,0.015) 40px
+                );
             border-radius: 6px;
             pointer-events: none;
             z-index: 10;
@@ -809,8 +937,7 @@
         .drift-row {
             margin-top: 16px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             position: relative;
             z-index: 2;
         }
@@ -853,6 +980,8 @@
             align-items: center;
             gap: 5px;
             white-space: nowrap;
+            align-self: flex-end;
+            margin-top: 8px;
         }
         .sync-btn:hover {
             color: #33ff66;
@@ -878,9 +1007,16 @@
 
         /* === SIGNUP === */
         .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #333, transparent);
-            margin: 16px 4px 14px;
+            height: 5px;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                #2a2220 1px,
+                #2a2220 2px
+            );
+            margin: 18px 4px 16px;
+            opacity: 0.6;
         }
         .signup {
             padding: 0 4px;
@@ -1040,6 +1176,12 @@
             .t-lbl {
                 font-size: 11px;
             }
+            .aux-strip {
+                margin-top: 10px;
+            }
+            .drift-bar-container {
+                margin-top: 10px;
+            }
         }
 
     </style>
@@ -1056,12 +1198,12 @@
             <div class="lcd">
                 <div class="clock-row">
                     <div class="sw-track"><div class="sw-thumb" id="sw-thumb"></div>
-                        <div class="sw-slot on" data-i="0" onclick="setFmt(0)">LUNAR</div>
-                        <div class="sw-slot" data-i="1" onclick="setFmt(1)">UTC</div>
-                        <div class="sw-slot" data-i="2" onclick="setFmt(2)">LOCAL</div>
-                        <div class="sw-slot" data-i="3" onclick="setFmt(3)">TAI</div>
-                        <div class="sw-slot" data-i="4" onclick="setFmt(4)">GPS</div>
-                        <div class="sw-slot" data-i="5" onclick="setFmt(5)">UNIX</div>
+                        <div class="sw-slot on" data-i="0" onclick="setFmt(0)"><span class="led" style="--led-color: var(--lun)"></span>LUNAR</div>
+                        <div class="sw-slot" data-i="1" onclick="setFmt(1)"><span class="led" style="--led-color: var(--utc)"></span>UTC</div>
+                        <div class="sw-slot" data-i="2" onclick="setFmt(2)"><span class="led" style="--led-color: var(--gps)"></span>LOCAL</div>
+                        <div class="sw-slot" data-i="3" onclick="setFmt(3)"><span class="led" style="--led-color: var(--tai)"></span>TAI</div>
+                        <div class="sw-slot" data-i="4" onclick="setFmt(4)"><span class="led" style="--led-color: #ffaa66"></span>GPS</div>
+                        <div class="sw-slot" data-i="5" onclick="setFmt(5)"><span class="led" style="--led-color: var(--unix)"></span>UNIX</div>
                     </div>
                     <div class="clock-face">
                         <div class="time-line"><span class="time-ghost" id="ghost"></span><span class="time-val" id="tval"></span></div>
@@ -1069,6 +1211,52 @@
                     </div>
                 </div>
                 <div class="info-row"><span class="info-l" id="info-l"></span><span class="info-r" id="info-r"></span></div>
+                <div class="aux-strip">
+                    <div class="aux-readout">
+                        <span class="aux-label" style="color: var(--utc)">UTC</span>
+                        <span class="aux-value" id="aux-utc" style="color: var(--utc)">--:--:--</span>
+                    </div>
+                    <div class="aux-readout">
+                        <span class="aux-label" style="color: var(--tai)">TAI</span>
+                        <span class="aux-value" id="aux-tai" style="color: var(--tai)">--:--:--</span>
+                    </div>
+                    <div class="aux-readout">
+                        <span class="aux-label" style="color: var(--lun)">LUNAR</span>
+                        <span class="aux-value" id="aux-lun" style="color: var(--lun)">--:--:--</span>
+                    </div>
+                </div>
+                <div class="drift-bar-container">
+                    <div class="drift-bar-label">LUNAR DRIFT TODAY</div>
+                    <div class="drift-bar-track">
+                        <div class="drift-seg" id="seg-0"></div>
+                        <div class="drift-seg" id="seg-1"></div>
+                        <div class="drift-seg" id="seg-2"></div>
+                        <div class="drift-seg" id="seg-3"></div>
+                        <div class="drift-seg" id="seg-4"></div>
+                        <div class="drift-seg" id="seg-5"></div>
+                        <div class="drift-seg" id="seg-6"></div>
+                        <div class="drift-seg" id="seg-7"></div>
+                        <div class="drift-seg" id="seg-8"></div>
+                        <div class="drift-seg" id="seg-9"></div>
+                        <div class="drift-seg" id="seg-10"></div>
+                        <div class="drift-seg" id="seg-11"></div>
+                        <div class="drift-seg" id="seg-12"></div>
+                        <div class="drift-seg" id="seg-13"></div>
+                        <div class="drift-seg" id="seg-14"></div>
+                        <div class="drift-seg" id="seg-15"></div>
+                        <div class="drift-seg" id="seg-16"></div>
+                        <div class="drift-seg" id="seg-17"></div>
+                        <div class="drift-seg" id="seg-18"></div>
+                        <div class="drift-seg" id="seg-19"></div>
+                        <div class="drift-seg" id="seg-20"></div>
+                        <div class="drift-seg" id="seg-21"></div>
+                        <div class="drift-seg" id="seg-22"></div>
+                        <div class="drift-seg" id="seg-23"></div>
+                    </div>
+                    <div class="drift-bar-scale">
+                        <span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span>
+                    </div>
+                </div>
                 <div class="drift-row">
                     <div class="drift-info">
                         <div class="drift-lbl">Lunar drift since midnight UTC</div>
@@ -1167,8 +1355,7 @@ function tickClock(){
     const il=$('info-l'),ir=$('info-r');
     il.style.color=sc.c;il.style.textShadow=`0 0 4px ${sc.c}`;
     ir.style.color=sc.c;ir.style.textShadow=`0 0 4px ${sc.c}`;
-    switch(sc.key){
-    case'lunar':il.textContent=fmtISO(lunarDate(now));ir.textContent=`MJD ${toMJD(lunarDate(now)).toFixed(4)}`;break;
+    switch(sc.key){\n    case'lunar':il.textContent=fmtISO(lunarDate(now));ir.textContent=`MJD ${toMJD(lunarDate(now)).toFixed(4)}`;break;
     case'utc':il.textContent=fmtISO(now);ir.textContent=`MJD ${toMJD(now).toFixed(4)}`;break;
     case'local':il.textContent=`${now.toLocaleDateString('en-CA')} ${getTZ()}`;ir.textContent='Local Time Zone';break;
     case'tai':il.textContent=fmtISO(taiDate(now));ir.textContent=`TAI − UTC = +${TAI_OFF}s`;break;
@@ -1181,13 +1368,32 @@ function tickClock(){
     const secsSinceMidnight=(now.getTime()-midnightUTC.getTime())/1000;
     const driftSinceMidnight=secsSinceMidnight*RATE_M/86400;
     $('dt-rate').textContent=`+${driftSinceMidnight.toFixed(3)} µs`;
+    // Auxiliary readouts (always visible)
+    const auxUtc = now;
+    const auxTai = taiDate(now);
+    const auxLun = lunarDate(now);
+    $('aux-utc').textContent = `${pad(auxUtc.getUTCHours())}:${pad(auxUtc.getUTCMinutes())}:${pad(auxUtc.getUTCSeconds())}`;
+    $('aux-tai').textContent = `${pad(auxTai.getUTCHours())}:${pad(auxTai.getUTCMinutes())}:${pad(auxTai.getUTCSeconds())}`;
+    $('aux-lun').textContent = `${pad(auxLun.getUTCHours())}:${pad(auxLun.getUTCMinutes())}:${pad(auxLun.getUTCSeconds())}`;
+    // Drift bar segments
+    const currentHour = now.getUTCHours() + now.getUTCMinutes()/60;
+    for(let i=0; i<24; i++){
+        const seg = document.getElementById('seg-'+i);
+        if(i < Math.floor(currentHour)){
+            seg.className = 'drift-seg lit';
+        } else if(i < currentHour){
+            seg.className = 'drift-seg lit-bright';
+        } else {
+            seg.className = 'drift-seg';
+        }
+    }
 }
 function setFmt(i){
     cur=i;const sc=SCALES[i];
     document.querySelectorAll('.sw-slot').forEach(el=>{
         const idx=parseInt(el.dataset.i),on=idx===i;
         el.classList.toggle('on',on);
-        el.style.color=on?sc.c:'';el.style.textShadow=on?`0 0 6px ${sc.c}`:'';
+        el.style.color=on?sc.c:'';el.style.textShadow=on?`0 0 6px ${sc.c}`:''
     });
     $('sw-thumb').style.top=`${i*100/6}%`;
     tickClock();

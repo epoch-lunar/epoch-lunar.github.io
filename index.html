@@ -32,1627 +32,1625 @@
         />
 
         <style>
-             @font-face {
-                 font-family: "DSEG7";
-                 src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2")
-                     format("woff2");
-                 font-weight: bold;
-                 font-style: normal;
-             }
-             @font-face {
-                 font-family: "DSEG7";
-                 src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2")
-                     format("woff2");
-                 font-weight: normal;
-                 font-style: normal;
-             }
-             @font-face {
-                 font-family: "DSEG14";
-                 src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2")
-                     format("woff2");
-                 font-weight: bold;
-                 font-style: normal;
-             }
-             @font-face {
-                 font-family: "DSEG14";
-                 src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2")
-                     format("woff2");
-                 font-weight: normal;
-                 font-style: normal;
-             }
+            @font-face {
+                font-family: "DSEG7";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2")
+                    format("woff2");
+                font-weight: bold;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG7";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2")
+                    format("woff2");
+                font-weight: normal;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG14";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2")
+                    format("woff2");
+                font-weight: bold;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG14";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2")
+                    format("woff2");
+                font-weight: normal;
+                font-style: normal;
+            }
 
-             *,
-             *::before,
-             *::after {
-                 margin: 0;
-                 padding: 0;
-                 box-sizing: border-box;
-             }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-             :root {
-                 --red: #ff1a1a;
-                 --red-dim: #330808;
-                 --green: #33ff66;
-                 --green-dim: #0a330a;
-                 --cyan: #00ddff;
-                 --cyan-dim: #002a33;
-                 --gray: #cccccc;
-                 --gray-dim: #222222;
-                 --amber: #ffaa00;
-                 --amber-dim: #332200;
-                 --purple: #cc66ff;
-                 --purple-dim: #220033;
-                 --bg: #0a0a0a;
-                 --red-glow: #ff1a1a;
-                 --bg-black: #0a0a0a;
-                 --bg-case: #1a1a1a;
-                 --cream: #e9dcc4;
-                 --navy: #0e2a36;
-             }
+            :root {
+                --red: #ff1a1a;
+                --red-dim: #330808;
+                --green: #33ff66;
+                --green-dim: #0a330a;
+                --cyan: #00ddff;
+                --cyan-dim: #002a33;
+                --gray: #cccccc;
+                --gray-dim: #222222;
+                --amber: #ffaa00;
+                --amber-dim: #332200;
+                --purple: #cc66ff;
+                --purple-dim: #220033;
+                --bg: #0a0a0a;
+                --red-glow: #ff1a1a;
+                --bg-black: #0a0a0a;
+                --bg-case: #1a1a1a;
+                --cream: #e9dcc4;
+                --navy: #0e2a36;
+            }
 
-             html,
-             body {
-                 height: 100%;
-                 overflow: hidden;
-             }
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+            }
 
-             body {
-                 background:
-                     radial-gradient(
-                         ellipse at 20% 30%,
-                         rgba(25, 20, 15, 0.8) 0%,
-                         transparent 50%
-                     ),
-                     radial-gradient(
-                         ellipse at 80% 70%,
-                         rgba(20, 15, 10, 0.6) 0%,
-                         transparent 50%
-                     ),
-                     #080706;
-                 color: var(--red-glow);
-                 font-family: "Share Tech Mono", monospace;
-                 display: flex;
-                 flex-direction: column;
-                 align-items: center;
-                 justify-content: center;
-                 min-height: 100vh;
-                 min-height: 100dvh;
-             }
+            body {
+                background:
+                    radial-gradient(
+                        ellipse at 20% 30%,
+                        rgba(25, 20, 15, 0.8) 0%,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 70%,
+                        rgba(20, 15, 10, 0.6) 0%,
+                        transparent 50%
+                    ),
+                    #080706;
+                color: var(--red-glow);
+                font-family: "Share Tech Mono", monospace;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                min-height: 100dvh;
+            }
 
-             /* ============================================
+            /* ============================================
             THE CLOCK HOUSING
             ============================================ */
 
-             .clock-housing {
-                 background:
-                     linear-gradient(
-                         135deg,
-                         transparent 0%,
-                         rgba(0, 0, 0, 0.3) 50%,
-                         transparent 100%
-                     ),
-                     repeating-linear-gradient(
-                         90deg,
-                         #1c1a18 0px,
-                         #1e1c1a 1px,
-                         #1c1a18 2px
-                     ),
-                     linear-gradient(
-                         180deg,
-                         #1c1a18 0%,
-                         #121110 30%,
-                         #0c0b0a 70%,
-                         #121110 100%
-                     );
-                 border-radius: 8px;
-                 border: 2px solid #0a0a0a;
-                 padding: 4px;
-                 box-shadow:
-                     0 0 0 1px #2a2a2a,
-                     0 0 0 2px #0a0a0a,
-                     0 14px 50px rgba(0, 0, 0, 0.95),
-                     inset 0 1px 0 rgba(255, 255, 255, 0.03),
-                     inset 0 -1px 0 rgba(0, 0, 0, 0.9),
-                     inset 2px 2px 4px rgba(0, 0, 0, 0.4);
-                 max-width: 800px;
-                 width: 95vw;
-                 position: relative;
-             }
+            .clock-housing {
+                background:
+                    linear-gradient(
+                        135deg,
+                        transparent 0%,
+                        rgba(0, 0, 0, 0.3) 50%,
+                        transparent 100%
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        #1c1a18 0px,
+                        #1e1c1a 1px,
+                        #1c1a18 2px
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #1c1a18 0%,
+                        #121110 30%,
+                        #0c0b0a 70%,
+                        #121110 100%
+                    );
+                border-radius: 8px;
+                border: 2px solid #0a0a0a;
+                padding: 4px;
+                box-shadow:
+                    0 0 0 1px #2a2a2a,
+                    0 0 0 2px #0a0a0a,
+                    0 14px 50px rgba(0, 0, 0, 0.95),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.9),
+                    inset 2px 2px 4px rgba(0, 0, 0, 0.4);
+                max-width: 800px;
+                width: 95vw;
+                position: relative;
+            }
 
-             .clock-inner {
-                 background:
-                     linear-gradient(
-                         45deg,
-                         transparent 48%,
-                         rgba(255, 255, 255, 0.01) 50%,
-                         transparent 52%
-                     ),
-                     linear-gradient(
-                         180deg,
-                         #111010 0%,
-                         #0a0908 50%,
-                         #0c0b0a 100%
-                     );
-                 background-size:
-                     20px 20px,
-                     100% 100%;
-                 border-radius: 6px;
-                 padding: 32px 40px 28px;
-                 position: relative;
-                 box-shadow:
-                     inset 0 2px 8px rgba(0, 0, 0, 0.8),
-                     inset 0 0 1px rgba(255, 255, 255, 0.02);
-             }
+            .clock-inner {
+                background:
+                    linear-gradient(
+                        45deg,
+                        transparent 48%,
+                        rgba(255, 255, 255, 0.01) 50%,
+                        transparent 52%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #111010 0%,
+                        #0a0908 50%,
+                        #0c0b0a 100%
+                    );
+                background-size:
+                    20px 20px,
+                    100% 100%;
+                border-radius: 6px;
+                padding: 32px 40px 28px;
+                position: relative;
+                box-shadow:
+                    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+                    inset 0 0 1px rgba(255, 255, 255, 0.02);
+            }
 
-             /* ============================================
+            /* ============================================
             BRAND STRIP
             ============================================ */
 
-             .brand-strip {
-                 display: flex;
-                 align-items: center;
-                 justify-content: space-between;
-                 margin-bottom: 8px;
-                 padding: 0 4px;
-             }
+            .brand-strip {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                padding: 0 4px;
+            }
 
-             .brand-name {
-                 font-family: "Space Grotesk", sans-serif;
-                 font-size: 22px;
-                 letter-spacing: 12px;
-                 color: #999;
-                 text-transform: uppercase;
-                 font-weight: 700;
-             }
+            .brand-name {
+                font-family: "Space Grotesk", sans-serif;
+                font-size: 22px;
+                letter-spacing: 12px;
+                color: #999;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
 
-             .brand-tagline {
-                 font-family: "Space Mono", monospace;
-                 font-size: 10px;
-                 letter-spacing: 3px;
-                 color: #555;
-                 text-transform: uppercase;
-             }
+            .brand-tagline {
+                font-family: "Space Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: #555;
+                text-transform: uppercase;
+            }
 
-             /* ============================================
+            /* ============================================
             DISPLAY PANEL (the dark LCD area)
             ============================================ */
 
-             .display-panel {
-                 background: #0c0000;
-                 border-radius: 6px;
-                 padding: 20px 24px 16px;
-                 border: 1px solid #1a0505;
-                 box-shadow:
-                     inset 0 2px 8px rgba(0, 0, 0, 0.8),
-                     inset 0 0 20px rgba(0, 0, 0, 0.5);
-                 position: relative;
-                 overflow: hidden;
-             }
+            .display-panel {
+                background: #0c0000;
+                border-radius: 6px;
+                padding: 20px 24px 16px;
+                border: 1px solid #1a0505;
+                box-shadow:
+                    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+                    inset 0 0 20px rgba(0, 0, 0, 0.5);
+                position: relative;
+                overflow: hidden;
+            }
 
-             /* Subtle screen texture */
-             .display-panel::before {
-                 content: "";
-                 position: absolute;
-                 inset: 0;
-                 background: repeating-linear-gradient(
-                     0deg,
-                     transparent,
-                     transparent 2px,
-                     rgba(0, 0, 0, 0.15) 2px,
-                     rgba(0, 0, 0, 0.15) 4px
-                 );
-                 pointer-events: none;
-                 z-index: 1;
-             }
+            /* Subtle screen texture */
+            .display-panel::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.15) 2px,
+                    rgba(0, 0, 0, 0.15) 4px
+                );
+                pointer-events: none;
+                z-index: 1;
+            }
 
-             /* ============================================
+            /* ============================================
             TIME LABEL ROW
             ============================================ */
 
-             .time-label-row {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 margin-bottom: 4px;
-                 position: relative;
-                 z-index: 2;
-             }
+            .time-label-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 4px;
+                position: relative;
+                z-index: 2;
+            }
 
-             .time-label {
-                 font-size: 10px;
-                 letter-spacing: 3px;
-                 color: var(--red-dim);
-                 text-transform: uppercase;
-             }
+            .time-label {
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: var(--red-dim);
+                text-transform: uppercase;
+            }
 
-             .time-label.active {
-                 color: var(--red-glow);
-                 text-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-             }
+            .time-label.active {
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+            }
 
-             /* ============================================
+            /* ============================================
             THE BIG CLOCK DISPLAY
             ============================================ */
 
-             .clock-display {
-                 position: relative;
-                 z-index: 2;
-                 text-align: center;
-                 padding: 4px 0;
-             }
+            .clock-display {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                padding: 4px 0;
+            }
 
-             /* Ghost segments (the dim "8s" behind the active display) */
-             .clock-ghost {
-                 font-family: "DSEG7", monospace;
-                 font-weight: bold;
-                 font-size: clamp(48px, 10vw, 80px);
-                 color: var(--red-dim);
-                 position: absolute;
-                 width: 100%;
-                 text-align: center;
-                 left: 0;
-                 user-select: none;
-                 -webkit-user-select: none;
-             }
+            /* Ghost segments (the dim "8s" behind the active display) */
+            .clock-ghost {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                font-size: clamp(48px, 10vw, 80px);
+                color: var(--red-dim);
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                left: 0;
+                user-select: none;
+                -webkit-user-select: none;
+            }
 
-             .clock-time {
-                 font-family: "DSEG7", monospace;
-                 font-weight: bold;
-                 font-size: clamp(48px, 10vw, 80px);
-                 color: var(--red-glow);
-                 text-shadow:
-                     0 0 8px rgba(255, 26, 26, 0.6),
-                     0 0 20px rgba(255, 26, 26, 0.3),
-                     0 0 40px rgba(255, 26, 26, 0.1);
-                 position: relative;
-                 letter-spacing: 4px;
-             }
+            .clock-time {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                font-size: clamp(48px, 10vw, 80px);
+                color: var(--red-glow);
+                text-shadow:
+                    0 0 8px rgba(255, 26, 26, 0.6),
+                    0 0 20px rgba(255, 26, 26, 0.3),
+                    0 0 40px rgba(255, 26, 26, 0.1);
+                position: relative;
+                letter-spacing: 4px;
+            }
 
-             /* ============================================
+            /* ============================================
             DATE & LABEL ROW BELOW CLOCK
             ============================================ */
 
-             .info-row {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 margin-top: 6px;
-                 position: relative;
-                 z-index: 2;
-             }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-top: 6px;
+                position: relative;
+                z-index: 2;
+            }
 
-             .date-display {
-                 font-family: "DSEG7", monospace;
-                 font-size: clamp(12px, 2.5vw, 16px);
-                 color: var(--red-glow);
-                 text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
-                 letter-spacing: 2px;
-             }
+            .date-display {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(12px, 2.5vw, 16px);
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+                letter-spacing: 2px;
+            }
 
-             .utc-indicator {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 11px;
-                 letter-spacing: 2px;
-                 color: var(--red-glow);
-                 text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
-                 opacity: 0.9;
-             }
+            .utc-indicator {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+                opacity: 0.9;
+            }
 
-             /* ============================================
+            /* ============================================
             SECONDS BAR
             ============================================ */
 
-             .seconds-bar-container {
-                 margin-top: 12px;
-                 height: 3px;
-                 background: var(--red-dim);
-                 border-radius: 2px;
-                 position: relative;
-                 z-index: 2;
-                 overflow: hidden;
-             }
+            .seconds-bar-container {
+                margin-top: 12px;
+                height: 3px;
+                background: var(--red-dim);
+                border-radius: 2px;
+                position: relative;
+                z-index: 2;
+                overflow: hidden;
+            }
 
-             .seconds-bar {
-                 height: 100%;
-                 background: var(--red-glow);
-                 box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-                 border-radius: 2px;
-                 transition: width 0.15s linear;
-             }
+            .seconds-bar {
+                height: 100%;
+                background: var(--red-glow);
+                box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+                border-radius: 2px;
+                transition: width 0.15s linear;
+            }
 
-             /* ============================================
+            /* ============================================
             DIVIDER
             ============================================ */
 
-             .divider {
-                 height: 5px;
-                 background: repeating-linear-gradient(
-                     0deg,
-                     transparent,
-                     transparent 1px,
-                     #2a2220 1px,
-                     #2a2220 2px
-                 );
-                 margin: 18px 4px 16px;
-                 opacity: 0.6;
-             }
+            .divider {
+                height: 5px;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1px,
+                    #2a2220 1px,
+                    #2a2220 2px
+                );
+                margin: 18px 4px 16px;
+                opacity: 0.6;
+            }
 
-             /* ============================================
+            /* ============================================
             AUXILIARY STATUS STRIP
             ============================================ */
 
-             .aux-strip {
-                 display: flex;
-                 justify-content: space-between;
-                 margin-top: 14px;
-                 padding: 8px 0 0;
-                 border-top: 1px solid #1a1a1a;
-                 position: relative;
-                 z-index: 2;
-             }
+            .aux-strip {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 14px;
+                padding: 8px 0 0;
+                border-top: 1px solid #1a1a1a;
+                position: relative;
+                z-index: 2;
+            }
 
-             .aux-readout {
-                 text-align: center;
-                 flex: 1;
-             }
+            .aux-readout {
+                text-align: center;
+                flex: 1;
+            }
 
-             .aux-label {
-                 display: block;
-                 font-size: 12px;
-                 letter-spacing: 2px;
-                 opacity: 0.5;
-                 text-transform: uppercase;
-             }
+            .aux-label {
+                display: block;
+                font-size: 12px;
+                letter-spacing: 2px;
+                opacity: 0.5;
+                text-transform: uppercase;
+            }
 
-             .aux-value {
-                 font-family: "DSEG7", monospace;
-                 font-size: clamp(14px, 2.5vw, 18px);
-                 opacity: 0.6;
-                 text-shadow: none;
-                 letter-spacing: 1px;
-             }
+            .aux-value {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(14px, 2.5vw, 18px);
+                opacity: 0.6;
+                text-shadow: none;
+                letter-spacing: 1px;
+            }
 
-             .aux-delta {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 12px;
-                 letter-spacing: 0.5px;
-                 opacity: 0.6;
-                 display: block;
-                 margin-top: 2px;
-             }
+            .aux-delta {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                opacity: 0.6;
+                display: block;
+                margin-top: 2px;
+            }
 
-             /* ============================================
+            /* ============================================
             SEGMENTED DRIFT BAR
             ============================================ */
 
-             .drift-bar-container {
-                 margin-top: 14px;
-                 position: relative;
-                 z-index: 2;
-             }
+            .drift-bar-container {
+                margin-top: 14px;
+                position: relative;
+                z-index: 2;
+            }
 
-             .drift-bar-label {
-                 font-size: 10px;
-                 letter-spacing: 2px;
-                 color: #555;
-                 text-transform: uppercase;
-                 margin-bottom: 8px;
-             }
+            .drift-bar-label {
+                font-size: 10px;
+                letter-spacing: 2px;
+                color: #555;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
 
-             .drift-bar-track {
-                 display: flex;
-                 gap: 1px;
-                 height: 16px;
-             }
+            .drift-bar-track {
+                display: flex;
+                gap: 1px;
+                height: 16px;
+            }
 
-             .drift-seg {
-                 flex: 1;
-                 background: #1a1a1a;
-                 border-radius: 1px;
-                 transition:
-                     background 0.3s,
-                     box-shadow 0.3s;
-             }
+            .drift-seg {
+                flex: 1;
+                background: #1a1a1a;
+                border-radius: 1px;
+                transition:
+                    background 0.3s,
+                    box-shadow 0.3s;
+            }
 
-             .drift-seg.lit {
-                 background: var(--green);
-                 box-shadow: 0 0 4px rgba(51, 255, 102, 0.4);
-             }
+            .drift-seg.lit {
+                background: var(--green);
+                box-shadow: 0 0 4px rgba(51, 255, 102, 0.4);
+            }
 
-             .drift-seg.lit-bright {
-                 background: var(--green);
-                 box-shadow: 0 0 8px rgba(51, 255, 102, 0.6);
-             }
+            .drift-seg.lit-bright {
+                background: var(--green);
+                box-shadow: 0 0 8px rgba(51, 255, 102, 0.6);
+            }
 
-             .drift-seg.lit.warning-lit {
-                 background: var(--amber);
-                 box-shadow: 0 0 4px rgba(255, 170, 0, 0.5);
-             }
+            .drift-seg.lit.warning-lit {
+                background: var(--amber);
+                box-shadow: 0 0 4px rgba(255, 170, 0, 0.5);
+            }
 
-             .drift-seg.lit-bright.warning-lit {
-                 background: var(--amber);
-                 box-shadow: 0 0 8px rgba(255, 170, 0, 0.7);
-             }
+            .drift-seg.lit-bright.warning-lit {
+                background: var(--amber);
+                box-shadow: 0 0 8px rgba(255, 170, 0, 0.7);
+            }
 
-             .drift-seg.lit.error-lit {
-                 background: var(--red);
-                 box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-             }
+            .drift-seg.lit.error-lit {
+                background: var(--red);
+                box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+            }
 
-             .drift-seg.lit-bright.error-lit {
-                 background: var(--red);
-                 box-shadow: 0 0 10px rgba(255, 26, 26, 0.7);
-             }
+            .drift-seg.lit-bright.error-lit {
+                background: var(--red);
+                box-shadow: 0 0 10px rgba(255, 26, 26, 0.7);
+            }
 
-             .drift-bar-scale {
-                 display: flex;
-                 justify-content: space-between;
-                 font-size: 14px;
-                 color: #444;
-                 letter-spacing: 1px;
-                 margin-top: 4px;
-                 padding: 0 1px;
-             }
+            .drift-bar-scale {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #444;
+                letter-spacing: 1px;
+                margin-top: 4px;
+                padding: 0 1px;
+            }
 
-             /* ============================================
+            /* ============================================
             DEVIATION DISPLAY
             ============================================ */
 
-             .deviation-display {
-                 margin-top: 10px;
-                 text-align: center;
-                 position: relative;
-                 z-index: 2;
-             }
+            .deviation-display {
+                margin-top: 10px;
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
 
-             .deviation-value {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 18px;
-                 letter-spacing: 1px;
-                 color: var(--green);
-                 text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
-             }
+            .deviation-value {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 18px;
+                letter-spacing: 1px;
+                color: var(--green);
+                text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+            }
 
-             .deviation-value.warning {
-                 color: var(--amber);
-                 text-shadow: 0 0 6px rgba(255, 170, 0, 0.4);
-             }
+            .deviation-value.warning {
+                color: var(--amber);
+                text-shadow: 0 0 6px rgba(255, 170, 0, 0.4);
+            }
 
-             .deviation-value.error {
-                 color: var(--red);
-                 text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
-             }
+            .deviation-value.error {
+                color: var(--red);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+            }
 
-             .deviation-label {
-                 font-size: 14%;
-                 letter-spacing: 1px;
-                 color: #555;
-                 margin-left: 8px;
-                 text-transform: uppercase;
-             }
+            .deviation-label {
+                font-size: 14%;
+                letter-spacing: 1px;
+                color: #555;
+                margin-left: 8px;
+                text-transform: uppercase;
+            }
 
-             .deviation-qualitative {
-                 font-size: 14px;
-                 letter-spacing: 1px;
-                 color: #666;
-                 text-transform: uppercase;
-                 text-align: center;
-                 margin-top: 6px;
-                 opacity: 0.7;
-             }
+            .deviation-qualitative {
+                font-size: 14px;
+                letter-spacing: 1px;
+                color: #666;
+                text-transform: uppercase;
+                text-align: center;
+                margin-top: 6px;
+                opacity: 0.7;
+            }
 
-             .deviation-qualitative .highlight {
-                 color: #ffffff;
-                 text-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
-                 font-weight: bold;
-             }
+            .deviation-qualitative .highlight {
+                color: #ffffff;
+                text-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
+                font-weight: bold;
+            }
 
-             /* ============================================
+            /* ============================================
             NTP SERVERS DISPLAY
             ============================================ */
 
-             .ntp-servers {
-                 margin-top: 10px;
-                 display: flex;
-                 flex-direction: column;
-                 gap: 4px;
-                 position: relative;
-                 z-index: 2;
-             }
+            .ntp-servers {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                position: relative;
+                z-index: 2;
+            }
 
-             .ntp-server {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 10px;
-                 letter-spacing: 1px;
-                 padding: 2px 0;
-                 opacity: 0.7;
-             }
+            .ntp-server {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 1px;
+                padding: 2px 0;
+                opacity: 0.7;
+            }
 
-             .ntp-name {
-                 color: #666;
-                 flex: 1;
-             }
+            .ntp-name {
+                color: #666;
+                flex: 1;
+            }
 
-             .ntp-offset {
-                 color: var(--green);
-                 text-align: right;
-                 min-width: 100px;
-             }
+            .ntp-offset {
+                color: var(--green);
+                text-align: right;
+                min-width: 100px;
+            }
 
-             .ntp-offset.warning {
-                 color: var(--amber);
-             }
+            .ntp-offset.warning {
+                color: var(--amber);
+            }
 
-             .ntp-offset.error {
-                 color: var(--red);
-             }
+            .ntp-offset.error {
+                color: var(--red);
+            }
 
-             .ntp-rtt {
-                 color: #444;
-                 text-align: right;
-                 min-width: 60px;
-                 margin-left: 16px;
-             }
+            .ntp-rtt {
+                color: #444;
+                text-align: right;
+                min-width: 60px;
+                margin-left: 16px;
+            }
 
-             .ntp-servers-compact {
-                 display: flex;
-                 flex-direction: column;
-                 gap: 6px;
-             }
+            .ntp-servers-compact {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
 
-             .ntp-servers-compact .ntp-server {
-                 font-size: 12px;
-                 padding: 3px 0;
-                 opacity: 0.9;
-             }
+            .ntp-servers-compact .ntp-server {
+                font-size: 12px;
+                padding: 3px 0;
+                opacity: 0.9;
+            }
 
-             .ntp-servers-compact .ntp-name {
-                 font-size: 11px;
-             }
+            .ntp-servers-compact .ntp-name {
+                font-size: 11px;
+            }
 
-             .ntp-header {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 font-size: 12px;
-                 letter-spacing: 1px;
-                 color: #666;
-                 text-transform: uppercase;
-                 padding-bottom: 4px;
-                 border-bottom: 1px solid #333;
-                 margin-bottom: 6px;
-                 opacity: 0.7;
-             }
+            .ntp-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                font-size: 12px;
+                letter-spacing: 1px;
+                color: #666;
+                text-transform: uppercase;
+                padding-bottom: 4px;
+                border-bottom: 1px solid #333;
+                margin-bottom: 6px;
+                opacity: 0.7;
+            }
 
-             .ntp-header .ntp-offset,
-             .ntp-header .ntp-rtt {
-                 color: #666;
-             }
+            .ntp-header .ntp-offset,
+            .ntp-header .ntp-rtt {
+                color: #666;
+            }
 
-             /* ============================================
+            /* ============================================
             EMAIL SIGNUP SECTION
             ============================================ */
 
-             .signup-section {
-                 padding: 0 4px;
-             }
+            .signup-section {
+                padding: 0 4px;
+            }
 
-             .signup-prompt {
-                 font-size: 11px;
-                 letter-spacing: 2px;
-                 color: #666;
-                 text-transform: uppercase;
-                 margin-top: 12px;
-                 text-align: center;
-             }
+            .signup-prompt {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #666;
+                text-transform: uppercase;
+                margin-top: 12px;
+                text-align: center;
+            }
 
-             .signup-prompt em {
-                 color: #999;
-                 font-style: normal;
-                 letter-spacing: 1px;
-                 text-transform: none;
-             }
+            .signup-prompt em {
+                color: #999;
+                font-style: normal;
+                letter-spacing: 1px;
+                text-transform: none;
+            }
 
-             .form-row {
-                 display: flex;
-                 gap: 8px;
-             }
+            .form-row {
+                display: flex;
+                gap: 8px;
+            }
 
-             .form-row input[type="email"] {
-                 flex: 1;
-                 background: #0c0000;
-                 border: 1px solid #002233;
-                 border-radius: 4px;
-                 padding: 10px 14px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 14px;
-                 color: var(--cyan);
-                 outline: none;
-                 transition: border-color 0.2s;
-             }
+            .form-row input[type="email"] {
+                flex: 1;
+                background: #0c0000;
+                border: 1px solid #002233;
+                border-radius: 4px;
+                padding: 10px 14px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 14px;
+                color: var(--cyan);
+                outline: none;
+                transition: border-color 0.2s;
+            }
 
-             .form-row input[type="email"]::placeholder {
-                 color: var(--cyan-dim);
-             }
+            .form-row input[type="email"]::placeholder {
+                color: var(--cyan-dim);
+            }
 
-             .form-row input[type="email"]:focus {
-                 border-color: var(--cyan);
-                 box-shadow: 0 0 8px rgba(0, 221, 255, 0.15);
-             }
+            .form-row input[type="email"]:focus {
+                border-color: var(--cyan);
+                box-shadow: 0 0 8px rgba(0, 221, 255, 0.15);
+            }
 
-             .form-row button {
-                 background: var(--cyan-dim);
-                 border: 1px solid #003344;
-                 border-radius: 4px;
-                 padding: 10px 20px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 12px;
-                 letter-spacing: 2px;
-                 color: var(--cyan);
-                 text-transform: uppercase;
-                 cursor: pointer;
-                 transition: all 0.2s;
-                 white-space: nowrap;
-             }
+            .form-row button {
+                background: var(--cyan-dim);
+                border: 1px solid #003344;
+                border-radius: 4px;
+                padding: 10px 20px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 2px;
+                color: var(--cyan);
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.2s;
+                white-space: nowrap;
+            }
 
-             .form-row button:hover {
-                 background: #003344;
-                 border-color: var(--cyan);
-                 text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
-                 box-shadow: 0 0 12px rgba(0, 221, 255, 0.15);
-             }
+            .form-row button:hover {
+                background: #003344;
+                border-color: var(--cyan);
+                text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+                box-shadow: 0 0 12px rgba(0, 221, 255, 0.15);
+            }
 
-             .form-row button:active {
-                 transform: scale(0.98);
-             }
+            .form-row button:active {
+                transform: scale(0.98);
+            }
 
-             /* Honeypot */
-             .form-row input[name="_gotcha"] {
-                 display: none;
-             }
+            /* Honeypot */
+            .form-row input[name="_gotcha"] {
+                display: none;
+            }
 
-             /* ============================================
+            /* ============================================
             SUCCESS / DOWNLOAD STATE
             ============================================ */
 
-             .signup-section.submitted .form-row {
-                 display: none;
-             }
+            .signup-section.submitted .form-row {
+                display: none;
+            }
 
-             .signup-section.submitted .signup-prompt {
-                 display: none;
-             }
+            .signup-section.submitted .signup-prompt {
+                display: none;
+            }
 
-             .download-section {
-                 display: none;
-                 text-align: center;
-             }
+            .download-section {
+                display: none;
+                text-align: center;
+            }
 
-             .signup-section.submitted .download-section {
-                 display: block;
-             }
+            .signup-section.submitted .download-section {
+                display: block;
+            }
 
-             .download-check {
-                 font-size: 11px;
-                 letter-spacing: 2px;
-                 color: #1a8a1a;
-                 text-transform: uppercase;
-                 margin-bottom: 12px;
-                 text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
-             }
+            .download-check {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #1a8a1a;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+                text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
+            }
 
-             .download-link {
-                 display: inline-block;
-                 background: #081a08;
-                 border: 1px solid #1a4a1a;
-                 border-radius: 4px;
-                 padding: 10px 24px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 12px;
-                 letter-spacing: 2px;
-                 color: #33cc33;
-                 text-transform: uppercase;
-                 text-decoration: none;
-                 transition: all 0.2s;
-             }
+            .download-link {
+                display: inline-block;
+                background: #081a08;
+                border: 1px solid #1a4a1a;
+                border-radius: 4px;
+                padding: 10px 24px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 2px;
+                color: #33cc33;
+                text-transform: uppercase;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
 
-             .download-link:hover {
-                 background: #0a2a0a;
-                 border-color: #33cc33;
-                 text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
-                 box-shadow: 0 0 12px rgba(51, 204, 51, 0.15);
-             }
+            .download-link:hover {
+                background: #0a2a0a;
+                border-color: #33cc33;
+                text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
+                box-shadow: 0 0 12px rgba(51, 204, 51, 0.15);
+            }
 
-             /* ============================================
+            /* ============================================
             BOTTOM BADGE
             ============================================ */
 
-             .bottom-badge {
-                 margin-top: 20px;
-                 text-align: center;
-                 padding: 0 4px;
-             }
+            .bottom-badge {
+                margin-top: 20px;
+                text-align: center;
+                padding: 0 4px;
+            }
 
-             .bottom-badge a {
-                 font-size: 9px;
-                 letter-spacing: 3px;
-                 color: #444;
-                 text-transform: uppercase;
-                 text-decoration: none;
-                 transition: color 0.2s;
-             }
+            .bottom-badge a {
+                font-size: 9px;
+                letter-spacing: 3px;
+                color: #444;
+                text-transform: uppercase;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
 
-             .bottom-badge a:hover {
-                 color: #666;
-             }
+            .bottom-badge a:hover {
+                color: #666;
+            }
 
-             /* ============================================
+            /* ============================================
             LUNAR OFFSET DISPLAY
             ============================================ */
 
-             .lunar-offset {
-                 margin-top: 14px;
-                 text-align: center;
-                 position: relative;
-                 z-index: 2;
-             }
+            .lunar-offset {
+                margin-top: 14px;
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
 
-             .lunar-offset-label {
-                 font-size: 9px;
-                 letter-spacing: 2px;
-                 color: var(--red-dim);
-                 text-transform: uppercase;
-             }
+            .lunar-offset-label {
+                font-size: 9px;
+                letter-spacing: 2px;
+                color: var(--red-dim);
+                text-transform: uppercase;
+            }
 
-             .lunar-offset-value {
-                 font-family: "DSEG7", monospace;
-                 font-size: clamp(14px, 3vw, 20px);
-                 color: var(--red-glow);
-                 text-shadow: 0 0 6px rgba(255, 26, 26, 0.3);
-                 opacity: 0.7;
-                 letter-spacing: 2px;
-             }
+            .lunar-offset-value {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(14px, 3vw, 20px);
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.3);
+                opacity: 0.7;
+                letter-spacing: 2px;
+            }
 
-             /* ============================================
+            /* ============================================
             LED INDICATOR DOTS
             ============================================ */
 
-             .led {
-                 display: inline-block;
-                 width: 4px;
-                 height: 4px;
-                 border-radius: 50%;
-                 background: var(--led-color);
-                 opacity: 0.2;
-                 margin-right: 4px;
-                 vertical-align: middle;
-                 transition:
-                     opacity 0.15s,
-                     box-shadow 0.15s;
-             }
+            .led {
+                display: inline-block;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--led-color);
+                opacity: 0.2;
+                margin-right: 4px;
+                vertical-align: middle;
+                transition:
+                    opacity 0.15s,
+                    box-shadow 0.15s;
+            }
 
-             .sw-slot.on .led {
-                 opacity: 1;
-                 box-shadow:
-                     0 0 6px var(--led-color),
-                     0 0 12px var(--led-color);
-             }
+            .sw-slot.on .led {
+                opacity: 1;
+                box-shadow:
+                    0 0 6px var(--led-color),
+                    0 0 12px var(--led-color);
+            }
 
-             /* === TOOLTIP GUTTERS === */
-             .tooltip-gutter {
-                 position: absolute;
-                 top: 0;
-                 bottom: 0;
-                 width: 80px;
-                 display: flex;
-                 align-items: center;
-                 pointer-events: none;
-                 z-index: 50;
-             }
-             .tooltip-gutter.left {
-                 left: -90px;
-                 justify-content: flex-end;
-             }
-             .tooltip-gutter.right {
-                 right: -90px;
-                 justify-content: flex-start;
-             }
-             .tooltip-box {
-                 background: #0a0a0a;
-                 border: 1px solid #333;
-                 padding: 6px 10px;
-                 font-family: "Space Mono", monospace;
-                 font-size: 9px;
-                 color: #888;
-                 text-transform: uppercase;
-                 letter-spacing: 1px;
-                 opacity: 0;
-                 transform: translateX(5px);
-                 transition:
-                     opacity 0.15s,
-                     transform 0.15s;
-                 white-space: nowrap;
-                 position: relative;
-             }
-             .tooltip-gutter:hover .tooltip-box {
-                 opacity: 1;
-                 transform: translateX(0);
-             }
-             .tooltip-box::before {
-                 content: "";
-                 position: absolute;
-                 width: 20px;
-                 height: 1px;
-                 background: #444;
-                 top: 50%;
-             }
-             .tooltip-gutter.left .tooltip-box::before {
-                 right: 100%;
-                 margin-right: 4px;
-             }
-             .tooltip-gutter.right .tooltip-box::before {
-                 left: 100%;
-                 margin-left: 4px;
-             }
-             .tooltip-gutter.right .tooltip-box::before {
-                 background: linear-gradient(90deg, #444, transparent);
-             }
-             .tooltip-gutter.left .tooltip-box::before {
-                 background: linear-gradient(270deg, #444, transparent);
-             }
-             .tooltip-box::after {
-                 content: "";
-                 position: absolute;
-                 width: 3px;
-                 height: 3px;
-                 background: #666;
-                 border-radius: 50%;
-                 top: 50%;
-                 transform: translateY(-50%);
-             }
-             .tooltip-gutter.left .tooltip-box::after {
-                 right: -8px;
-             }
-             .tooltip-gutter.right .tooltip-box::after {
-                 left: -8px;
-             }
-             .tooltip-gutter:hover .tooltip-box::after {
-                 background: var(--tooltip-color, #888);
-                 box-shadow: 0 0 4px var(--tooltip-color, #888);
-             }
+            /* === TOOLTIP GUTTERS === */
+            .tooltip-gutter {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 80px;
+                display: flex;
+                align-items: center;
+                pointer-events: none;
+                z-index: 50;
+            }
+            .tooltip-gutter.left {
+                left: -90px;
+                justify-content: flex-end;
+            }
+            .tooltip-gutter.right {
+                right: -90px;
+                justify-content: flex-start;
+            }
+            .tooltip-box {
+                background: #0a0a0a;
+                border: 1px solid #333;
+                padding: 6px 10px;
+                font-family: "Space Mono", monospace;
+                font-size: 9px;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                opacity: 0;
+                transform: translateX(5px);
+                transition:
+                    opacity 0.15s,
+                    transform 0.15s;
+                white-space: nowrap;
+                position: relative;
+            }
+            .tooltip-gutter:hover .tooltip-box {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .tooltip-box::before {
+                content: "";
+                position: absolute;
+                width: 20px;
+                height: 1px;
+                background: #444;
+                top: 50%;
+            }
+            .tooltip-gutter.left .tooltip-box::before {
+                right: 100%;
+                margin-right: 4px;
+            }
+            .tooltip-gutter.right .tooltip-box::before {
+                left: 100%;
+                margin-left: 4px;
+            }
+            .tooltip-gutter.right .tooltip-box::before {
+                background: linear-gradient(90deg, #444, transparent);
+            }
+            .tooltip-gutter.left .tooltip-box::before {
+                background: linear-gradient(270deg, #444, transparent);
+            }
+            .tooltip-box::after {
+                content: "";
+                position: absolute;
+                width: 3px;
+                height: 3px;
+                background: #666;
+                border-radius: 50%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .tooltip-gutter.left .tooltip-box::after {
+                right: -8px;
+            }
+            .tooltip-gutter.right .tooltip-box::after {
+                left: -8px;
+            }
+            .tooltip-gutter:hover .tooltip-box::after {
+                background: var(--tooltip-color, #888);
+                box-shadow: 0 0 4px var(--tooltip-color, #888);
+            }
 
-             /* ============================================
+            /* ============================================
             RESPONSIVE
             ============================================ */
 
-             @media (max-width: 480px) {
-                 .clock-housing {
-                     width: 95vw;
-                     border-radius: 12px;
-                 }
-                 .clock-inner {
-                     padding: 20px 20px 20px;
-                     border-radius: 10px;
-                 }
-                 .display-panel {
-                     padding: 16px 16px 12px;
-                 }
-                 .form-row {
-                     flex-direction: column;
-                 }
-                 .form-row button {
-                     padding: 12px 20px;
-                 }
-                 .brand-strip {
-                     flex-direction: column;
-                     align-items: flex-start;
-                     gap: 2px;
-                 }
-                 .aux-strip {
-                     margin-top: 10px;
-                 }
-                 .drift-bar-container {
-                     margin-top: 10px;
-                 }
-             }
+            @media (max-width: 480px) {
+                .clock-housing {
+                    width: 95vw;
+                    border-radius: 12px;
+                }
+                .clock-inner {
+                    padding: 20px 20px 20px;
+                    border-radius: 10px;
+                }
+                .display-panel {
+                    padding: 16px 16px 12px;
+                }
+                .form-row {
+                    flex-direction: column;
+                }
+                .form-row button {
+                    padding: 12px 20px;
+                }
+                .brand-strip {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                }
+                .aux-strip {
+                    margin-top: 10px;
+                }
+                .drift-bar-container {
+                    margin-top: 10px;
+                }
+            }
 
-             /* Blink animation for colon */
-             @keyframes blink {
-                 0%,
-                 49% {
-                     opacity: 1;
-                 }
-                 50%,
-                 100% {
-                     opacity: 0.2;
-                 }
-             }
-             .colon-blink {
-                 animation: blink 1s step-end infinite;
-             }
+            /* Blink animation for colon */
+            @keyframes blink {
+                0%,
+                49% {
+                    opacity: 1;
+                }
+                50%,
+                100% {
+                    opacity: 0.2;
+                }
+            }
+            .colon-blink {
+                animation: blink 1s step-end infinite;
+            }
 
-             /* Subtle screen flicker on load */
-             @keyframes screenOn {
-                 0% {
-                     opacity: 0;
-                 }
-                 5% {
-                     opacity: 0.8;
-                 }
-                 10% {
-                     opacity: 0.3;
-                 }
-                 15% {
-                     opacity: 0.9;
-                 }
-                 20% {
-                     opacity: 0.5;
-                 }
-                 30% {
-                     opacity: 1;
-                 }
-                 100% {
-                     opacity: 1;
-                 }
-             }
+            /* Subtle screen flicker on load */
+            @keyframes screenOn {
+                0% {
+                    opacity: 0;
+                }
+                5% {
+                    opacity: 0.8;
+                }
+                10% {
+                    opacity: 0.3;
+                }
+                15% {
+                    opacity: 0.9;
+                }
+                20% {
+                    opacity: 0.5;
+                }
+                30% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
 
-             /* Corner rivets/screws - military matte finish */
-             .clock-housing::before,
-             .clock-housing::after {
-                 content: "";
-                 position: absolute;
-                 width: 9px;
-                 height: 9px;
-                 border-radius: 50%;
-                 background: radial-gradient(
-                     circle,
-                     #2a2a2a 30%,
-                     #1a1a1a 50%,
-                     #0a0a0a 100%
-                 );
-                 box-shadow:
-                     inset 0 1px 1px rgba(255, 255, 255, 0.08),
-                     inset 0 -1px 1px rgba(0, 0, 0, 0.95),
-                     0 1px 3px rgba(0, 0, 0, 0.9),
-                     0 0 0 1px #000;
-                 z-index: 100;
-             }
-             .clock-housing::before {
-                 top: 12px;
-                 left: 12px;
-             }
-             .clock-housing::after {
-                 top: 12px;
-                 right: 12px;
-             }
-             .clock-inner::before,
-             .clock-inner::after {
-                 content: "";
-                 position: absolute;
-                 width: 9px;
-                 height: 9px;
-                 border-radius: 50%;
-                 background: radial-gradient(
-                     circle,
-                     #2a2a2a 30%,
-                     #1a1a1a 50%,
-                     #0a0a0a 100%
-                 );
-                 box-shadow:
-                     inset 0 1px 1px rgba(255, 255, 255, 0.08),
-                     inset 0 -1px 1px rgba(0, 0, 0, 0.95),
-                     0 1px 3px rgba(0, 0, 0, 0.9),
-                     0 0 0 1px #000;
-                 z-index: 100;
-             }
-             .clock-inner::before {
-                 bottom: 12px;
-                 left: 12px;
-             }
-             .clock-inner::after {
-                 bottom: 12px;
-                 right: 12px;
-             }
+            /* Corner rivets/screws - military matte finish */
+            .clock-housing::before,
+            .clock-housing::after {
+                content: "";
+                position: absolute;
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    #2a2a2a 30%,
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
+                );
+                box-shadow:
+                    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.95),
+                    0 1px 3px rgba(0, 0, 0, 0.9),
+                    0 0 0 1px #000;
+                z-index: 100;
+            }
+            .clock-housing::before {
+                top: 12px;
+                left: 12px;
+            }
+            .clock-housing::after {
+                top: 12px;
+                right: 12px;
+            }
+            .clock-inner::before,
+            .clock-inner::after {
+                content: "";
+                position: absolute;
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    #2a2a2a 30%,
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
+                );
+                box-shadow:
+                    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.95),
+                    0 1px 3px rgba(0, 0, 0, 0.9),
+                    0 0 0 1px #000;
+                z-index: 100;
+            }
+            .clock-inner::before {
+                bottom: 12px;
+                left: 12px;
+            }
+            .clock-inner::after {
+                bottom: 12px;
+                right: 12px;
+            }
 
-             /* === BRAND === */
-             .brand {
-                 display: flex;
-                 align-items: center;
-                 justify-content: space-between;
-                 margin-bottom: 10px;
-                 padding: 0 4px;
-             }
-             .brand-name {
-                 font-family: "Space Grotesk", sans-serif;
-                 font-size: 22px;
-                 letter-spacing: 12px;
-                 color: #999;
-                 text-transform: uppercase;
-                 font-weight: 700;
-             }
-             .brand-tag {
-                 font-size: 10px;
-                 letter-spacing: 3px;
-                 color: #555;
-                 text-transform: uppercase;
-             }
+            /* === BRAND === */
+            .brand {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                padding: 0 4px;
+            }
+            .brand-name {
+                font-family: "Space Grotesk", sans-serif;
+                font-size: 22px;
+                letter-spacing: 12px;
+                color: #999;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
+            .brand-tag {
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: #555;
+                text-transform: uppercase;
+            }
 
-             /* === LCD === */
-             .lcd {
-                 background: #080404;
-                 border-radius: 6px;
-                 padding: 20px 22px 18px;
-                 border: 3px solid #0a0a0a;
-                 box-shadow:
-                     inset 0 4px 12px rgba(0, 0, 0, 0.9),
-                     inset 0 2px 4px rgba(0, 0, 0, 0.8),
-                     0 0 0 1px #2a2a2a,
-                     0 0 0 2px #1a1a1a;
-                 position: relative;
-                 overflow: hidden;
-                 animation: screenOn 0.8s ease-out;
-             }
-             .lcd::before {
-                 content: "";
-                 position: absolute;
-                 inset: 0;
-                 background: repeating-linear-gradient(
-                     0deg,
-                     transparent,
-                     transparent 2px,
-                     rgba(0, 0, 0, 0.15) 2px,
-                     rgba(0, 0, 0, 0.15) 4px
-                 );
-                 pointer-events: none;
-                 z-index: 1;
-             }
-             .lcd::after {
-                 content: "";
-                 position: absolute;
-                 inset: 0;
-                 background:
-                     radial-gradient(
-                         ellipse at center,
-                         transparent 0%,
-                         transparent 60%,
-                         rgba(0, 0, 0, 0.2) 80%,
-                         rgba(0, 0, 0, 0.5) 100%
-                     ),
-                     repeating-linear-gradient(
-                         90deg,
-                         transparent,
-                         transparent 39px,
-                         rgba(255, 255, 255, 0.015) 39px,
-                         rgba(255, 255, 255, 0.015) 40px
-                     );
-                 border-radius: 6px;
-                 pointer-events: none;
-                 z-index: 10;
-             }
+            /* === LCD === */
+            .lcd {
+                background: #080404;
+                border-radius: 6px;
+                padding: 20px 22px 18px;
+                border: 3px solid #0a0a0a;
+                box-shadow:
+                    inset 0 4px 12px rgba(0, 0, 0, 0.9),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.8),
+                    0 0 0 1px #2a2a2a,
+                    0 0 0 2px #1a1a1a;
+                position: relative;
+                overflow: hidden;
+                animation: screenOn 0.8s ease-out;
+            }
+            .lcd::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.15) 2px,
+                    rgba(0, 0, 0, 0.15) 4px
+                );
+                pointer-events: none;
+                z-index: 1;
+            }
+            .lcd::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        ellipse at center,
+                        transparent 0%,
+                        transparent 60%,
+                        rgba(0, 0, 0, 0.2) 80%,
+                        rgba(0, 0, 0, 0.5) 100%
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        transparent,
+                        transparent 39px,
+                        rgba(255, 255, 255, 0.015) 39px,
+                        rgba(255, 255, 255, 0.015) 40px
+                    );
+                border-radius: 6px;
+                pointer-events: none;
+                z-index: 10;
+            }
 
-             /* === CLOCK ROW === */
-             .clock-row {
-                 display: flex;
-                 align-items: stretch;
-                 position: relative;
-                 z-index: 2;
-             }
-             .sw-track {
-                 width: 56px;
-                 flex-shrink: 0;
-                 background: #0a0a0a;
-                 border: 1px solid #2a2a2a;
-                 border-radius: 4px;
-                 position: relative;
-                 display: flex;
-                 flex-direction: column;
-                 padding: 4px 0;
-                 margin-right: 16px;
-                 box-shadow:
-                     0 2px 4px rgba(0, 0, 0, 0.8),
-                     inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                     0 0 0 1px #1a1a1a;
-             }
-             .sw-slot {
-                 flex: 1;
-                 display: flex;
-                 align-items: center;
-                 justify-content: center;
-                 cursor: pointer;
-                 user-select: none;
-                 font-size: 9px;
-                 letter-spacing: 1px;
-                 text-transform: uppercase;
-                 color: #444;
-                 transition: all 0.15s;
-                 position: relative;
-                 z-index: 1;
-                 padding: 3px 0;
-             }
-             .sw-slot:hover {
-                 color: #777;
-             }
-             .sw-slot.on {
-                 font-weight: bold;
-                 font-size: 10.5px;
-             }
-             .sw-thumb {
-                 position: absolute;
-                 left: 2px;
-                 right: 2px;
-                 height: 16.6667%;
-                 background: linear-gradient(180deg, #3a3a3a, #222);
-                 border: 1px solid #4a4a4a;
-                 border-radius: 3px;
-                 box-shadow:
-                     0 1px 4px rgba(0, 0, 0, 0.6),
-                     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-                 transition: top 0.15s cubic-bezier(0.34, 1.2, 0.64, 1);
-                 pointer-events: none;
-                 z-index: 0;
-             }
-             .sw-thumb::after {
-                 content: "";
-                 position: absolute;
-                 left: 50%;
-                 top: 50%;
-                 transform: translate(-50%, -50%);
-                 width: 16px;
-                 height: 2px;
-                 background: transparent;
-                 border-radius: 1px;
-             }
-             .clock-face {
-                 flex: 1;
-                 display: flex;
-                 flex-direction: column;
-                 justify-content: center;
-                 align-items: center;
-                 position: relative;
-             }
-             .time-line {
-                 position: relative;
-                 white-space: nowrap;
-                 line-height: 1.1;
-             }
-             .time-ghost {
-                 font-family: "DSEG7", monospace;
-                 font-weight: bold;
-                 position: absolute;
-                 left: 0;
-                 top: 0;
-                 user-select: none;
-             }
-             .time-val {
-                 font-family: "DSEG7", monospace;
-                 font-weight: bold;
-                 position: relative;
-                 filter: blur(0.3px);
-             }
-             .t-main {
-                 font-size: 56px;
-                 letter-spacing: 4px;
-             }
-             .t-frac {
-                 font-size: 28px;
-                 letter-spacing: 1px;
-                 opacity: 0.75;
-             }
-             .drift-val {
-                 filter: blur(0.2px);
-             }
-             .t-lbl {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 13px;
-                 letter-spacing: 2px;
-                 text-transform: uppercase;
-                 opacity: 0.5;
-                 vertical-align: middle;
-                 padding: 0 4px;
-             }
-             .scale-name {
-                 font-size: 12px;
-                 letter-spacing: 3px;
-                 text-transform: uppercase;
-                 opacity: 0.5;
-                 margin-top: 8px;
-             }
-             .scale-citation {
-                 font-size: 8px;
-                 letter-spacing: 1px;
-                 color: #666;
-                 margin-top: 4px;
-                 opacity: 0.6;
-                 text-align: center;
-                 position: absolute;
-                 top: 100%;
-                 left: 0;
-                 right: 0;
-             }
-             .info-row {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 margin-top: 12px;
-                 position: relative;
-                 z-index: 2;
-             }
-             .info-l {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: clamp(14px, 2.5vw, 18px);
-                 letter-spacing: 2px;
-             }
-             .info-r {
-                 font-size: 12px;
-                 letter-spacing: 2px;
-                 opacity: 0.8;
-             }
+            /* === CLOCK ROW === */
+            .clock-row {
+                display: flex;
+                align-items: stretch;
+                position: relative;
+                z-index: 2;
+            }
+            .sw-track {
+                width: 56px;
+                flex-shrink: 0;
+                background: #0a0a0a;
+                border: 1px solid #2a2a2a;
+                border-radius: 4px;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 4px 0;
+                margin-right: 16px;
+                box-shadow:
+                    0 2px 4px rgba(0, 0, 0, 0.8),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 0 0 1px #1a1a1a;
+            }
+            .sw-slot {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                user-select: none;
+                font-size: 9px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #444;
+                transition: all 0.15s;
+                position: relative;
+                z-index: 1;
+                padding: 3px 0;
+            }
+            .sw-slot:hover {
+                color: #777;
+            }
+            .sw-slot.on {
+                font-weight: bold;
+                font-size: 10.5px;
+            }
+            .sw-thumb {
+                position: absolute;
+                left: 2px;
+                right: 2px;
+                height: 16.6667%;
+                background: linear-gradient(180deg, #3a3a3a, #222);
+                border: 1px solid #4a4a4a;
+                border-radius: 3px;
+                box-shadow:
+                    0 1px 4px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                transition: top 0.15s cubic-bezier(0.34, 1.2, 0.64, 1);
+                pointer-events: none;
+                z-index: 0;
+            }
+            .sw-thumb::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 16px;
+                height: 2px;
+                background: transparent;
+                border-radius: 1px;
+            }
+            .clock-face {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .time-line {
+                position: relative;
+                white-space: nowrap;
+                line-height: 1.1;
+            }
+            .time-ghost {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+                top: 0;
+                user-select: none;
+            }
+            .time-val {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                position: relative;
+                filter: blur(0.3px);
+            }
+            .t-main {
+                font-size: 56px;
+                letter-spacing: 4px;
+            }
+            .t-frac {
+                font-size: 28px;
+                letter-spacing: 1px;
+                opacity: 0.75;
+            }
+            .drift-val {
+                filter: blur(0.2px);
+            }
+            .t-lbl {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 13px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                opacity: 0.5;
+                vertical-align: middle;
+                padding: 0 4px;
+            }
+            .scale-name {
+                font-size: 12px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                opacity: 0.5;
+                margin-top: 8px;
+            }
+            .scale-citation {
+                font-size: 8px;
+                letter-spacing: 1px;
+                color: #666;
+                margin-top: 4px;
+                opacity: 0.6;
+                text-align: center;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+            }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-top: 12px;
+                position: relative;
+                z-index: 2;
+            }
+            .info-l {
+                font-family: "Share Tech Mono", monospace;
+                font-size: clamp(14px, 2.5vw, 18px);
+                letter-spacing: 2px;
+            }
+            .info-r {
+                font-size: 12px;
+                letter-spacing: 2px;
+                opacity: 0.8;
+            }
 
-             /* === DRIFT ROW === */
-             .drift-row {
-                 margin-top: 16px;
-                 display: flex;
-                 gap: 12px;
-                 position: relative;
-                 z-index: 2;
-             }
-             .drift-info {
-                 flex: 1;
-                 text-align: left;
-             }
-             .time-source-panel {
-                 flex: 1;
-                 display: flex;
-                 flex-direction: column;
-                 align-items: center;
-                 justify-content: flex-start;
-                 padding: 8px;
-                 background: #0c0c0c;
-                 border-radius: 4px;
-                 border: 1px solid #1a1a1a;
-             }
-             .source-label {
-                 font-size: 10px;
-                 letter-spacing: 2px;
-                 color: #555;
-                 text-transform: uppercase;
-                 margin-bottom: 8px;
-             }
-             .source-status {
-                 display: flex;
-                 align-items: center;
-                 gap: 8px;
-                 margin-bottom: 4px;
-             }
-             .source-indicators {
-                 display: flex;
-                 flex-wrap: wrap;
-                 gap: 6px;
-                 justify-content: center;
-                 margin-bottom: 8px;
-             }
-             .indicator {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 9px;
-                 letter-spacing: 1px;
-                 padding: 4px 8px;
-                 border-radius: 2px;
-                 background: #0a0a0a;
-                 border: 1px solid #1a1a1a;
-                 color: #2a2a2a;
-                 text-shadow: none;
-                 box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
-                 transition: all 0.2s;
-             }
-             .indicator.active {
-                 background: #0a1a0a;
-                 border-color: var(--green);
-                 color: var(--green);
-                 text-shadow: 0 0 8px var(--green);
-                 box-shadow:
-                     inset 0 1px 2px rgba(0,0,0,0.3),
-                     0 0 8px rgba(51, 255, 102, 0.3);
-             }
-             .indicator.active.warning {
-                 background: #1a1a0a;
-                 border-color: var(--amber);
-                 color: var(--amber);
-                 text-shadow: 0 0 8px var(--amber);
-                 box-shadow:
-                     inset 0 1px 2px rgba(0,0,0,0.3),
-                     0 0 8px rgba(255, 170, 0, 0.3);
-             }
-             .indicator.active.error {
-                 background: #1a0a0a;
-                 border-color: var(--red);
-                 color: var(--red);
-                 text-shadow: 0 0 8px var(--red);
-                 box-shadow:
-                     inset 0 1px 2px rgba(0,0,0,0.3),
-                     0 0 8px rgba(255, 26, 26, 0.3);
-             }
-             .source-rtt {
-                 display: none;
-             }
-             .drift-lbl {
-                 font-size: 11px;
-                 letter-spacing: 1.5px;
-                 color: #555;
-                 text-transform: uppercase;
-             }
-             .drift-val {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: clamp(16px, 2.5vw, 22px);
-                 color: var(--amber);
-                 text-shadow: 0 0 6px rgba(255, 170, 0, 0.3);
-                 opacity: 0.8;
-                 letter-spacing: 2px;
-             }
-             .rate-val {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 12px;
-                 color: var(--amber);
-                 text-shadow: 0 0 4px rgba(255, 170, 0, 0.2);
-                 opacity: 0.8;
-                 letter-spacing: 2px;
-             }
-             .source-detail {
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 11px;
-                 letter-spacing: 1px;
-                 display: flex;
-                 flex-direction: column;
-                 gap: 6px;
-             }
-             .source-detail .sd-row {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: baseline;
-                 gap: 8px;
-                 opacity: 0.9;
-             }
-             .source-detail .sd-row span:first-child { color: #666; flex: 1; }
-             .source-detail .sd-row span:nth-child(2) { text-align: right; min-width: 80px; }
-             .source-detail .sd-row span:nth-child(3) { color: #444; text-align: right; min-width: 50px; }
-             .source-detail .sd-header {
-                 font-size: 11px;
-                 color: #555;
-                 padding-bottom: 4px;
-                 border-bottom: 1px solid #333;
-                 margin-bottom: 2px;
-                 opacity: 0.7;
-             }
-             .source-detail .sd-header span { color: #555 !important; }
-             .source-detail .sd-ok { color: #33ff66; }
-             .source-detail .sd-warn { color: var(--amber); }
-             .source-detail .sd-fail { color: #444; }
-             @keyframes blink-dim {
-                 0%, 100% { opacity: 0.4; }
-                 50% { opacity: 0.15; }
-             }
-             .indicator.querying {
-                 animation: blink-dim 1.4s ease-in-out infinite;
-             }
-             .sync-btn {
-                 font-size: 11px;
-                 letter-spacing: 2px;
-                 color: #555;
-                 text-transform: uppercase;
-                 text-decoration: none;
-                 border: 1px solid #2a2a2a;
-                 border-radius: 3px;
-                 padding: 8px 12px;
-                 transition: all 0.2s;
-                 display: flex;
-                 align-items: center;
-                 gap: 5px;
-                 white-space: nowrap;
-                 align-self: flex-end;
-                 margin-top: 8px;
-             }
-             .sync-btn:hover {
-                 color: #33ff66;
-                 border-color: #0a330a;
-                 text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
-             }
-             .citation {
-                 font-size: 12px;
-                 letter-spacing: 1px;
-                 color: #333;
-                 text-align: center;
-                 margin-top: 14px;
-                 position: relative;
-                 z-index: 2;
-             }
-             .citation a {
-                 color: #444;
-                 text-decoration: none;
-             }
-             .citation a:hover {
-                 color: #777;
-             }
+            /* === DRIFT ROW === */
+            .drift-row {
+                margin-top: 16px;
+                display: flex;
+                gap: 12px;
+                position: relative;
+                z-index: 2;
+            }
+            .drift-info {
+                flex: 1;
+                text-align: left;
+            }
+            .time-source-panel {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 8px;
+                background: #0c0c0c;
+                border-radius: 4px;
+                border: 1px solid #1a1a1a;
+            }
+            .source-label {
+                font-size: 10px;
+                letter-spacing: 2px;
+                color: #555;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
+            .source-status {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 4px;
+            }
+            .source-indicators {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+            .indicator {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 1px;
+                padding: 4px 8px;
+                border-radius: 2px;
+                background: #0a0a0a;
+                border: 1px solid #1a1a1a;
+                color: #2a2a2a;
+                text-shadow: none;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+                transition: all 0.2s;
+            }
+            .indicator.active {
+                background: #0a1a0a;
+                border-color: var(--green);
+                color: var(--green);
+                text-shadow: 0 0 8px var(--green);
+                box-shadow:
+                    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+                    0 0 8px rgba(51, 255, 102, 0.3);
+            }
+            .indicator.active.warning {
+                background: #1a1a0a;
+                border-color: var(--amber);
+                color: var(--amber);
+                text-shadow: 0 0 8px var(--amber);
+                box-shadow:
+                    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+                    0 0 8px rgba(255, 170, 0, 0.3);
+            }
+            .indicator.active.error {
+                background: #1a0a0a;
+                border-color: var(--red);
+                color: var(--red);
+                text-shadow: 0 0 8px var(--red);
+                box-shadow:
+                    inset 0 1px 2px rgba(0, 0, 0, 0.3),
+                    0 0 8px rgba(255, 26, 26, 0.3);
+            }
+            .source-rtt {
+                display: none;
+            }
+            .drift-lbl {
+                font-size: 11px;
+                letter-spacing: 1.5px;
+                color: #555;
+                text-transform: uppercase;
+            }
+            .drift-val {
+                font-family: "Share Tech Mono", monospace;
+                font-size: clamp(16px, 2.5vw, 22px);
+                color: var(--amber);
+                text-shadow: 0 0 6px rgba(255, 170, 0, 0.3);
+                opacity: 0.8;
+                letter-spacing: 2px;
+            }
+            .rate-val {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                color: var(--amber);
+                text-shadow: 0 0 4px rgba(255, 170, 0, 0.2);
+                opacity: 0.8;
+                letter-spacing: 2px;
+            }
+            .source-detail {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 1px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .source-detail .sd-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 8px;
+                opacity: 0.9;
+            }
+            .source-detail .sd-row span:first-child {
+                color: #666;
+                flex: 1;
+            }
+            .source-detail .sd-row span:nth-child(2) {
+                text-align: right;
+                min-width: 80px;
+            }
+            .source-detail .sd-row span:nth-child(3) {
+                color: #444;
+                text-align: right;
+                min-width: 50px;
+            }
+            .source-detail .sd-header {
+                font-size: 11px;
+                color: #555;
+                padding-bottom: 4px;
+                border-bottom: 1px solid #333;
+                margin-bottom: 2px;
+                opacity: 0.7;
+            }
+            .source-detail .sd-header span {
+                color: #555 !important;
+            }
+            .source-detail .sd-ok {
+                color: #33ff66;
+            }
+            .source-detail .sd-warn {
+                color: var(--amber);
+            }
+            .source-detail .sd-fail {
+                color: #444;
+            }
+            @keyframes blink-dim {
+                0%,
+                100% {
+                    opacity: 0.4;
+                }
+                50% {
+                    opacity: 0.15;
+                }
+            }
+            .indicator.querying {
+                animation: blink-dim 1.4s ease-in-out infinite;
+            }
+            .sync-btn {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #555;
+                text-transform: uppercase;
+                text-decoration: none;
+                border: 1px solid #2a2a2a;
+                border-radius: 3px;
+                padding: 8px 12px;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                white-space: nowrap;
+                align-self: flex-end;
+                margin-top: 8px;
+            }
+            .sync-btn:hover {
+                color: #33ff66;
+                border-color: #0a330a;
+                text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+            }
+            .citation {
+                font-size: 12px;
+                letter-spacing: 1px;
+                color: #333;
+                text-align: center;
+                margin-top: 14px;
+                position: relative;
+                z-index: 2;
+            }
+            .citation a {
+                color: #444;
+                text-decoration: none;
+            }
+            .citation a:hover {
+                color: #777;
+            }
 
-             /* === SIGNUP === */
-             .divider {
-                 height: 5px;
-                 background: repeating-linear-gradient(
-                     0deg,
-                     transparent,
-                     transparent 1px,
-                     #2a2220 1px,
-                     #2a2220 2px
-                 );
-                 margin: 18px 4px 16px;
-                 opacity: 0.6;
-             }
-             .signup {
-                 padding: 0 4px;
-             }
-             .signup-prompt {
-                 font-size: 16px;
-                 letter-spacing: 2px;
-                 color: #666;
-                 text-transform: uppercase;
-                 margin-top: 14px;
-                 text-align: center;
-             }
-             .signup-prompt em {
-                 color: #999;
-                 font-style: normal;
-                 letter-spacing: 1px;
-                 text-transform: none;
-             }
-             .form-row {
-                 display: flex;
-                 gap: 8px;
-             }
-             .form-row input[type="email"] {
-                 flex: 1;
-                 background: #0c0000;
-                 border: 1px solid #002233;
-                 border-radius: 4px;
-                 padding: 12px 16px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 16px;
-                 color: var(--cyan);
-                 outline: none;
-                 transition: border-color 0.2s;
-             }
-             .form-row input[type="email"]::placeholder {
-                 color: var(--cyan-dim);
-             }
-             .form-row input[type="email"]:focus {
-                 border-color: var(--cyan);
-                 box-shadow: 0 0 8px rgba(0, 221, 255, 0.15);
-             }
-             .form-row button {
-                 background: var(--cyan-dim);
-                 border: 1px solid #003344;
-                 border-radius: 4px;
-                 padding: 12px 24px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 14px;
-                 letter-spacing: 2px;
-                 color: var(--cyan);
-                 text-transform: uppercase;
-                 cursor: pointer;
-                 transition: all 0.2s;
-                 white-space: nowrap;
-             }
-             .form-row button:hover {
-                 background: #003344;
-                 border-color: var(--cyan);
-                 text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
-             }
-             .form-row button:active {
-                 transform: scale(0.98);
-             }
-             .form-row input[name="_gotcha"] {
-                 display: none;
-             }
-             .signup.done .form-row,
-             .signup.done .signup-prompt {
-                 display: none;
-             }
-             .dl-sec {
-                 display: none;
-                 text-align: center;
-             }
-             .signup.done .dl-sec {
-                 display: block;
-             }
-             .dl-chk {
-                 font-size: 13px;
-                 letter-spacing: 2px;
-                 color: #1a8a1a;
-                 text-transform: uppercase;
-                 margin-bottom: 14px;
-                 text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
-             }
-             .dl-a {
-                 display: inline-block;
-                 background: #081a08;
-                 border: 1px solid #1a4a1a;
-                 border-radius: 4px;
-                 padding: 12px 28px;
-                 font-family: "Share Tech Mono", monospace;
-                 font-size: 14px;
-                 letter-spacing: 2px;
-                 color: #33cc33;
-                 text-transform: uppercase;
-                 text-decoration: none;
-                 transition: all 0.2s;
-             }
-             .dl-a:hover {
-                 background: #0a2a0a;
-                 border-color: #33cc33;
-                 text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
-             }
-             .badge {
-                 margin-top: 20px;
-                 text-align: center;
-             }
-             .badge a {
-                 font-size: 11px;
-                 letter-spacing: 3px;
-                 color: #444;
-                 text-transform: uppercase;
-                 text-decoration: none;
-             }
-             .badge a:hover {
-                 color: #666;
-             }
+            /* === SIGNUP === */
+            .divider {
+                height: 5px;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1px,
+                    #2a2220 1px,
+                    #2a2220 2px
+                );
+                margin: 18px 4px 16px;
+                opacity: 0.6;
+            }
+            .signup {
+                padding: 0 4px;
+            }
+            .signup-prompt {
+                font-size: 16px;
+                letter-spacing: 2px;
+                color: #666;
+                text-transform: uppercase;
+                margin-top: 14px;
+                text-align: center;
+            }
+            .signup-prompt em {
+                color: #999;
+                font-style: normal;
+                letter-spacing: 1px;
+                text-transform: none;
+            }
+            .substack-embed {
+                margin: 14px 0 0;
+                overflow: hidden;
+                opacity: 0.85;
+            }
+            .substack-embed iframe {
+                display: block;
+                width: 100%;
+                border: none;
+            }
+            .dl-sec {
+                margin-top: 16px;
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+            }
+            .dl-a {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                background: #1a1a1a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                padding: 14px 16px;
+                font-family: "Share Tech Mono", monospace;
+                color: #888;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+            .dl-a:hover {
+                border-color: currentColor;
+            }
+            .dl-a.dl-paper:hover {
+                background: #081a08;
+                border-color: #33cc33;
+                color: #33cc33;
+            }
+            .dl-a.dl-paper:hover .dl-a-sub {
+                color: #1a8a1a;
+            }
+            .dl-a.dl-openlunar:hover {
+                background: #0d0d1f;
+                border-color: #5b6fd6;
+                color: #8090e8;
+            }
+            .dl-a.dl-openlunar:hover .dl-a-sub {
+                color: #3a4899;
+            }
+            .dl-a-action {
+                font-size: 13px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+            .dl-a-sub {
+                font-size: 11px;
+                letter-spacing: 1px;
+                color: #555;
+                text-transform: none;
+            }
+            .badge {
+                margin-top: 20px;
+                text-align: center;
+            }
+            .badge a {
+                font-size: 11px;
+                letter-spacing: 3px;
+                color: #444;
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+            .badge a:hover {
+                color: #666;
+            }
 
-             @media (max-width: 520px) {
-                 .lcd {
-                     padding: 16px 14px 14px;
-                 }
-                 .form-row {
-                     flex-direction: column;
-                 }
-                 .brand {
-                     flex-direction: column;
-                     align-items: flex-start;
-                     gap: 2px;
-                 }
-                 .drift-row {
-                     flex-direction: column;
-                     align-items: flex-start;
-                     gap: 8px;
-                 }
-                 .sync-btn {
-                     align-self: flex-end;
-                 }
-                 .t-main {
-                     font-size: 40px !important;
-                     letter-spacing: 2px !important;
-                 }
-                 .t-frac {
-                     font-size: 22px !important;
-                 }
-                 .sw-track {
-                     width: 46px;
-                     margin-right: 10px;
-                 }
-                 .sw-slot {
-                     font-size: 8px;
-                 }
-                 .sw-slot.on {
-                     font-size: 9px;
-                 }
-                 .t-lbl {
-                     font-size: 11px;
-                 }
-                 .aux-strip {
-                     margin-top: 10px;
-                 }
-                 .drift-bar-container {
-                     margin-top: 10px;
-                 }
-             }
+            @media (max-width: 520px) {
+                .lcd {
+                    padding: 16px 14px 14px;
+                }
+                .form-row {
+                    flex-direction: column;
+                }
+                .brand {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                }
+                .drift-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                }
+                .sync-btn {
+                    align-self: flex-end;
+                }
+                .t-main {
+                    font-size: 40px !important;
+                    letter-spacing: 2px !important;
+                }
+                .t-frac {
+                    font-size: 22px !important;
+                }
+                .sw-track {
+                    width: 46px;
+                    margin-right: 10px;
+                }
+                .sw-slot {
+                    font-size: 8px;
+                }
+                .sw-slot.on {
+                    font-size: 9px;
+                }
+                .t-lbl {
+                    font-size: 11px;
+                }
+                .aux-strip {
+                    margin-top: 10px;
+                }
+                .drift-bar-container {
+                    margin-top: 10px;
+                }
+            }
         </style>
     </head>
     <body>
@@ -1940,53 +1938,38 @@
                                     SYSTEM
                                 </div>
                             </div>
-                            <div class="source-rtt" id="source-rtt">QUERYING…</div>
+                            <div class="source-rtt" id="source-rtt">
+                                QUERYING…
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Divider -->
                 <div class="divider"></div>
-                <div class="signup-prompt">Get the whitepaper</div>
-                <!-- Email Signup -->
-                <div class="signup" id="signup">
-                    <div class="form-row">
-                        <input
-                            type="email"
-                            name="email"
-                            id="email-input"
-                            placeholder="you@example.com"
-                            required
-                            autocomplete="email"
-                        />
-                        <input
-                            type="text"
-                            name="_gotcha"
-                            tabindex="-1"
-                            autocomplete="off"
-                        />
-                        <button
-                            type="button"
-                            id="submit-btn"
-                            onclick="doSignup()"
-                        >
-                            Download
-                        </button>
-                    </div>
-                    <div class="signup-prompt">
-                        <em
-                            >Space Time Card: a near-term bridge and long-term
-                            resilience layer for lunar time &amp;
-                            coordination</em
-                        >
-                    </div>
-                    <div class="signup-prompt">Linden, Kosak 2026</div>
-                    <div class="dl-sec">
-                        <div class="dl-chk">✓ Check your inbox</div>
-                        <a class="dl-a" href="epoch-whitepaper.pdf" download
-                            >↓ Download White Paper</a
-                        >
-                    </div>
+                <div class="signup-prompt">Stay in sync</div>
+
+                <div class="substack-embed">
+                    <iframe
+                        src="https://epochlunar.substack.com/embed"
+                        height="150"
+                        scrolling="no"
+                    ></iframe>
+                </div>
+                <!-- White Paper -->
+                <div class="dl-sec">
+                    <a
+                        class="dl-a dl-paper"
+                        href="https://epochlunar.substack.com/"
+                        target="_blank"
+                        rel="noopener"
+                    ><span class="dl-a-action">↗ Read White Paper</span><span class="dl-a-sub">Space Time Card — Linden, Kosak 2026</span></a>
+                    <a
+                        class="dl-a dl-openlunar"
+                        href="https://openlunar.org"
+                        target="_blank"
+                        rel="noopener"
+                    ><span class="dl-a-action">↗ Open Lunar Foundation</span><span class="dl-a-sub">openlunar.org</span></a>
                 </div>
 
                 <!-- Bottom Badge -->
@@ -2276,58 +2259,91 @@
                 {
                     name: "timeapi.io",
                     query: async () => {
-                        const t1 = performance.now(), t1w = Date.now();
-                        const res = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=UTC", { cache: "no-store" });
+                        const t1 = performance.now(),
+                            t1w = Date.now();
+                        const res = await fetch(
+                            "https://www.timeapi.io/api/Time/current/zone?timeZone=UTC",
+                            { cache: "no-store" },
+                        );
                         if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         const rtt = performance.now() - t1;
                         const { dateTime } = await res.json();
-                        if (!dateTime) throw new Error("missing dateTime field");
-                        return { offsetSec: (t1w + rtt / 2 - new Date(dateTime + "Z").getTime()) / 1000, rtt };
+                        if (!dateTime)
+                            throw new Error("missing dateTime field");
+                        return {
+                            offsetSec:
+                                (t1w +
+                                    rtt / 2 -
+                                    new Date(dateTime + "Z").getTime()) /
+                                1000,
+                            rtt,
+                        };
                     },
                 },
                 {
                     name: "Cloudflare CDN",
                     query: async () => {
-                        const t1 = performance.now(), t1w = Date.now();
-                        const res = await fetch("https://www.cloudflare.com/cdn-cgi/trace", { cache: "no-store" });
+                        const t1 = performance.now(),
+                            t1w = Date.now();
+                        const res = await fetch(
+                            "https://www.cloudflare.com/cdn-cgi/trace",
+                            { cache: "no-store" },
+                        );
                         if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         const rtt = performance.now() - t1;
                         const m = (await res.text()).match(/ts=([\d.]+)/);
                         if (!m) throw new Error("no ts field");
-                        return { offsetSec: (t1w + rtt / 2 - parseFloat(m[1]) * 1000) / 1000, rtt };
+                        return {
+                            offsetSec:
+                                (t1w + rtt / 2 - parseFloat(m[1]) * 1000) /
+                                1000,
+                            rtt,
+                        };
                     },
                 },
                 {
                     name: "System Clock",
-                    local: true,  // excluded from median; shown for reference only
+                    local: true, // excluded from median; shown for reference only
                     query: async () => ({ offsetSec: 0, rtt: 0 }),
                 },
             ];
 
-            let ntpServers = TIME_SOURCES.map(src => ({
-                name: src.name, offset: null, rtt: null, lastUpdate: 0,
+            let ntpServers = TIME_SOURCES.map((src) => ({
+                name: src.name,
+                offset: null,
+                rtt: null,
+                lastUpdate: 0,
             }));
 
             const SOURCE_TIMEOUT_MS = 5000;
 
             function recomputeNetworkTime() {
                 // Exclude local system clock from the median — it's shown for reference only
-                const good = ntpServers.filter((s, i) => s.offset !== null && !TIME_SOURCES[i].local);
+                const good = ntpServers.filter(
+                    (s, i) => s.offset !== null && !TIME_SOURCES[i].local,
+                );
                 if (good.length === 0) return;
-                const sorted = [...good.map(s => s.offset)].sort((a, b) => a - b);
+                const sorted = [...good.map((s) => s.offset)].sort(
+                    (a, b) => a - b,
+                );
                 const median = sorted[Math.floor(sorted.length / 2)];
                 networkTimeData = {
                     networkTime: new Date(Date.now() - median * 1000),
                     deviation: median,
-                    rtt: Math.min(...good.map(s => s.rtt)),
-                    source: `${good.length}/${TIME_SOURCES.filter(s => !s.local).length}`,
+                    rtt: Math.min(...good.map((s) => s.rtt)),
+                    source: `${good.length}/${TIME_SOURCES.filter((s) => !s.local).length}`,
                 };
                 networkTimeError = false;
 
                 // Back-fill the system clock row with the measured deviation from reference
-                const sysIdx = TIME_SOURCES.findIndex(s => s.local);
+                const sysIdx = TIME_SOURCES.findIndex((s) => s.local);
                 if (sysIdx >= 0) {
-                    ntpServers[sysIdx] = { name: "System Clock", offset: median, rtt: 0, lastUpdate: Date.now() };
+                    ntpServers[sysIdx] = {
+                        name: "System Clock",
+                        offset: median,
+                        rtt: 0,
+                        lastUpdate: Date.now(),
+                    };
                 }
             }
 
@@ -2335,35 +2351,60 @@
                 if (networkTimePending) return;
                 networkTimePending = true;
 
-                const withTimeout = (p) => Promise.race([
-                    p,
-                    new Promise((_, rej) =>
-                        setTimeout(() => rej(new Error(`timeout after ${SOURCE_TIMEOUT_MS}ms`)), SOURCE_TIMEOUT_MS)
-                    ),
-                ]);
+                const withTimeout = (p) =>
+                    Promise.race([
+                        p,
+                        new Promise((_, rej) =>
+                            setTimeout(
+                                () =>
+                                    rej(
+                                        new Error(
+                                            `timeout after ${SOURCE_TIMEOUT_MS}ms`,
+                                        ),
+                                    ),
+                                SOURCE_TIMEOUT_MS,
+                            ),
+                        ),
+                    ]);
 
                 // Update display as each source responds rather than waiting for all
                 // Skip local sources — they are derived after the network median is known
-                await Promise.allSettled(TIME_SOURCES.map((src, i) => {
-                    if (src.local) return Promise.resolve();
-                    return withTimeout(src.query())
-                        .then(({ offsetSec, rtt }) => {
-                            ntpServers[i] = { name: src.name, offset: offsetSec, rtt, lastUpdate: Date.now() };
-                            recomputeNetworkTime();
-                        })
-                        .catch(err => {
-                            ntpServers[i] = { name: src.name, offset: null, rtt: null, lastUpdate: 0 };
-                            console.warn(`${src.name}:`, err?.message);
-                        });
-                }));
+                await Promise.allSettled(
+                    TIME_SOURCES.map((src, i) => {
+                        if (src.local) return Promise.resolve();
+                        return withTimeout(src.query())
+                            .then(({ offsetSec, rtt }) => {
+                                ntpServers[i] = {
+                                    name: src.name,
+                                    offset: offsetSec,
+                                    rtt,
+                                    lastUpdate: Date.now(),
+                                };
+                                recomputeNetworkTime();
+                            })
+                            .catch((err) => {
+                                ntpServers[i] = {
+                                    name: src.name,
+                                    offset: null,
+                                    rtt: null,
+                                    lastUpdate: 0,
+                                };
+                                console.warn(`${src.name}:`, err?.message);
+                            });
+                    }),
+                );
 
                 if (!networkTimeData) {
-                    networkTimeData = { networkTime: new Date(), deviation: 0, rtt: 0, source: "System" };
+                    networkTimeData = {
+                        networkTime: new Date(),
+                        deviation: 0,
+                        rtt: 0,
+                        source: "System",
+                    };
                     networkTimeError = true;
                 }
                 networkTimePending = false;
             }
-
 
             function updateDeviationDisplay() {
                 const TOTAL_SEGS = 48;
@@ -2376,7 +2417,8 @@
                     $("deviation-qualitative").innerHTML =
                         "CONTACTING TIME SOURCES";
                     for (let i = 0; i < TOTAL_SEGS; i++) {
-                        document.getElementById("seg-" + i).className = "drift-seg";
+                        document.getElementById("seg-" + i).className =
+                            "drift-seg";
                     }
                     document.querySelectorAll(".indicator").forEach((el) => {
                         el.className = "indicator querying";
@@ -2392,7 +2434,8 @@
                     $("deviation-qualitative").innerHTML =
                         "NO TIME SOURCES AVAILABLE";
                     for (let i = 0; i < TOTAL_SEGS; i++) {
-                        document.getElementById("seg-" + i).className = "drift-seg";
+                        document.getElementById("seg-" + i).className =
+                            "drift-seg";
                     }
                     document.querySelectorAll(".indicator").forEach((el) => {
                         el.classList.remove("active", "warning", "querying");
@@ -2454,17 +2497,23 @@
 
                 // Per-source detail table
                 const hdr = `<div class="sd-row sd-header"><span>TIME SERVER</span><span>DEVIATION</span><span>PING</span></div>`;
-                const rows = ntpServers.map(s => {
-                    if (s.offset === null) {
-                        return `<div class="sd-row"><span>${s.name}</span><span class="sd-fail">NO RESPONSE</span><span>---</span></div>`;
-                    }
-                    const sign = s.offset >= 0 ? "+" : "";
-                    const cls = Math.abs(s.offset) > 1.0 ? "sd-fail"
-                              : Math.abs(s.offset) > 0.25 ? "sd-warn"
-                              : "sd-ok";
-                    const rttStr = s.rtt !== null ? `${Math.round(s.rtt)}ms` : "---";
-                    return `<div class="sd-row"><span>${s.name}</span><span class="${cls}">${sign}${s.offset.toFixed(3)}s</span><span>${rttStr}</span></div>`;
-                }).join("");
+                const rows = ntpServers
+                    .map((s) => {
+                        if (s.offset === null) {
+                            return `<div class="sd-row"><span>${s.name}</span><span class="sd-fail">NO RESPONSE</span><span>---</span></div>`;
+                        }
+                        const sign = s.offset >= 0 ? "+" : "";
+                        const cls =
+                            Math.abs(s.offset) > 1.0
+                                ? "sd-fail"
+                                : Math.abs(s.offset) > 0.25
+                                  ? "sd-warn"
+                                  : "sd-ok";
+                        const rttStr =
+                            s.rtt !== null ? `${Math.round(s.rtt)}ms` : "---";
+                        return `<div class="sd-row"><span>${s.name}</span><span class="${cls}">${sign}${s.offset.toFixed(3)}s</span><span>${rttStr}</span></div>`;
+                    })
+                    .join("");
                 $("source-detail").innerHTML = hdr + rows;
 
                 // Update color based on deviation magnitude
@@ -2501,7 +2550,8 @@
                         if (dist >= 0 && dist < segmentsLit) {
                             seg.className = "drift-seg lit" + segColor(dist);
                         } else if (dist === segmentsLit && segmentsLit > 0) {
-                            seg.className = "drift-seg lit-bright" + segColor(dist);
+                            seg.className =
+                                "drift-seg lit-bright" + segColor(dist);
                         } else {
                             seg.className = "drift-seg";
                         }
@@ -2511,7 +2561,8 @@
                         if (dist >= 0 && dist < segmentsLit) {
                             seg.className = "drift-seg lit" + segColor(dist);
                         } else if (dist === segmentsLit && segmentsLit > 0) {
-                            seg.className = "drift-seg lit-bright" + segColor(dist);
+                            seg.className =
+                                "drift-seg lit-bright" + segColor(dist);
                         } else {
                             seg.className = "drift-seg";
                         }
@@ -2536,7 +2587,9 @@
             function tick() {
                 const sysTime = new Date();
                 const realTime = networkTimeData
-                    ? new Date(sysTime.getTime() - networkTimeData.deviation * 1000)
+                    ? new Date(
+                          sysTime.getTime() - networkTimeData.deviation * 1000,
+                      )
                     : sysTime;
                 const tv = $("tval"),
                     gh = $("ghost");
@@ -2622,37 +2675,6 @@
             setInterval(fetchNetworkTime, 5000);
             setFmt(1);
             requestAnimationFrame(tick);
-
-            // FORMSPREE
-            const FORMSPREE = "https://formspree.io/f/YOUR_FORM_ID";
-            async function doSignup() {
-                const inp = $("email-input"),
-                    btn = $("submit-btn"),
-                    email = inp.value.trim();
-                if (!email || !inp.checkValidity()) {
-                    inp.focus();
-                    return;
-                }
-                btn.textContent = "...";
-                btn.disabled = true;
-                try {
-                    await fetch(FORMSPREE, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                        },
-                        body: JSON.stringify({
-                            email,
-                            _subject: "Epoch White Paper Download",
-                        }),
-                    });
-                } catch (e) {}
-                $("signup").classList.add("done");
-            }
-            $("email-input").addEventListener("keydown", (e) => {
-                if (e.key === "Enter") doSignup();
-            });
         </script>
     </body>
 </html>

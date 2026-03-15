@@ -1375,10 +1375,7 @@
                      0 0 8px rgba(255, 26, 26, 0.3);
              }
              .source-rtt {
-                 font-size: 10px;
-                 color: #555;
-                 letter-spacing: 1px;
-                 margin-bottom: 8px;
+                 display: none;
              }
              .drift-lbl {
                  font-size: 11px;
@@ -1939,12 +1936,6 @@
                                 <div class="indicator" id="ind-timeapi">
                                     CF CDN
                                 </div>
-                                <div class="indicator" id="ind-worldtime">
-                                    CF TIME
-                                </div>
-                                <div class="indicator" id="ind-github">
-                                    GITHUB
-                                </div>
                                 <div class="indicator" id="ind-error">
                                     SYSTEM
                                 </div>
@@ -2307,32 +2298,6 @@
                     },
                 },
                 {
-                    name: "Cloudflare Time",
-                    query: async () => {
-                        const t1 = performance.now(), t1w = Date.now();
-                        const res = await fetch("https://time.cloudflare.com/cdn-cgi/trace", { cache: "no-store" });
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        const rtt = performance.now() - t1;
-                        const m = (await res.text()).match(/ts=([\d.]+)/);
-                        if (!m) throw new Error("no ts field");
-                        return { offsetSec: (t1w + rtt / 2 - parseFloat(m[1]) * 1000) / 1000, rtt };
-                    },
-                },
-                {
-                    name: "GitHub CDN",
-                    // Same-origin fetch — no CORS restriction, hits Fastly edge near the user
-                    query: async () => {
-                        const t1 = performance.now(), t1w = Date.now();
-                        const res = await fetch(window.location.origin + "/?_t=" + t1w, {
-                            method: "HEAD", cache: "no-store",
-                        });
-                        const rtt = performance.now() - t1;
-                        const dateHdr = res.headers.get("Date");
-                        if (!dateHdr) throw new Error("no Date header");
-                        return { offsetSec: (t1w + rtt / 2 - new Date(dateHdr).getTime()) / 1000, rtt };
-                    },
-                },
-                {
                     name: "System Clock",
                     local: true,  // excluded from median; shown for reference only
                     query: async () => ({ offsetSec: 0, rtt: 0 }),
@@ -2369,11 +2334,6 @@
             async function fetchNetworkTime() {
                 if (networkTimePending) return;
                 networkTimePending = true;
-
-                // Reset per-source state; old networkTimeData stays visible during refresh
-                ntpServers = TIME_SOURCES.map(src => ({
-                    name: src.name, offset: null, rtt: null, lastUpdate: 0,
-                }));
 
                 const withTimeout = (p) => Promise.race([
                     p,
@@ -2477,7 +2437,7 @@
                 }
 
                 // One indicator light per source: green = ok, amber = high offset, red = failed
-                ["ind-local", "ind-timeapi", "ind-worldtime", "ind-github", "ind-error"].forEach((id, i) => {
+                ["ind-local", "ind-timeapi", "ind-error"].forEach((id, i) => {
                     const el = $(id);
                     el.className = "indicator active";
                     const s = ntpServers[i];

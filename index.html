@@ -483,17 +483,6 @@
                  background: var(--red);
                  box-shadow: 0 0 10px rgba(255, 26, 26, 0.7);
              }
-             }
-
-             .drift-seg.lit.warning-lit {
-                 background: var(--amber);
-                 box-shadow: 0 0 4px rgba(255, 170, 0, 0.5);
-             }
-
-             .drift-seg.lit.error-lit {
-                 background: var(--red);
-                 box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-             }
 
              .drift-bar-scale {
                  display: flex;
@@ -1413,6 +1402,43 @@
                  opacity: 0.8;
                  letter-spacing: 2px;
              }
+             .source-detail {
+                 font-family: "Share Tech Mono", monospace;
+                 font-size: 11px;
+                 letter-spacing: 1px;
+                 display: flex;
+                 flex-direction: column;
+                 gap: 6px;
+             }
+             .source-detail .sd-row {
+                 display: flex;
+                 justify-content: space-between;
+                 align-items: baseline;
+                 gap: 8px;
+                 opacity: 0.9;
+             }
+             .source-detail .sd-row span:first-child { color: #666; flex: 1; }
+             .source-detail .sd-row span:nth-child(2) { text-align: right; min-width: 80px; }
+             .source-detail .sd-row span:nth-child(3) { color: #444; text-align: right; min-width: 50px; }
+             .source-detail .sd-header {
+                 font-size: 11px;
+                 color: #555;
+                 padding-bottom: 4px;
+                 border-bottom: 1px solid #333;
+                 margin-bottom: 2px;
+                 opacity: 0.7;
+             }
+             .source-detail .sd-header span { color: #555 !important; }
+             .source-detail .sd-ok { color: #33ff66; }
+             .source-detail .sd-warn { color: var(--amber); }
+             .source-detail .sd-fail { color: #444; }
+             @keyframes blink-dim {
+                 0%, 100% { opacity: 0.4; }
+                 50% { opacity: 0.15; }
+             }
+             .indicator.querying {
+                 animation: blink-dim 1.4s ease-in-out infinite;
+             }
              .sync-btn {
                  font-size: 11px;
                  letter-spacing: 2px;
@@ -1896,31 +1922,11 @@
                     </div>
                     <div class="drift-row">
                         <div class="drift-info">
-                            <div class="ntp-servers-compact">
-                                <div class="ntp-header">
-                                    <span class="ntp-name">TIME SERVER</span>
-                                    <span class="ntp-offset">DEVIATION</span>
-                                    <span class="ntp-rtt">PING</span>
-                                </div>
-                                <div class="ntp-server" id="ntp-row-0">
-                                    <span class="ntp-name">---</span>
-                                    <span class="ntp-offset">--.--- s</span>
-                                    <span class="ntp-rtt">---ms</span>
-                                </div>
-                                <div class="ntp-server" id="ntp-row-1">
-                                    <span class="ntp-name">---</span>
-                                    <span class="ntp-offset">--.--- s</span>
-                                    <span class="ntp-rtt">---ms</span>
-                                </div>
-                                <div class="ntp-server" id="ntp-row-2">
-                                    <span class="ntp-name">---</span>
-                                    <span class="ntp-offset">--.--- s</span>
-                                    <span class="ntp-rtt">---ms</span>
-                                </div>
-                                <div class="ntp-server" id="ntp-row-3">
-                                    <span class="ntp-name">---</span>
-                                    <span class="ntp-offset">--.--- s</span>
-                                    <span class="ntp-rtt">---ms</span>
+                            <div class="source-detail" id="source-detail">
+                                <div class="sd-row sd-header">
+                                    <span>TIME SERVER</span>
+                                    <span>DEVIATION</span>
+                                    <span>PING</span>
                                 </div>
                             </div>
                         </div>
@@ -1928,35 +1934,22 @@
                             <div class="source-label">TIME SOURCE</div>
                             <div class="source-indicators">
                                 <div class="indicator" id="ind-local">
-                                    LOCAL NTP
+                                    TIMEAPI
                                 </div>
                                 <div class="indicator" id="ind-timeapi">
-                                    TIME API
+                                    CF CDN
                                 </div>
                                 <div class="indicator" id="ind-worldtime">
-                                    WORLDTIME
+                                    CF TIME
+                                </div>
+                                <div class="indicator" id="ind-github">
+                                    GITHUB
                                 </div>
                                 <div class="indicator" id="ind-error">
-                                    ERROR
+                                    SYSTEM
                                 </div>
                             </div>
-                            <div class="source-rtt" id="source-rtt">--</div>
-                            <a
-                                class="sync-btn"
-                                href="https://time.philiplinden.com"
-                                target="_blank"
-                                rel="noopener"
-                                title="Time API endpoint"
-                                >API ↗</a
-                            >
-                            <a
-                                class="sync-btn"
-                                href="https://time.is/"
-                                target="_blank"
-                                rel="noopener"
-                                title="Compare your time with Time.is"
-                                >Time.is ↗</a
-                            >
+                            <div class="source-rtt" id="source-rtt">QUERYING…</div>
                         </div>
                     </div>
                 </div>
@@ -2285,160 +2278,168 @@
             let networkTimePending = false;
             let networkTimeError = false;
 
-            let ntpServers = [
+            // Browsers can't do UDP NTP; these are HTTP-accessible time sources.
+            // time.nist.gov uses its HTTP Date header (1s resolution).
+            // Cloudflare cdn-cgi/trace returns a high-precision Unix timestamp.
+            const TIME_SOURCES = [
                 {
-                    name: "time.nist.gov",
-                    offset: null,
-                    rtt: null,
-                    lastUpdate: 0,
+                    name: "timeapi.io",
+                    query: async () => {
+                        const t1 = performance.now(), t1w = Date.now();
+                        const res = await fetch("https://www.timeapi.io/api/Time/current/zone?timeZone=UTC", { cache: "no-store" });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        const rtt = performance.now() - t1;
+                        const { dateTime } = await res.json();
+                        if (!dateTime) throw new Error("missing dateTime field");
+                        return { offsetSec: (t1w + rtt / 2 - new Date(dateTime + "Z").getTime()) / 1000, rtt };
+                    },
                 },
                 {
-                    name: "localhost:8765",
-                    offset: null,
-                    rtt: null,
-                    lastUpdate: 0,
+                    name: "Cloudflare CDN",
+                    query: async () => {
+                        const t1 = performance.now(), t1w = Date.now();
+                        const res = await fetch("https://www.cloudflare.com/cdn-cgi/trace", { cache: "no-store" });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        const rtt = performance.now() - t1;
+                        const m = (await res.text()).match(/ts=([\d.]+)/);
+                        if (!m) throw new Error("no ts field");
+                        return { offsetSec: (t1w + rtt / 2 - parseFloat(m[1]) * 1000) / 1000, rtt };
+                    },
                 },
                 {
-                    name: "---",
-                    offset: null,
-                    rtt: null,
-                    lastUpdate: 0,
+                    name: "Cloudflare Time",
+                    query: async () => {
+                        const t1 = performance.now(), t1w = Date.now();
+                        const res = await fetch("https://time.cloudflare.com/cdn-cgi/trace", { cache: "no-store" });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        const rtt = performance.now() - t1;
+                        const m = (await res.text()).match(/ts=([\d.]+)/);
+                        if (!m) throw new Error("no ts field");
+                        return { offsetSec: (t1w + rtt / 2 - parseFloat(m[1]) * 1000) / 1000, rtt };
+                    },
                 },
                 {
-                    name: "---",
-                    offset: null,
-                    rtt: null,
-                    lastUpdate: 0,
+                    name: "GitHub CDN",
+                    // Same-origin fetch — no CORS restriction, hits Fastly edge near the user
+                    query: async () => {
+                        const t1 = performance.now(), t1w = Date.now();
+                        const res = await fetch(window.location.origin + "/?_t=" + t1w, {
+                            method: "HEAD", cache: "no-store",
+                        });
+                        const rtt = performance.now() - t1;
+                        const dateHdr = res.headers.get("Date");
+                        if (!dateHdr) throw new Error("no Date header");
+                        return { offsetSec: (t1w + rtt / 2 - new Date(dateHdr).getTime()) / 1000, rtt };
+                    },
+                },
+                {
+                    name: "System Clock",
+                    local: true,  // excluded from median; shown for reference only
+                    query: async () => ({ offsetSec: 0, rtt: 0 }),
                 },
             ];
+
+            let ntpServers = TIME_SOURCES.map(src => ({
+                name: src.name, offset: null, rtt: null, lastUpdate: 0,
+            }));
+
+            const SOURCE_TIMEOUT_MS = 5000;
+
+            function recomputeNetworkTime() {
+                // Exclude local system clock from the median — it's shown for reference only
+                const good = ntpServers.filter((s, i) => s.offset !== null && !TIME_SOURCES[i].local);
+                if (good.length === 0) return;
+                const sorted = [...good.map(s => s.offset)].sort((a, b) => a - b);
+                const median = sorted[Math.floor(sorted.length / 2)];
+                networkTimeData = {
+                    networkTime: new Date(Date.now() - median * 1000),
+                    deviation: median,
+                    rtt: Math.min(...good.map(s => s.rtt)),
+                    source: `${good.length}/${TIME_SOURCES.filter(s => !s.local).length}`,
+                };
+                networkTimeError = false;
+
+                // Back-fill the system clock row with the measured deviation from reference
+                const sysIdx = TIME_SOURCES.findIndex(s => s.local);
+                if (sysIdx >= 0) {
+                    ntpServers[sysIdx] = { name: "System Clock", offset: median, rtt: 0, lastUpdate: Date.now() };
+                }
+            }
 
             async function fetchNetworkTime() {
                 if (networkTimePending) return;
                 networkTimePending = true;
 
-                // Try local Python NTP server first (development)
-                try {
-                    const localResponse = await fetch("http://localhost:8765/ntp", {
-                        cache: "no-store",
-                    });
-                    const data = await localResponse.json();
-                    if (data.servers && data.servers.length > 0 && data.averageOffset !== null) {
-                        // Update ntpServers display
-                        for (let i = 0; i < Math.min(2, data.servers.length); i++) {
-                            ntpServers[i] = {
-                                name: data.servers[i].name,
-                                offset: data.servers[i].offset,
-                                rtt: data.servers[i].rtt,
-                                lastUpdate: Date.now(),
-                            };
-                        }
-                        ntpServers[2] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-                        ntpServers[3] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
+                // Reset per-source state; old networkTimeData stays visible during refresh
+                ntpServers = TIME_SOURCES.map(src => ({
+                    name: src.name, offset: null, rtt: null, lastUpdate: 0,
+                }));
 
-                        networkTimeData = {
-                            networkTime: new Date(Date.now() - data.averageOffset * 1000),
-                            deviation: data.averageOffset,
-                            rtt: data.servers[0]?.rtt || 0,
-                            source: "Local NTP",
-                        };
-                        networkTimeError = false;
-                        networkTimePending = false;
-                        return;
-                    }
-                } catch (e) {
-                    // Local NTP not available, continue to Cloudflare Worker
+                const withTimeout = (p) => Promise.race([
+                    p,
+                    new Promise((_, rej) =>
+                        setTimeout(() => rej(new Error(`timeout after ${SOURCE_TIMEOUT_MS}ms`)), SOURCE_TIMEOUT_MS)
+                    ),
+                ]);
+
+                // Update display as each source responds rather than waiting for all
+                // Skip local sources — they are derived after the network median is known
+                await Promise.allSettled(TIME_SOURCES.map((src, i) => {
+                    if (src.local) return Promise.resolve();
+                    return withTimeout(src.query())
+                        .then(({ offsetSec, rtt }) => {
+                            ntpServers[i] = { name: src.name, offset: offsetSec, rtt, lastUpdate: Date.now() };
+                            recomputeNetworkTime();
+                        })
+                        .catch(err => {
+                            ntpServers[i] = { name: src.name, offset: null, rtt: null, lastUpdate: 0 };
+                            console.warn(`${src.name}:`, err?.message);
+                        });
+                }));
+
+                if (!networkTimeData) {
+                    networkTimeData = { networkTime: new Date(), deviation: 0, rtt: 0, source: "System" };
+                    networkTimeError = true;
                 }
-
-                // Try time.nist.gov via HTTP Date header
-                try {
-                    const t1 = Date.now();
-                    const response = await fetch("https://time.nist.gov", {
-                        cache: "no-store",
-                    });
-                    const t2 = Date.now();
-                    const rtt = t2 - t1;
-                    const dateHeader = response.headers.get("Date");
-
-                    if (dateHeader) {
-                        const serverTime = new Date(dateHeader).getTime();
-                        const clientMidpoint = (t1 + t2) / 2;
-                        const offsetSec = (clientMidpoint - serverTime) / 1000;
-
-                        ntpServers[0] = { name: "time.nist.gov", offset: offsetSec, rtt: rtt, lastUpdate: Date.now() };
-                        ntpServers[1] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-                        ntpServers[2] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-                        ntpServers[3] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-
-                        networkTimeData = {
-                            networkTime: new Date(Date.now() - offsetSec * 1000),
-                            deviation: offsetSec,
-                            rtt: rtt,
-                            source: "NIST",
-                        };
-                        networkTimeError = false;
-                        networkTimePending = false;
-                        return;
-                    }
-                } catch (e) {
-                    console.error("NIST fetch error:", e);
-                }
-
-                // Fall back to system time
-                ntpServers[0] = { name: "System", offset: 0, rtt: 0, lastUpdate: Date.now() };
-                ntpServers[1] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-                ntpServers[2] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-                ntpServers[3] = { name: "---", offset: null, rtt: null, lastUpdate: 0 };
-
-                networkTimeData = {
-                    networkTime: new Date(Date.now()),
-                    deviation: 0,
-                    rtt: 0,
-                    source: "System",
-                };
-                networkTimeError = false;
                 networkTimePending = false;
             }
 
-            function updateNtpServerTable() {
-                for (let i = 0; i < 4; i++) {
-                    const row = document.getElementById("ntp-row-" + i);
-                    if (!row) continue;
-                    const s = ntpServers[i];
-                    row.querySelector(".ntp-name").textContent = s.name;
-                    const offEl = row.querySelector(".ntp-offset");
-                    if (s.offset !== null) {
-                        const sign = s.offset >= 0 ? "+" : "";
-                        offEl.textContent = `${sign}${s.offset.toFixed(3)} s`;
-                        offEl.className = "ntp-offset" + (Math.abs(s.offset) > 1 ? " error" : Math.abs(s.offset) > 0.25 ? " warning" : "");
-                    } else {
-                        offEl.textContent = "--.--- s";
-                        offEl.className = "ntp-offset";
-                    }
-                    row.querySelector(".ntp-rtt").textContent = s.rtt !== null ? `${Math.round(s.rtt)}ms` : "---ms";
-                }
-            }
 
             function updateDeviationDisplay() {
                 const TOTAL_SEGS = 48;
                 const HALF_SEGS = 24;
 
-                if (!networkTimeData || networkTimeError) {
+                if (!networkTimeData) {
+                    // Initial load — sources are being queried
                     $("deviation-val").textContent = "--.--- s";
                     $("deviation-val").className = "deviation-value";
                     $("deviation-qualitative").innerHTML =
-                        "ERROR FETCHING NETWORK TIME";
-                    // Dim all segments
+                        "CONTACTING TIME SOURCES";
                     for (let i = 0; i < TOTAL_SEGS; i++) {
-                        document.getElementById("seg-" + i).className =
-                            "drift-seg";
+                        document.getElementById("seg-" + i).className = "drift-seg";
                     }
-                    // Update source indicators - show all dim, error lit
-                    document
-                        .querySelectorAll(".indicator")
-                        .forEach((el) => el.classList.remove("active"));
-                    $("ind-error").classList.add("active", "error");
+                    document.querySelectorAll(".indicator").forEach((el) => {
+                        el.className = "indicator querying";
+                    });
+                    $("source-rtt").textContent = "QUERYING\u2026";
+                    $("source-detail").innerHTML = "";
+                    return;
+                }
+
+                if (networkTimeError) {
+                    $("deviation-val").textContent = "--.--- s";
+                    $("deviation-val").className = "deviation-value";
+                    $("deviation-qualitative").innerHTML =
+                        "NO TIME SOURCES AVAILABLE";
+                    for (let i = 0; i < TOTAL_SEGS; i++) {
+                        document.getElementById("seg-" + i).className = "drift-seg";
+                    }
+                    document.querySelectorAll(".indicator").forEach((el) => {
+                        el.classList.remove("active", "warning", "querying");
+                        el.classList.add("active", "error");
+                    });
                     $("source-rtt").textContent = "--";
-                    updateNtpServerTable();
+                    $("source-detail").innerHTML = "";
                     return;
                 }
 
@@ -2452,12 +2453,15 @@
                     `${sign}${deviation.toFixed(3)} s`;
 
                 // Update qualitative text
-                if (isFast) {
+                if (absDeviation < 0.25) {
+                    $("deviation-qualitative").innerHTML =
+                        "YOUR SYSTEM IS <span class='highlight'>ON TIME</span>";
+                } else if (isFast) {
                     $("deviation-qualitative").innerHTML =
                         "YOUR SYSTEM IS <span class='highlight'>AHEAD</span> OF UTC";
                 } else {
                     $("deviation-qualitative").innerHTML =
-                        "YOUR SYSTEM IS <span class='highlight'>BEHIND</span> OF UTC";
+                        "YOUR SYSTEM IS <span class='highlight'>BEHIND</span> UTC";
                 }
 
                 // Update system delta in aux strip
@@ -2472,24 +2476,36 @@
                     statusClass = "warning";
                 }
 
-                // Update source indicators based on which source is active
-                document
-                    .querySelectorAll(".indicator")
-                    .forEach((el) => el.classList.remove("active"));
-                const source = networkTimeData.source || "HTTP";
-                if (source.includes("Local") || source.includes("NTP")) {
-                    $("ind-local").classList.add("active", statusClass);
-                } else if (source === "NIST") {
-                    $("ind-timeapi").classList.add("active", statusClass);
-                } else if (source === "System") {
-                    $("ind-local").classList.add("active", "warning");
-                } else if (source.includes("WorldTime")) {
-                    $("ind-worldtime").classList.add("active", statusClass);
-                } else {
-                    $("ind-timeapi").classList.add("active", statusClass);
-                }
+                // One indicator light per source: green = ok, amber = high offset, red = failed
+                ["ind-local", "ind-timeapi", "ind-worldtime", "ind-github", "ind-error"].forEach((id, i) => {
+                    const el = $(id);
+                    el.className = "indicator active";
+                    const s = ntpServers[i];
+                    if (!s || s.offset === null) {
+                        el.classList.add("error");
+                    } else if (Math.abs(s.offset) > 1.0) {
+                        el.classList.add("error");
+                    } else if (Math.abs(s.offset) > 0.25) {
+                        el.classList.add("warning");
+                    }
+                });
                 $("source-rtt").textContent =
-                    `${Math.round(networkTimeData.rtt || 0)}ms RTT`;
+                    `${networkTimeData.source} SOURCES \u2022 ${Math.round(networkTimeData.rtt || 0)}ms RTT`;
+
+                // Per-source detail table
+                const hdr = `<div class="sd-row sd-header"><span>TIME SERVER</span><span>DEVIATION</span><span>PING</span></div>`;
+                const rows = ntpServers.map(s => {
+                    if (s.offset === null) {
+                        return `<div class="sd-row"><span>${s.name}</span><span class="sd-fail">NO RESPONSE</span><span>---</span></div>`;
+                    }
+                    const sign = s.offset >= 0 ? "+" : "";
+                    const cls = Math.abs(s.offset) > 1.0 ? "sd-fail"
+                              : Math.abs(s.offset) > 0.25 ? "sd-warn"
+                              : "sd-ok";
+                    const rttStr = s.rtt !== null ? `${Math.round(s.rtt)}ms` : "---";
+                    return `<div class="sd-row"><span>${s.name}</span><span class="${cls}">${sign}${s.offset.toFixed(3)}s</span><span>${rttStr}</span></div>`;
+                }).join("");
+                $("source-detail").innerHTML = hdr + rows;
 
                 // Update color based on deviation magnitude
                 const devEl = $("deviation-val");
@@ -2501,78 +2517,46 @@
                     devEl.className = "deviation-value";
                 }
 
-                // Update gauge segments (stereo meter: left = slow, right = fast)
-                // 48 segments total: 24 on each side, center is segment 23-24
-                // Green when < 0.25s, yellow when 0.25-1.0s, red when > 1.0s
+                // VU meter: emanates from center outward on both sides
+                // -6 dBFS (0.5×MAX) → yellow, -3 dBFS (MAX/√2 ≈ 0.707×MAX) → red
                 const MAX_DEV = 1.0;
+                const YELLOW_AT = 0.5;
+                const RED_AT = 1 / Math.sqrt(2);
                 const segmentsLit = Math.min(
                     HALF_SEGS,
                     Math.floor((absDeviation / MAX_DEV) * HALF_SEGS),
                 );
+                const segColor = (dist) => {
+                    const frac = dist / HALF_SEGS;
+                    if (frac >= RED_AT) return " error-lit";
+                    if (frac >= YELLOW_AT) return " warning-lit";
+                    return "";
+                };
 
                 for (let i = 0; i < TOTAL_SEGS; i++) {
                     const seg = document.getElementById("seg-" + i);
-                    let isLit = false;
-                    let isBright = false;
-                    let colorClass = "";
-
                     if (deviation >= 0) {
-                        // Positive deviation = fast = right side (segments 24-47)
-                        const rightIndex = i - HALF_SEGS;
-                        if (rightIndex >= 0 && rightIndex < segmentsLit) {
-                            isLit = true;
-                            // Determine color based on deviation from center
-                            const segDeviation =
-                                (rightIndex / HALF_SEGS) * MAX_DEV;
-                            if (segDeviation > 1.0) {
-                                colorClass = " error-lit";
-                            } else if (segDeviation > 0.25) {
-                                colorClass = " warning-lit";
-                            }
-                        } else if (
-                            rightIndex === segmentsLit &&
-                            segmentsLit > 0
-                        ) {
-                            isLit = true;
-                            isBright = true;
-                            const segDeviation =
-                                (rightIndex / HALF_SEGS) * MAX_DEV;
-                            if (segDeviation > 1.0) {
-                                colorClass = " error-lit";
-                            } else if (segDeviation > 0.25) {
-                                colorClass = " warning-lit";
-                            }
+                        // Fast: right side emanates from seg 24 outward
+                        const dist = i - HALF_SEGS;
+                        if (dist >= 0 && dist < segmentsLit) {
+                            seg.className = "drift-seg lit" + segColor(dist);
+                        } else if (dist === segmentsLit && segmentsLit > 0) {
+                            seg.className = "drift-seg lit-bright" + segColor(dist);
+                        } else {
+                            seg.className = "drift-seg";
                         }
                     } else {
-                        // Negative deviation = slow = left side (segments 0-23)
-                        if (i < segmentsLit) {
-                            isLit = true;
-                            const segDeviation = (i / HALF_SEGS) * MAX_DEV;
-                            if (segDeviation > 1.0) {
-                                colorClass = " error-lit";
-                            } else if (segDeviation > 0.25) {
-                                colorClass = " warning-lit";
-                            }
-                        } else if (i === segmentsLit && segmentsLit > 0) {
-                            isLit = true;
-                            isBright = true;
-                            const segDeviation = (i / HALF_SEGS) * MAX_DEV;
-                            if (segDeviation > 1.0) {
-                                colorClass = " error-lit";
-                            } else if (segDeviation > 0.25) {
-                                colorClass = " warning-lit";
-                            }
+                        // Slow: left side emanates from seg 23 outward
+                        const dist = HALF_SEGS - 1 - i;
+                        if (dist >= 0 && dist < segmentsLit) {
+                            seg.className = "drift-seg lit" + segColor(dist);
+                        } else if (dist === segmentsLit && segmentsLit > 0) {
+                            seg.className = "drift-seg lit-bright" + segColor(dist);
+                        } else {
+                            seg.className = "drift-seg";
                         }
-                    }
-
-                    if (isLit) {
-                        seg.className = "drift-seg lit" + colorClass;
-                        if (isBright) seg.className += "-bright";
-                    } else {
-                        seg.className = "drift-seg";
                     }
                 }
-                updateNtpServerTable();
                 return;
             }
 
@@ -2590,7 +2574,10 @@
                 $("tooltip-gutter-r").innerHTML = "";
             }
             function tick() {
-                const realTime = new Date();
+                const sysTime = new Date();
+                const realTime = networkTimeData
+                    ? new Date(sysTime.getTime() - networkTimeData.deviation * 1000)
+                    : sysTime;
                 const tv = $("tval"),
                     gh = $("ghost");
                 tv.innerHTML = buildTimeHTML(realTime);
@@ -2661,7 +2648,7 @@
                 $("aux-lun").textContent =
                     `${pad(auxLun.getUTCHours())}:${pad(auxLun.getUTCMinutes())}:${pad(auxLun.getUTCSeconds())}`;
                 $("aux-ping").textContent =
-                    `${pad(realTime.getUTCHours())}:${pad(realTime.getUTCMinutes())}:${pad(realTime.getUTCSeconds())}`;
+                    `${pad(sysTime.getUTCHours())}:${pad(sysTime.getUTCMinutes())}:${pad(sysTime.getUTCSeconds())}`;
                 // Update delta displays (drift from UTC since midnight)
                 $("aux-utc-delta").textContent = "+0.0 µs";
                 $("aux-tai-delta").textContent = "+37.0 s";

@@ -2478,18 +2478,18 @@
                 }
 
                 // VU meter: emanates from center outward on both sides
-                // -6 dBFS (0.5×MAX) → yellow, -3 dBFS (MAX/√2 ≈ 0.707×MAX) → red
-                const MAX_DEV = 1.0;
-                const YELLOW_AT = 0.5;
-                const RED_AT = 1 / Math.sqrt(2);
+                // Thresholds match indicator text: amber ≥ 0.25s, red ≥ 1.0s
+                const MAX_DEV = 1.5;
+                const WARN_S = 0.25;
+                const ERR_S = 1.0;
                 const segmentsLit = Math.min(
                     HALF_SEGS,
                     Math.floor((absDeviation / MAX_DEV) * HALF_SEGS),
                 );
                 const segColor = (dist) => {
-                    const frac = dist / HALF_SEGS;
-                    if (frac >= RED_AT) return " error-lit";
-                    if (frac >= YELLOW_AT) return " warning-lit";
+                    const devAtDist = (dist / HALF_SEGS) * MAX_DEV;
+                    if (devAtDist >= ERR_S) return " error-lit";
+                    if (devAtDist >= WARN_S) return " warning-lit";
                     return "";
                 };
 

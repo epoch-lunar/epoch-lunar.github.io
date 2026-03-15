@@ -1,1422 +1,2472 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EPOCH — Open-Source Lunar Timekeeping</title>
-    <meta name="description" content="Precision timing infrastructure for lunar and cislunar missions. Open-source hardware and standards for the next era of space exploration.">
-    <meta property="og:title" content="EPOCH — Open-Source Lunar Timekeeping">
-    <meta property="og:description" content="Precision timing infrastructure for lunar and cislunar missions.">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>EPOCH — Open-Source Lunar Timekeeping</title>
+        <meta
+            name="description"
+            content="Precision timing infrastructure for lunar and cislunar missions. Open-source hardware and standards for the next era of space exploration."
+        />
+        <meta
+            property="og:title"
+            content="EPOCH — Open-Source Lunar Timekeeping"
+        />
+        <meta
+            property="og:description"
+            content="Precision timing infrastructure for lunar and cislunar missions."
+        />
+        <meta property="og:type" content="website" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>"
+        />
 
-    <!-- 7-segment font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+        <!-- 7-segment font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
 
-    <style>
-        @font-face {
-            font-family: 'DSEG7';
-            src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2') format('woff2');
-            font-weight: bold;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'DSEG7';
-            src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'DSEG14';
-            src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2') format('woff2');
-            font-weight: bold;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'DSEG14';
-            src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-        }
+        <style>
+            @font-face {
+                font-family: "DSEG7";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2")
+                    format("woff2");
+                font-weight: bold;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG7";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2")
+                    format("woff2");
+                font-weight: normal;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG14";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2")
+                    format("woff2");
+                font-weight: bold;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "DSEG14";
+                src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2")
+                    format("woff2");
+                font-weight: normal;
+                font-style: normal;
+            }
 
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-        :root {
-            --utc: #ff1a1a;
-            --utc-d: #330808;
-            --tai: #33ff66;
-            --tai-d: #0a330a;
-            --gps: #00ddff;
-            --gps-d: #002a33;
-            --unix: #cccccc;
-            --unix-d: #222;
-            --lun: #ffaa00;
-            --lun-d: #332200;
-            --tcb: #cc66ff;
-            --tcb-d: #220033;
-            --ut1: #ff6688;
-            --bg: #0a0a0a;
-            --red-glow: #ff1a1a;
-            --red-dim: #330808;
-            --red-bright: #ff3333;
-            --bg-black: #0a0a0a;
-            --bg-case: #1a1a1a;
-            --cream: #e9dcc4;
-            --navy: #0e2a36;
-        }
+            :root {
+                --red: #ff1a1a;
+                --red-dim: #330808;
+                --green: #33ff66;
+                --green-dim: #0a330a;
+                --cyan: #00ddff;
+                --cyan-dim: #002a33;
+                --gray: #cccccc;
+                --gray-dim: #222222;
+                --amber: #ffaa00;
+                --amber-dim: #332200;
+                --purple: #cc66ff;
+                --purple-dim: #220033;
+                --bg: #0a0a0a;
+                --red-glow: #ff1a1a;
+                --bg-black: #0a0a0a;
+                --bg-case: #1a1a1a;
+                --cream: #e9dcc4;
+                --navy: #0e2a36;
+            }
 
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+            }
 
-        body {
-            background:
-                radial-gradient(ellipse at 20% 30%, rgba(25,20,15,0.8) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(20,15,10,0.6) 0%, transparent 50%),
-                #080706;
-            color: var(--red-glow);
-            font-family: 'Share Tech Mono', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
+            body {
+                background:
+                    radial-gradient(
+                        ellipse at 20% 30%,
+                        rgba(25, 20, 15, 0.8) 0%,
+                        transparent 50%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 70%,
+                        rgba(20, 15, 10, 0.6) 0%,
+                        transparent 50%
+                    ),
+                    #080706;
+                color: var(--red-glow);
+                font-family: "Share Tech Mono", monospace;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                min-height: 100dvh;
+            }
 
-        /* ============================================
+            /* ============================================
            THE CLOCK HOUSING
            ============================================ */
 
-        .clock-housing {
-            background:
-                linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.3) 50%, transparent 100%),
-                repeating-linear-gradient(
-                    90deg,
-                    #1c1a18 0px,
-                    #1e1c1a 1px,
-                    #1c1a18 2px
-                ),
-                linear-gradient(180deg, #1c1a18 0%, #121110 30%, #0c0b0a 70%, #121110 100%);
-            border-radius: 8px;
-            border: 2px solid #0a0a0a;
-            padding: 4px;
-            box-shadow:
-                0 0 0 1px #2a2a2a,
-                0 0 0 2px #0a0a0a,
-                0 14px 50px rgba(0,0,0,0.95),
-                inset 0 1px 0 rgba(255,255,255,0.03),
-                inset 0 -1px 0 rgba(0,0,0,0.9),
-                inset 2px 2px 4px rgba(0,0,0,0.4);
-            max-width: 800px;
-            width: 95vw;
-            position: relative;
-        }
+            .clock-housing {
+                background:
+                    linear-gradient(
+                        135deg,
+                        transparent 0%,
+                        rgba(0, 0, 0, 0.3) 50%,
+                        transparent 100%
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        #1c1a18 0px,
+                        #1e1c1a 1px,
+                        #1c1a18 2px
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #1c1a18 0%,
+                        #121110 30%,
+                        #0c0b0a 70%,
+                        #121110 100%
+                    );
+                border-radius: 8px;
+                border: 2px solid #0a0a0a;
+                padding: 4px;
+                box-shadow:
+                    0 0 0 1px #2a2a2a,
+                    0 0 0 2px #0a0a0a,
+                    0 14px 50px rgba(0, 0, 0, 0.95),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.9),
+                    inset 2px 2px 4px rgba(0, 0, 0, 0.4);
+                max-width: 800px;
+                width: 95vw;
+                position: relative;
+            }
 
-        .clock-inner {
-            background:
-                linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.01) 50%, transparent 52%),
-                linear-gradient(180deg, #111010 0%, #0a0908 50%, #0c0b0a 100%);
-            background-size: 20px 20px, 100% 100%;
-            border-radius: 6px;
-            padding: 32px 40px 28px;
-            position: relative;
-            box-shadow:
-                inset 0 2px 8px rgba(0,0,0,0.8),
-                inset 0 0 1px rgba(255,255,255,0.02);
-        }
+            .clock-inner {
+                background:
+                    linear-gradient(
+                        45deg,
+                        transparent 48%,
+                        rgba(255, 255, 255, 0.01) 50%,
+                        transparent 52%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #111010 0%,
+                        #0a0908 50%,
+                        #0c0b0a 100%
+                    );
+                background-size:
+                    20px 20px,
+                    100% 100%;
+                border-radius: 6px;
+                padding: 32px 40px 28px;
+                position: relative;
+                box-shadow:
+                    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+                    inset 0 0 1px rgba(255, 255, 255, 0.02);
+            }
 
-        /* ============================================
+            /* ============================================
            BRAND STRIP
            ============================================ */
 
-        .brand-strip {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 0 4px;
-        }
+            .brand-strip {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                padding: 0 4px;
+            }
 
-        .brand-name {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 22px;
-            letter-spacing: 10px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
+            .brand-name {
+                font-family: "Space Grotesk", sans-serif;
+                font-size: 22px;
+                letter-spacing: 12px;
+                color: #999;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
 
-        .brand-tagline {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: #555;
-            text-transform: uppercase;
-        }
+            .brand-tagline {
+                font-family: "Space Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: #555;
+                text-transform: uppercase;
+            }
 
-        /* ============================================
+            /* ============================================
            DISPLAY PANEL (the dark LCD area)
            ============================================ */
 
-        .display-panel {
-            background: #0c0000;
-            border-radius: 6px;
-            padding: 20px 24px 16px;
-            border: 1px solid #1a0505;
-            box-shadow:
-                inset 0 2px 8px rgba(0,0,0,0.8),
-                inset 0 0 20px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-        }
+            .display-panel {
+                background: #0c0000;
+                border-radius: 6px;
+                padding: 20px 24px 16px;
+                border: 1px solid #1a0505;
+                box-shadow:
+                    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+                    inset 0 0 20px rgba(0, 0, 0, 0.5);
+                position: relative;
+                overflow: hidden;
+            }
 
-        /* Subtle screen texture */
-        .display-panel::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.15) 2px,
-                rgba(0,0,0,0.15) 4px
-            );
-            pointer-events: none;
-            z-index: 1;
-        }
+            /* Subtle screen texture */
+            .display-panel::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.15) 2px,
+                    rgba(0, 0, 0, 0.15) 4px
+                );
+                pointer-events: none;
+                z-index: 1;
+            }
 
-        /* ============================================
+            /* ============================================
            TIME LABEL ROW
            ============================================ */
 
-        .time-label-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 4px;
-            position: relative;
-            z-index: 2;
-        }
+            .time-label-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 4px;
+                position: relative;
+                z-index: 2;
+            }
 
-        .time-label {
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: var(--red-dim);
-            text-transform: uppercase;
-        }
+            .time-label {
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: var(--red-dim);
+                text-transform: uppercase;
+            }
 
-        .time-label.active {
-            color: var(--red-glow);
-            text-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-        }
+            .time-label.active {
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+            }
 
-        /* ============================================
+            /* ============================================
            THE BIG CLOCK DISPLAY
            ============================================ */
 
-        .clock-display {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 4px 0;
-        }
+            .clock-display {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                padding: 4px 0;
+            }
 
-        /* Ghost segments (the dim "8s" behind the active display) */
-        .clock-ghost {
-            font-family: 'DSEG7', monospace;
-            font-weight: bold;
-            font-size: clamp(48px, 10vw, 80px);
-            color: var(--red-dim);
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            left: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+            /* Ghost segments (the dim "8s" behind the active display) */
+            .clock-ghost {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                font-size: clamp(48px, 10vw, 80px);
+                color: var(--red-dim);
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                left: 0;
+                user-select: none;
+                -webkit-user-select: none;
+            }
 
-        .clock-time {
-            font-family: 'DSEG7', monospace;
-            font-weight: bold;
-            font-size: clamp(48px, 10vw, 80px);
-            color: var(--red-glow);
-            text-shadow:
-                0 0 8px rgba(255, 26, 26, 0.6),
-                0 0 20px rgba(255, 26, 26, 0.3),
-                0 0 40px rgba(255, 26, 26, 0.1);
-            position: relative;
-            letter-spacing: 4px;
-        }
+            .clock-time {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                font-size: clamp(48px, 10vw, 80px);
+                color: var(--red-glow);
+                text-shadow:
+                    0 0 8px rgba(255, 26, 26, 0.6),
+                    0 0 20px rgba(255, 26, 26, 0.3),
+                    0 0 40px rgba(255, 26, 26, 0.1);
+                position: relative;
+                letter-spacing: 4px;
+            }
 
-        /* ============================================
+            /* ============================================
            DATE & LABEL ROW BELOW CLOCK
            ============================================ */
 
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-top: 6px;
-            position: relative;
-            z-index: 2;
-        }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-top: 6px;
+                position: relative;
+                z-index: 2;
+            }
 
-        .date-display {
-            font-family: 'DSEG7', monospace;
-            font-size: clamp(12px, 2.5vw, 16px);
-            color: var(--red-glow);
-            text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
-            letter-spacing: 2px;
-        }
+            .date-display {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(12px, 2.5vw, 16px);
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+                letter-spacing: 2px;
+            }
 
-        .utc-indicator {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--red-glow);
-            text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
-            opacity: 0.9;
-        }
+            .utc-indicator {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+                opacity: 0.9;
+            }
 
-        /* ============================================
+            /* ============================================
            SECONDS BAR
            ============================================ */
 
-        .seconds-bar-container {
-            margin-top: 12px;
-            height: 3px;
-            background: var(--red-dim);
-            border-radius: 2px;
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
+            .seconds-bar-container {
+                margin-top: 12px;
+                height: 3px;
+                background: var(--red-dim);
+                border-radius: 2px;
+                position: relative;
+                z-index: 2;
+                overflow: hidden;
+            }
 
-        .seconds-bar {
-            height: 100%;
-            background: var(--red-glow);
-            box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
-            border-radius: 2px;
-            transition: width 0.15s linear;
-        }
+            .seconds-bar {
+                height: 100%;
+                background: var(--red-glow);
+                box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+                border-radius: 2px;
+                transition: width 0.15s linear;
+            }
 
-        /* ============================================
+            /* ============================================
            DIVIDER
            ============================================ */
 
-        .divider {
-            height: 5px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                #2a2220 1px,
-                #2a2220 2px
-            );
-            margin: 18px 4px 16px;
-            opacity: 0.6;
-        }
+            .divider {
+                height: 5px;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1px,
+                    #2a2220 1px,
+                    #2a2220 2px
+                );
+                margin: 18px 4px 16px;
+                opacity: 0.6;
+            }
 
-        /* ============================================
+            /* ============================================
            AUXILIARY STATUS STRIP
            ============================================ */
 
-        .aux-strip {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 14px;
-            padding: 8px 0 0;
-            border-top: 1px solid #1a1a1a;
-            position: relative;
-            z-index: 2;
-        }
+            .aux-strip {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 14px;
+                padding: 8px 0 0;
+                border-top: 1px solid #1a1a1a;
+                position: relative;
+                z-index: 2;
+            }
 
-        .aux-readout {
-            text-align: center;
-            flex: 1;
-        }
+            .aux-readout {
+                text-align: center;
+                flex: 1;
+            }
 
-        .aux-label {
-            display: block;
-            font-size: 9px;
-            letter-spacing: 2px;
-            opacity: 0.5;
-            text-transform: uppercase;
-        }
+            .aux-label {
+                display: block;
+                font-size: 12px;
+                letter-spacing: 2px;
+                opacity: 0.5;
+                text-transform: uppercase;
+            }
 
-        .aux-value {
-            font-family: 'DSEG7', monospace;
-            font-size: clamp(14px, 2.5vw, 18px);
-            opacity: 0.6;
-            text-shadow: none;
-            letter-spacing: 1px;
-        }
+            .aux-value {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(14px, 2.5vw, 18px);
+                opacity: 0.6;
+                text-shadow: none;
+                letter-spacing: 1px;
+            }
 
-        /* ============================================
+            .aux-delta {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                opacity: 0.6;
+                display: block;
+                margin-top: 2px;
+            }
+
+            /* ============================================
            SEGMENTED DRIFT BAR
            ============================================ */
 
-        .drift-bar-container {
-            margin-top: 14px;
-            position: relative;
-            z-index: 2;
-        }
+            .drift-bar-container {
+                margin-top: 14px;
+                position: relative;
+                z-index: 2;
+            }
 
-        .drift-bar-label {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: #555;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
+            .drift-bar-label {
+                font-size: 10px;
+                letter-spacing: 2px;
+                color: #555;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
 
-        .drift-bar-track {
-            display: flex;
-            gap: 2px;
-            height: 16px;
-        }
+            .drift-bar-track {
+                display: flex;
+                gap: 2px;
+                height: 16px;
+            }
 
-        .drift-seg {
-            flex: 1;
-            background: var(--lun-d);
-            border-radius: 1px;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
+            .drift-seg {
+                flex: 1;
+                background: #1a1a1a;
+                border-radius: 1px;
+                transition:
+                    background 0.3s,
+                    box-shadow 0.3s;
+            }
 
-        .drift-seg.lit {
-            background: var(--lun);
-            box-shadow: 0 0 4px rgba(255, 170, 0, 0.4);
-        }
+            .drift-seg.lit {
+                background: var(--amber);
+                box-shadow: 0 0 4px rgba(255, 170, 0, 0.4);
+            }
 
-        .drift-seg.lit-bright {
-            background: var(--lun);
-            box-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
-        }
+            .drift-seg.lit-bright {
+                background: var(--amber);
+                box-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+            }
 
-        .drift-bar-scale {
-            display: flex;
-            justify-content: space-between;
-            font-size: 8px;
-            color: #444;
-            letter-spacing: 1px;
-            margin-top: 3px;
-            padding: 0 1px;
-        }
+            .drift-seg.lit.warning-lit {
+                background: var(--amber);
+                box-shadow: 0 0 4px rgba(255, 170, 0, 0.5);
+            }
 
-        /* ============================================
+            .drift-seg.lit.error-lit {
+                background: var(--red);
+                box-shadow: 0 0 6px rgba(255, 26, 26, 0.5);
+            }
+
+            .drift-bar-scale {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #444;
+                letter-spacing: 1px;
+                margin-top: 4px;
+                padding: 0 1px;
+            }
+
+            /* ============================================
+           DEVIATION DISPLAY
+           ============================================ */
+
+            .deviation-display {
+                margin-top: 10px;
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
+
+            .deviation-value {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 18px;
+                letter-spacing: 1px;
+                color: var(--green);
+                text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+            }
+
+            .deviation-value.warning {
+                color: var(--amber);
+                text-shadow: 0 0 6px rgba(255, 170, 0, 0.4);
+            }
+
+            .deviation-value.error {
+                color: var(--red);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.4);
+            }
+
+            .deviation-label {
+                font-size: 14%;
+                letter-spacing: 1px;
+                color: #555;
+                margin-left: 8px;
+                text-transform: uppercase;
+            }
+
+            .deviation-qualitative {
+                font-size: 14px;
+                letter-spacing: 1px;
+                color: #666;
+                text-transform: uppercase;
+                text-align: center;
+                margin-top: 6px;
+                opacity: 0.7;
+            }
+
+            .deviation-qualitative .highlight {
+                color: #ffffff;
+                text-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
+                font-weight: bold;
+            }
+
+            /* ============================================
+           NTP SERVERS DISPLAY
+           ============================================ */
+
+            .ntp-servers {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .ntp-server {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 1px;
+                padding: 2px 0;
+                opacity: 0.7;
+            }
+
+            .ntp-name {
+                color: #666;
+                flex: 1;
+            }
+
+            .ntp-offset {
+                color: var(--green);
+                text-align: right;
+                min-width: 100px;
+            }
+
+            .ntp-offset.warning {
+                color: var(--amber);
+            }
+
+            .ntp-offset.error {
+                color: var(--red);
+            }
+
+            .ntp-rtt {
+                color: #444;
+                text-align: right;
+                min-width: 60px;
+                margin-left: 16px;
+            }
+
+            .ntp-servers-compact {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .ntp-servers-compact .ntp-server {
+                font-size: 12px;
+                padding: 3px 0;
+                opacity: 0.9;
+            }
+
+            .ntp-servers-compact .ntp-name {
+                font-size: 11px;
+            }
+
+            .ntp-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                font-size: 12px;
+                letter-spacing: 1px;
+                color: #666;
+                text-transform: uppercase;
+                padding-bottom: 4px;
+                border-bottom: 1px solid #333;
+                margin-bottom: 6px;
+                opacity: 0.7;
+            }
+
+            .ntp-header .ntp-offset,
+            .ntp-header .ntp-rtt {
+                color: #666;
+            }
+
+            /* ============================================
            EMAIL SIGNUP SECTION
            ============================================ */
 
-        .signup-section {
-            padding: 0 4px;
-        }
+            .signup-section {
+                padding: 0 4px;
+            }
 
-        .signup-prompt {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #666;
-            text-transform: uppercase;
-            margin-top: 12px;
-            text-align: center;
-        }
+            .signup-prompt {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #666;
+                text-transform: uppercase;
+                margin-top: 12px;
+                text-align: center;
+            }
 
-        .signup-prompt em {
-            color: #999;
-            font-style: normal;
-            letter-spacing: 1px;
-            text-transform: none;
-        }
+            .signup-prompt em {
+                color: #999;
+                font-style: normal;
+                letter-spacing: 1px;
+                text-transform: none;
+            }
 
-        .form-row {
-            display: flex;
-            gap: 8px;
-        }
+            .form-row {
+                display: flex;
+                gap: 8px;
+            }
 
-        .form-row input[type="email"] {
-            flex: 1;
-            background: #0c0000;
-            border: 1px solid #2a1a00;
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            color: var(--lun);
-            outline: none;
-            transition: border-color 0.2s;
-        }
+            .form-row input[type="email"] {
+                flex: 1;
+                background: #0c0000;
+                border: 1px solid #002233;
+                border-radius: 4px;
+                padding: 10px 14px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 14px;
+                color: var(--cyan);
+                outline: none;
+                transition: border-color 0.2s;
+            }
 
-        .form-row input[type="email"]::placeholder {
-            color: var(--lun-d);
-        }
+            .form-row input[type="email"]::placeholder {
+                color: var(--cyan-dim);
+            }
 
-        .form-row input[type="email"]:focus {
-            border-color: var(--lun);
-            box-shadow: 0 0 8px rgba(255, 170, 0, 0.15);
-        }
+            .form-row input[type="email"]:focus {
+                border-color: var(--cyan);
+                box-shadow: 0 0 8px rgba(0, 221, 255, 0.15);
+            }
 
-        .form-row button {
-            background: var(--lun-d);
-            border: 1px solid #553300;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: var(--lun);
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
+            .form-row button {
+                background: var(--cyan-dim);
+                border: 1px solid #003344;
+                border-radius: 4px;
+                padding: 10px 20px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 2px;
+                color: var(--cyan);
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.2s;
+                white-space: nowrap;
+            }
 
-        .form-row button:hover {
-            background: #553300;
-            border-color: var(--lun);
-            text-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
-            box-shadow: 0 0 12px rgba(255, 170, 0, 0.15);
-        }
+            .form-row button:hover {
+                background: #003344;
+                border-color: var(--cyan);
+                text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+                box-shadow: 0 0 12px rgba(0, 221, 255, 0.15);
+            }
 
-        .form-row button:active {
-            transform: scale(0.98);
-        }
+            .form-row button:active {
+                transform: scale(0.98);
+            }
 
-        /* Honeypot */
-        .form-row input[name="_gotcha"] {
-            display: none;
-        }
+            /* Honeypot */
+            .form-row input[name="_gotcha"] {
+                display: none;
+            }
 
-        /* ============================================
+            /* ============================================
            SUCCESS / DOWNLOAD STATE
            ============================================ */
 
-        .signup-section.submitted .form-row {
-            display: none;
-        }
+            .signup-section.submitted .form-row {
+                display: none;
+            }
 
-        .signup-section.submitted .signup-prompt {
-            display: none;
-        }
+            .signup-section.submitted .signup-prompt {
+                display: none;
+            }
 
-        .download-section {
-            display: none;
-            text-align: center;
-        }
+            .download-section {
+                display: none;
+                text-align: center;
+            }
 
-        .signup-section.submitted .download-section {
-            display: block;
-        }
+            .signup-section.submitted .download-section {
+                display: block;
+            }
 
-        .download-check {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #1a8a1a;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
-        }
+            .download-check {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #1a8a1a;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+                text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
+            }
 
-        .download-link {
-            display: inline-block;
-            background: #081a08;
-            border: 1px solid #1a4a1a;
-            border-radius: 4px;
-            padding: 10px 24px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #33cc33;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
+            .download-link {
+                display: inline-block;
+                background: #081a08;
+                border: 1px solid #1a4a1a;
+                border-radius: 4px;
+                padding: 10px 24px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 2px;
+                color: #33cc33;
+                text-transform: uppercase;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
 
-        .download-link:hover {
-            background: #0a2a0a;
-            border-color: #33cc33;
-            text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
-            box-shadow: 0 0 12px rgba(51, 204, 51, 0.15);
-        }
+            .download-link:hover {
+                background: #0a2a0a;
+                border-color: #33cc33;
+                text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
+                box-shadow: 0 0 12px rgba(51, 204, 51, 0.15);
+            }
 
-        /* ============================================
+            /* ============================================
            BOTTOM BADGE
            ============================================ */
 
-        .bottom-badge {
-            margin-top: 20px;
-            text-align: center;
-            padding: 0 4px;
-        }
+            .bottom-badge {
+                margin-top: 20px;
+                text-align: center;
+                padding: 0 4px;
+            }
 
-        .bottom-badge a {
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: #444;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
+            .bottom-badge a {
+                font-size: 9px;
+                letter-spacing: 3px;
+                color: #444;
+                text-transform: uppercase;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
 
-        .bottom-badge a:hover {
-            color: #666;
-        }
+            .bottom-badge a:hover {
+                color: #666;
+            }
 
-        /* ============================================
+            /* ============================================
            LUNAR OFFSET DISPLAY
            ============================================ */
 
-        .lunar-offset {
-            margin-top: 14px;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
+            .lunar-offset {
+                margin-top: 14px;
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
 
-        .lunar-offset-label {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: var(--red-dim);
-            text-transform: uppercase;
-        }
+            .lunar-offset-label {
+                font-size: 9px;
+                letter-spacing: 2px;
+                color: var(--red-dim);
+                text-transform: uppercase;
+            }
 
-        .lunar-offset-value {
-            font-family: 'DSEG7', monospace;
-            font-size: clamp(14px, 3vw, 20px);
-            color: var(--red-glow);
-            text-shadow: 0 0 6px rgba(255, 26, 26, 0.3);
-            opacity: 0.7;
-            letter-spacing: 2px;
-        }
+            .lunar-offset-value {
+                font-family: "DSEG7", monospace;
+                font-size: clamp(14px, 3vw, 20px);
+                color: var(--red-glow);
+                text-shadow: 0 0 6px rgba(255, 26, 26, 0.3);
+                opacity: 0.7;
+                letter-spacing: 2px;
+            }
 
-        /* ============================================
+            /* ============================================
            LED INDICATOR DOTS
            ============================================ */
 
-        .led {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--led-color);
-            opacity: 0.2;
-            margin-right: 4px;
-            vertical-align: middle;
-            transition: opacity 0.15s, box-shadow 0.15s;
-        }
+            .led {
+                display: inline-block;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--led-color);
+                opacity: 0.2;
+                margin-right: 4px;
+                vertical-align: middle;
+                transition:
+                    opacity 0.15s,
+                    box-shadow 0.15s;
+            }
 
-        .sw-slot.on .led {
-            opacity: 1;
-            box-shadow: 0 0 6px var(--led-color), 0 0 12px var(--led-color);
-        }
+            .sw-slot.on .led {
+                opacity: 1;
+                box-shadow:
+                    0 0 6px var(--led-color),
+                    0 0 12px var(--led-color);
+            }
 
-        /* ============================================
+            /* === TOOLTIP GUTTERS === */
+            .tooltip-gutter {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 80px;
+                display: flex;
+                align-items: center;
+                pointer-events: none;
+                z-index: 50;
+            }
+            .tooltip-gutter.left {
+                left: -90px;
+                justify-content: flex-end;
+            }
+            .tooltip-gutter.right {
+                right: -90px;
+                justify-content: flex-start;
+            }
+            .tooltip-box {
+                background: #0a0a0a;
+                border: 1px solid #333;
+                padding: 6px 10px;
+                font-family: "Space Mono", monospace;
+                font-size: 9px;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                opacity: 0;
+                transform: translateX(5px);
+                transition:
+                    opacity 0.15s,
+                    transform 0.15s;
+                white-space: nowrap;
+                position: relative;
+            }
+            .tooltip-gutter:hover .tooltip-box {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            .tooltip-box::before {
+                content: "";
+                position: absolute;
+                width: 20px;
+                height: 1px;
+                background: #444;
+                top: 50%;
+            }
+            .tooltip-gutter.left .tooltip-box::before {
+                right: 100%;
+                margin-right: 4px;
+            }
+            .tooltip-gutter.right .tooltip-box::before {
+                left: 100%;
+                margin-left: 4px;
+            }
+            .tooltip-gutter.right .tooltip-box::before {
+                background: linear-gradient(90deg, #444, transparent);
+            }
+            .tooltip-gutter.left .tooltip-box::before {
+                background: linear-gradient(270deg, #444, transparent);
+            }
+            .tooltip-box::after {
+                content: "";
+                position: absolute;
+                width: 3px;
+                height: 3px;
+                background: #666;
+                border-radius: 50%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .tooltip-gutter.left .tooltip-box::after {
+                right: -8px;
+            }
+            .tooltip-gutter.right .tooltip-box::after {
+                left: -8px;
+            }
+            .tooltip-gutter:hover .tooltip-box::after {
+                background: var(--tooltip-color, #888);
+                box-shadow: 0 0 4px var(--tooltip-color, #888);
+            }
+
+            /* ============================================
            RESPONSIVE
            ============================================ */
 
-        @media (max-width: 480px) {
-            .clock-housing {
-                width: 95vw;
-                border-radius: 12px;
+            @media (max-width: 480px) {
+                .clock-housing {
+                    width: 95vw;
+                    border-radius: 12px;
+                }
+                .clock-inner {
+                    padding: 20px 20px 20px;
+                    border-radius: 10px;
+                }
+                .display-panel {
+                    padding: 16px 16px 12px;
+                }
+                .form-row {
+                    flex-direction: column;
+                }
+                .form-row button {
+                    padding: 12px 20px;
+                }
+                .brand-strip {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                }
+                .aux-strip {
+                    margin-top: 10px;
+                }
+                .drift-bar-container {
+                    margin-top: 10px;
+                }
             }
-            .clock-inner {
-                padding: 20px 20px 20px;
-                border-radius: 10px;
-            }
-            .display-panel {
-                padding: 16px 16px 12px;
-            }
-            .form-row {
-                flex-direction: column;
-            }
-            .form-row button {
-                padding: 12px 20px;
-            }
-            .brand-strip {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px;
-            }
-            .aux-strip {
-                margin-top: 10px;
-            }
-            .drift-bar-container {
-                margin-top: 10px;
-            }
-        }
 
-        /* Blink animation for colon */
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0.2; }
-        }
-        .colon-blink {
-            animation: blink 1s step-end infinite;
-        }
+            /* Blink animation for colon */
+            @keyframes blink {
+                0%,
+                49% {
+                    opacity: 1;
+                }
+                50%,
+                100% {
+                    opacity: 0.2;
+                }
+            }
+            .colon-blink {
+                animation: blink 1s step-end infinite;
+            }
 
-        /* Subtle screen flicker on load */
-        @keyframes screenOn {
-            0% { opacity: 0; }
-            5% { opacity: 0.8; }
-            10% { opacity: 0.3; }
-            15% { opacity: 0.9; }
-            20% { opacity: 0.5; }
-            30% { opacity: 1; }
-            100% { opacity: 1; }
-        }
+            /* Subtle screen flicker on load */
+            @keyframes screenOn {
+                0% {
+                    opacity: 0;
+                }
+                5% {
+                    opacity: 0.8;
+                }
+                10% {
+                    opacity: 0.3;
+                }
+                15% {
+                    opacity: 0.9;
+                }
+                20% {
+                    opacity: 0.5;
+                }
+                30% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
 
-        /* Corner rivets/screws - military matte finish */
-        .clock-housing::before,
-        .clock-housing::after {
-            content: '';
-            position: absolute;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2a2a2a 30%, #1a1a1a 50%, #0a0a0a 100%);
-            box-shadow:
-                inset 0 1px 1px rgba(255,255,255,0.08),
-                inset 0 -1px 1px rgba(0,0,0,0.95),
-                0 1px 3px rgba(0,0,0,0.9),
-                0 0 0 1px #000;
-            z-index: 100;
-        }
-        .clock-housing::before {
-            top: 12px;
-            left: 12px;
-        }
-        .clock-housing::after {
-            top: 12px;
-            right: 12px;
-        }
-        .clock-inner::before,
-        .clock-inner::after {
-            content: '';
-            position: absolute;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2a2a2a 30%, #1a1a1a 50%, #0a0a0a 100%);
-            box-shadow:
-                inset 0 1px 1px rgba(255,255,255,0.08),
-                inset 0 -1px 1px rgba(0,0,0,0.95),
-                0 1px 3px rgba(0,0,0,0.9),
-                0 0 0 1px #000;
-            z-index: 100;
-        }
-        .clock-inner::before {
-            bottom: 12px;
-            left: 12px;
-        }
-        .clock-inner::after {
-            bottom: 12px;
-            right: 12px;
-        }
-
-        /* === BRAND === */
-        .brand {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 0 4px;
-        }
-        .brand-name {
-            font-size: 22px;
-            letter-spacing: 10px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .brand-tag {
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: #555;
-            text-transform: uppercase;
-        }
-
-        /* === LCD === */
-        .lcd {
-            background: #080404;
-            border-radius: 6px;
-            padding: 20px 22px 18px;
-            border: 3px solid #0a0a0a;
-            box-shadow:
-                inset 0 4px 12px rgba(0,0,0,0.9),
-                inset 0 2px 4px rgba(0,0,0,0.8),
-                0 0 0 1px #2a2a2a,
-                0 0 0 2px #1a1a1a;
-            position: relative;
-            overflow: hidden;
-            animation: screenOn 0.8s ease-out;
-        }
-        .lcd::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.15) 2px, rgba(0,0,0,.15) 4px);
-            pointer-events: none;
-            z-index: 1;
-        }
-        .lcd::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(
-                    ellipse at center,
-                    transparent 0%,
-                    transparent 60%,
-                    rgba(0,0,0,0.2) 80%,
-                    rgba(0,0,0,0.5) 100%
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 39px,
-                    rgba(255,255,255,0.015) 39px,
-                    rgba(255,255,255,0.015) 40px
+            /* Corner rivets/screws - military matte finish */
+            .clock-housing::before,
+            .clock-housing::after {
+                content: "";
+                position: absolute;
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    #2a2a2a 30%,
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
                 );
-            border-radius: 6px;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* === CLOCK ROW === */
-        .clock-row {
-            display: flex;
-            align-items: stretch;
-            position: relative;
-            z-index: 2;
-        }
-        .sw-track {
-            width: 56px;
-            flex-shrink: 0;
-            background: #0a0a0a;
-            border: 1px solid #2a2a2a;
-            border-radius: 4px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 4px 0;
-            margin-right: 16px;
-            box-shadow:
-                0 2px 4px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.05),
-                0 0 0 1px #1a1a1a;
-        }
-        .sw-slot {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            user-select: none;
-            font-size: 9px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #444;
-            transition: all .15s;
-            position: relative;
-            z-index: 1;
-            padding: 3px 0;
-        }
-        .sw-slot:hover {
-            color: #777;
-        }
-        .sw-slot.on {
-            font-weight: bold;
-            font-size: 10.5px;
-        }
-        .sw-thumb {
-            position: absolute;
-            left: 2px;
-            right: 2px;
-            height: 16.666%;
-            background: linear-gradient(180deg, #3a3a3a, #222);
-            border: 1px solid #4a4a4a;
-            border-radius: 3px;
-            box-shadow: 0 1px 4px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
-            transition: top .15s cubic-bezier(.34,1.2,.64,1);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .sw-thumb::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%);
-            width: 16px;
-            height: 2px;
-            background: transparent;
-            border-radius: 1px;
-        }
-        .clock-face {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .time-line {
-            position: relative;
-            white-space: nowrap;
-            line-height: 1.1;
-        }
-        .time-ghost {
-            font-family: 'DSEG7', monospace;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-            top: 0;
-            user-select: none;
-        }
-        .time-val {
-            font-family: 'DSEG7', monospace;
-            font-weight: bold;
-            position: relative;
-            filter: blur(0.3px);
-        }
-        .t-main {
-            font-size: 56px;
-            letter-spacing: 4px;
-        }
-        .t-frac {
-            font-size: 28px;
-            letter-spacing: 1px;
-            opacity: .75;
-        }
-        .drift-val {
-            filter: blur(0.2px);
-        }
-        .t-lbl {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: .5;
-            vertical-align: middle;
-            padding: 0 4px;
-        }
-        .scale-name {
-            font-size: 12px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            opacity: .5;
-            margin-top: 8px;
-        }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-top: 12px;
-            position: relative;
-            z-index: 2;
-        }
-        .info-l {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(14px, 2.5vw, 18px);
-            letter-spacing: 2px;
-        }
-        .info-r {
-            font-size: 12px;
-            letter-spacing: 2px;
-            opacity: .8;
-        }
-
-        /* === DRIFT ROW === */
-        .drift-row {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 2;
-        }
-        .drift-info {
-            text-align: left;
-        }
-        .drift-lbl {
-            font-size: 11px;
-            letter-spacing: 1.5px;
-            color: #555;
-            text-transform: uppercase;
-        }
-        .drift-val {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(16px, 2.5vw, 22px);
-            color: var(--lun);
-            text-shadow: 0 0 6px rgba(255, 170, 0, 0.3);
-            opacity: .8;
-            letter-spacing: 2px;
-        }
-        .rate-val {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            color: var(--lun);
-            text-shadow: 0 0 4px rgba(255, 170, 0, 0.2);
-            opacity: .8;
-            letter-spacing: 2px;
-        }
-        .sync-btn {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #555;
-            text-transform: uppercase;
-            text-decoration: none;
-            border: 1px solid #2a2a2a;
-            border-radius: 3px;
-            padding: 8px 12px;
-            transition: all .2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-            align-self: flex-end;
-            margin-top: 8px;
-        }
-        .sync-btn:hover {
-            color: #33ff66;
-            border-color: #0a330a;
-            text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
-        }
-        .citation {
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: #333;
-            text-align: center;
-            margin-top: 14px;
-            position: relative;
-            z-index: 2;
-        }
-        .citation a {
-            color: #444;
-            text-decoration: none;
-        }
-        .citation a:hover {
-            color: #777;
-        }
-
-        /* === SIGNUP === */
-        .divider {
-            height: 5px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                #2a2220 1px,
-                #2a2220 2px
-            );
-            margin: 18px 4px 16px;
-            opacity: 0.6;
-        }
-        .signup {
-            padding: 0 4px;
-        }
-        .signup-prompt {
-            font-size: 16px;
-            letter-spacing: 2px;
-            color: #666;
-            text-transform: uppercase;
-            margin-top: 14px;
-            text-align: center;
-        }
-        .signup-prompt em {
-            color: #999;
-            font-style: normal;
-            letter-spacing: 1px;
-            text-transform: none;
-        }
-        .form-row {
-            display: flex;
-            gap: 8px;
-        }
-        .form-row input[type="email"] {
-            flex: 1;
-            background: #0c0000;
-            border: 1px solid #2a1a00;
-            border-radius: 4px;
-            padding: 12px 16px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 16px;
-            color: var(--lun);
-            outline: none;
-            transition: border-color .2s;
-        }
-        .form-row input[type="email"]::placeholder {
-            color: var(--lun-d);
-        }
-        .form-row input[type="email"]:focus {
-            border-color: var(--lun);
-            box-shadow: 0 0 8px rgba(255, 170, 0, .15);
-        }
-        .form-row button {
-            background: var(--lun-d);
-            border: 1px solid #553300;
-            border-radius: 4px;
-            padding: 12px 24px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            letter-spacing: 2px;
-            color: var(--lun);
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all .2s;
-            white-space: nowrap;
-        }
-        .form-row button:hover {
-            background: #553300;
-            border-color: var(--lun);
-            text-shadow: 0 0 8px rgba(255, 170, 0, .5);
-        }
-        .form-row button:active {
-            transform: scale(.98);
-        }
-        .form-row input[name="_gotcha"] {
-            display: none;
-        }
-        .signup.done .form-row,
-        .signup.done .signup-prompt {
-            display: none;
-        }
-        .dl-sec {
-            display: none;
-            text-align: center;
-        }
-        .signup.done .dl-sec {
-            display: block;
-        }
-        .dl-chk {
-            font-size: 13px;
-            letter-spacing: 2px;
-            color: #1a8a1a;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            text-shadow: 0 0 6px rgba(26, 138, 26, .3);
-        }
-        .dl-a {
-            display: inline-block;
-            background: #081a08;
-            border: 1px solid #1a4a1a;
-            border-radius: 4px;
-            padding: 12px 28px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            letter-spacing: 2px;
-            color: #33cc33;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all .2s;
-        }
-        .dl-a:hover {
-            background: #0a2a0a;
-            border-color: #33cc33;
-            text-shadow: 0 0 8px rgba(51, 204, 51, .5);
-        }
-        .badge {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .badge a {
-            font-size: 11px;
-            letter-spacing: 3px;
-            color: #444;
-            text-transform: uppercase;
-            text-decoration: none;
-        }
-        .badge a:hover {
-            color: #666;
-        }
-
-        @media (max-width: 520px) {
-            .lcd {
-                padding: 16px 14px 14px;
+                box-shadow:
+                    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.95),
+                    0 1px 3px rgba(0, 0, 0, 0.9),
+                    0 0 0 1px #000;
+                z-index: 100;
             }
-            .form-row {
-                flex-direction: column;
+            .clock-housing::before {
+                top: 12px;
+                left: 12px;
             }
+            .clock-housing::after {
+                top: 12px;
+                right: 12px;
+            }
+            .clock-inner::before,
+            .clock-inner::after {
+                content: "";
+                position: absolute;
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    #2a2a2a 30%,
+                    #1a1a1a 50%,
+                    #0a0a0a 100%
+                );
+                box-shadow:
+                    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.95),
+                    0 1px 3px rgba(0, 0, 0, 0.9),
+                    0 0 0 1px #000;
+                z-index: 100;
+            }
+            .clock-inner::before {
+                bottom: 12px;
+                left: 12px;
+            }
+            .clock-inner::after {
+                bottom: 12px;
+                right: 12px;
+            }
+
+            /* === BRAND === */
             .brand {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                padding: 0 4px;
             }
-            .drift-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
+            .brand-name {
+                font-family: "Space Grotesk", sans-serif;
+                font-size: 22px;
+                letter-spacing: 12px;
+                color: #999;
+                text-transform: uppercase;
+                font-weight: 700;
             }
-            .sync-btn {
-                align-self: flex-end;
+            .brand-tag {
+                font-size: 10px;
+                letter-spacing: 3px;
+                color: #555;
+                text-transform: uppercase;
             }
-            .t-main {
-                font-size: 40px !important;
-                letter-spacing: 2px !important;
+
+            /* === LCD === */
+            .lcd {
+                background: #080404;
+                border-radius: 6px;
+                padding: 20px 22px 18px;
+                border: 3px solid #0a0a0a;
+                box-shadow:
+                    inset 0 4px 12px rgba(0, 0, 0, 0.9),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.8),
+                    0 0 0 1px #2a2a2a,
+                    0 0 0 2px #1a1a1a;
+                position: relative;
+                overflow: hidden;
+                animation: screenOn 0.8s ease-out;
             }
-            .t-frac {
-                font-size: 22px !important;
+            .lcd::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.15) 2px,
+                    rgba(0, 0, 0, 0.15) 4px
+                );
+                pointer-events: none;
+                z-index: 1;
+            }
+            .lcd::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        ellipse at center,
+                        transparent 0%,
+                        transparent 60%,
+                        rgba(0, 0, 0, 0.2) 80%,
+                        rgba(0, 0, 0, 0.5) 100%
+                    ),
+                    repeating-linear-gradient(
+                        90deg,
+                        transparent,
+                        transparent 39px,
+                        rgba(255, 255, 255, 0.015) 39px,
+                        rgba(255, 255, 255, 0.015) 40px
+                    );
+                border-radius: 6px;
+                pointer-events: none;
+                z-index: 10;
+            }
+
+            /* === CLOCK ROW === */
+            .clock-row {
+                display: flex;
+                align-items: stretch;
+                position: relative;
+                z-index: 2;
             }
             .sw-track {
-                width: 46px;
-                margin-right: 10px;
+                width: 56px;
+                flex-shrink: 0;
+                background: #0a0a0a;
+                border: 1px solid #2a2a2a;
+                border-radius: 4px;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 4px 0;
+                margin-right: 16px;
+                box-shadow:
+                    0 2px 4px rgba(0, 0, 0, 0.8),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 0 0 1px #1a1a1a;
             }
             .sw-slot {
-                font-size: 8px;
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                user-select: none;
+                font-size: 9px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #444;
+                transition: all 0.15s;
+                position: relative;
+                z-index: 1;
+                padding: 3px 0;
+            }
+            .sw-slot:hover {
+                color: #777;
             }
             .sw-slot.on {
-                font-size: 9px;
+                font-weight: bold;
+                font-size: 10.5px;
+            }
+            .sw-thumb {
+                position: absolute;
+                left: 2px;
+                right: 2px;
+                height: 16.6667%;
+                background: linear-gradient(180deg, #3a3a3a, #222);
+                border: 1px solid #4a4a4a;
+                border-radius: 3px;
+                box-shadow:
+                    0 1px 4px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                transition: top 0.15s cubic-bezier(0.34, 1.2, 0.64, 1);
+                pointer-events: none;
+                z-index: 0;
+            }
+            .sw-thumb::after {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 16px;
+                height: 2px;
+                background: transparent;
+                border-radius: 1px;
+            }
+            .clock-face {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .time-line {
+                position: relative;
+                white-space: nowrap;
+                line-height: 1.1;
+            }
+            .time-ghost {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+                top: 0;
+                user-select: none;
+            }
+            .time-val {
+                font-family: "DSEG7", monospace;
+                font-weight: bold;
+                position: relative;
+                filter: blur(0.3px);
+            }
+            .t-main {
+                font-size: 56px;
+                letter-spacing: 4px;
+            }
+            .t-frac {
+                font-size: 28px;
+                letter-spacing: 1px;
+                opacity: 0.75;
+            }
+            .drift-val {
+                filter: blur(0.2px);
             }
             .t-lbl {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 13px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                opacity: 0.5;
+                vertical-align: middle;
+                padding: 0 4px;
+            }
+            .scale-name {
+                font-size: 12px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                opacity: 0.5;
+                margin-top: 8px;
+            }
+            .scale-citation {
+                font-size: 8px;
+                letter-spacing: 1px;
+                color: #666;
+                margin-top: 4px;
+                opacity: 0.6;
+                text-align: center;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+            }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-top: 12px;
+                position: relative;
+                z-index: 2;
+            }
+            .info-l {
+                font-family: "Share Tech Mono", monospace;
+                font-size: clamp(14px, 2.5vw, 18px);
+                letter-spacing: 2px;
+            }
+            .info-r {
+                font-size: 12px;
+                letter-spacing: 2px;
+                opacity: 0.8;
+            }
+
+            /* === DRIFT ROW === */
+            .drift-row {
+                margin-top: 16px;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                z-index: 2;
+            }
+            .drift-info {
+                text-align: left;
+            }
+            .drift-lbl {
                 font-size: 11px;
+                letter-spacing: 1.5px;
+                color: #555;
+                text-transform: uppercase;
             }
-            .aux-strip {
-                margin-top: 10px;
+            .drift-val {
+                font-family: "Share Tech Mono", monospace;
+                font-size: clamp(16px, 2.5vw, 22px);
+                color: var(--amber);
+                text-shadow: 0 0 6px rgba(255, 170, 0, 0.3);
+                opacity: 0.8;
+                letter-spacing: 2px;
             }
-            .drift-bar-container {
-                margin-top: 10px;
+            .rate-val {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 12px;
+                color: var(--amber);
+                text-shadow: 0 0 4px rgba(255, 170, 0, 0.2);
+                opacity: 0.8;
+                letter-spacing: 2px;
             }
-        }
+            .sync-btn {
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #555;
+                text-transform: uppercase;
+                text-decoration: none;
+                border: 1px solid #2a2a2a;
+                border-radius: 3px;
+                padding: 8px 12px;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                white-space: nowrap;
+                align-self: flex-end;
+                margin-top: 8px;
+            }
+            .sync-btn:hover {
+                color: #33ff66;
+                border-color: #0a330a;
+                text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+            }
+            .citation {
+                font-size: 12px;
+                letter-spacing: 1px;
+                color: #333;
+                text-align: center;
+                margin-top: 14px;
+                position: relative;
+                z-index: 2;
+            }
+            .citation a {
+                color: #444;
+                text-decoration: none;
+            }
+            .citation a:hover {
+                color: #777;
+            }
 
-    </style>
-</head>
-<body>
+            /* === SIGNUP === */
+            .divider {
+                height: 5px;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1px,
+                    #2a2220 1px,
+                    #2a2220 2px
+                );
+                margin: 18px 4px 16px;
+                opacity: 0.6;
+            }
+            .signup {
+                padding: 0 4px;
+            }
+            .signup-prompt {
+                font-size: 16px;
+                letter-spacing: 2px;
+                color: #666;
+                text-transform: uppercase;
+                margin-top: 14px;
+                text-align: center;
+            }
+            .signup-prompt em {
+                color: #999;
+                font-style: normal;
+                letter-spacing: 1px;
+                text-transform: none;
+            }
+            .form-row {
+                display: flex;
+                gap: 8px;
+            }
+            .form-row input[type="email"] {
+                flex: 1;
+                background: #0c0000;
+                border: 1px solid #002233;
+                border-radius: 4px;
+                padding: 12px 16px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 16px;
+                color: var(--cyan);
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            .form-row input[type="email"]::placeholder {
+                color: var(--cyan-dim);
+            }
+            .form-row input[type="email"]:focus {
+                border-color: var(--cyan);
+                box-shadow: 0 0 8px rgba(0, 221, 255, 0.15);
+            }
+            .form-row button {
+                background: var(--cyan-dim);
+                border: 1px solid #003344;
+                border-radius: 4px;
+                padding: 12px 24px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 14px;
+                letter-spacing: 2px;
+                color: var(--cyan);
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.2s;
+                white-space: nowrap;
+            }
+            .form-row button:hover {
+                background: #003344;
+                border-color: var(--cyan);
+                text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+            }
+            .form-row button:active {
+                transform: scale(0.98);
+            }
+            .form-row input[name="_gotcha"] {
+                display: none;
+            }
+            .signup.done .form-row,
+            .signup.done .signup-prompt {
+                display: none;
+            }
+            .dl-sec {
+                display: none;
+                text-align: center;
+            }
+            .signup.done .dl-sec {
+                display: block;
+            }
+            .dl-chk {
+                font-size: 13px;
+                letter-spacing: 2px;
+                color: #1a8a1a;
+                text-transform: uppercase;
+                margin-bottom: 14px;
+                text-shadow: 0 0 6px rgba(26, 138, 26, 0.3);
+            }
+            .dl-a {
+                display: inline-block;
+                background: #081a08;
+                border: 1px solid #1a4a1a;
+                border-radius: 4px;
+                padding: 12px 28px;
+                font-family: "Share Tech Mono", monospace;
+                font-size: 14px;
+                letter-spacing: 2px;
+                color: #33cc33;
+                text-transform: uppercase;
+                text-decoration: none;
+                transition: all 0.2s;
+            }
+            .dl-a:hover {
+                background: #0a2a0a;
+                border-color: #33cc33;
+                text-shadow: 0 0 8px rgba(51, 204, 51, 0.5);
+            }
+            .badge {
+                margin-top: 20px;
+                text-align: center;
+            }
+            .badge a {
+                font-size: 11px;
+                letter-spacing: 3px;
+                color: #444;
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+            .badge a:hover {
+                color: #666;
+            }
 
-    <div class="clock-housing">
-        <div class="clock-inner">
+            @media (max-width: 520px) {
+                .lcd {
+                    padding: 16px 14px 14px;
+                }
+                .form-row {
+                    flex-direction: column;
+                }
+                .brand {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                }
+                .drift-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+                }
+                .sync-btn {
+                    align-self: flex-end;
+                }
+                .t-main {
+                    font-size: 40px !important;
+                    letter-spacing: 2px !important;
+                }
+                .t-frac {
+                    font-size: 22px !important;
+                }
+                .sw-track {
+                    width: 46px;
+                    margin-right: 10px;
+                }
+                .sw-slot {
+                    font-size: 8px;
+                }
+                .sw-slot.on {
+                    font-size: 9px;
+                }
+                .t-lbl {
+                    font-size: 11px;
+                }
+                .aux-strip {
+                    margin-top: 10px;
+                }
+                .drift-bar-container {
+                    margin-top: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="clock-housing">
+            <div class="clock-inner">
+                <!-- Brand -->
+                <div class="brand">
+                    <span class="brand-name">Epoch</span
+                    ><span class="brand-tag"
+                        >Open-Source Lunar Timekeeping</span
+                    >
+                </div>
 
-            <!-- Brand -->
-            <div class="brand"><span class="brand-name">Epoch</span><span class="brand-tag">Open-Source Lunar Timekeeping</span></div>
-
-            <!-- LCD Display Area -->
-            <div class="lcd">
-                <div class="clock-row">
-                    <div class="sw-track"><div class="sw-thumb" id="sw-thumb"></div>
-                        <div class="sw-slot on" data-i="0" onclick="setFmt(0)"><span class="led" style="--led-color: var(--lun)"></span>LUNAR</div>
-                        <div class="sw-slot" data-i="1" onclick="setFmt(1)"><span class="led" style="--led-color: var(--utc)"></span>UTC</div>
-                        <div class="sw-slot" data-i="2" onclick="setFmt(2)"><span class="led" style="--led-color: var(--gps)"></span>LOCAL</div>
-                        <div class="sw-slot" data-i="3" onclick="setFmt(3)"><span class="led" style="--led-color: var(--tai)"></span>TAI</div>
-                        <div class="sw-slot" data-i="4" onclick="setFmt(4)"><span class="led" style="--led-color: #ffaa66"></span>GPS</div>
-                        <div class="sw-slot" data-i="5" onclick="setFmt(5)"><span class="led" style="--led-color: var(--unix)"></span>UNIX</div>
+                <!-- LCD Display Area -->
+                <div class="lcd">
+                    <div class="clock-row">
+                        <div
+                            class="tooltip-gutter left"
+                            id="tooltip-gutter-l"
+                        ></div>
+                        <div class="sw-track">
+                            <div class="sw-thumb" id="sw-thumb"></div>
+                            <div
+                                class="sw-slot"
+                                data-i="0"
+                                data-key="tcb"
+                                onclick="setFmt(0)"
+                                onmouseenter="showTooltip(0)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: var(--purple)"
+                                ></span
+                                >TCB
+                            </div>
+                            <div
+                                class="sw-slot on"
+                                data-i="1"
+                                data-key="lunar"
+                                onclick="setFmt(1)"
+                                onmouseenter="showTooltip(1)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: #00ddff"
+                                ></span
+                                >TCL
+                            </div>
+                            <div
+                                class="sw-slot"
+                                data-i="2"
+                                data-key="tai"
+                                onclick="setFmt(2)"
+                                onmouseenter="showTooltip(2)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: var(--green)"
+                                ></span
+                                >TAI
+                            </div>
+                            <div
+                                class="sw-slot"
+                                data-i="3"
+                                data-key="utc"
+                                onclick="setFmt(3)"
+                                onmouseenter="showTooltip(3)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: #ffaa00"
+                                ></span
+                                >UTC
+                            </div>
+                            <div
+                                class="sw-slot"
+                                data-i="4"
+                                data-key="gps"
+                                onclick="setFmt(4)"
+                                onmouseenter="showTooltip(4)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: #ff1a1a"
+                                ></span
+                                >GPS
+                            </div>
+                            <div
+                                class="sw-slot"
+                                data-i="5"
+                                data-key="unix"
+                                onclick="setFmt(5)"
+                                onmouseenter="showTooltip(5)"
+                                onmouseleave="hideTooltip()"
+                            >
+                                <span
+                                    class="led"
+                                    style="--led-color: var(--gray)"
+                                ></span
+                                >UNIX
+                            </div>
+                        </div>
+                        <div
+                            class="tooltip-gutter right"
+                            id="tooltip-gutter-r"
+                        ></div>
+                        <div class="clock-face">
+                            <div class="time-line">
+                                <span class="time-ghost" id="ghost"></span
+                                ><span class="time-val" id="tval"></span>
+                            </div>
+                            <div class="scale-name" id="sname">Lunar</div>
+                            <div
+                                class="scale-citation"
+                                id="scale-citation"
+                            ></div>
+                        </div>
                     </div>
-                    <div class="clock-face">
-                        <div class="time-line"><span class="time-ghost" id="ghost"></span><span class="time-val" id="tval"></span></div>
-                        <div class="scale-name" id="sname">Lunar Coordinate Time</div>
+                    <div class="info-row">
+                        <span class="info-l" id="info-l"></span
+                        ><span class="info-r" id="info-r"></span>
+                    </div>
+                    <div class="aux-strip">
+                        <div class="aux-readout">
+                            <span class="aux-label" style="color: #ffaa00"
+                                >UTC</span
+                            >
+                            <span
+                                class="aux-value"
+                                id="aux-utc"
+                                style="color: #ffaa00"
+                                >--:--:--</span
+                            >
+                            <span
+                                class="aux-delta"
+                                id="aux-utc-delta"
+                                style="color: #ffaa00"
+                                >+0.0 µs</span
+                            >
+                        </div>
+                        <div class="aux-readout">
+                            <span class="aux-label" style="color: var(--green)"
+                                >TAI</span
+                            >
+                            <span
+                                class="aux-value"
+                                id="aux-tai"
+                                style="color: var(--green)"
+                                >--:--:--</span
+                            >
+                            <span
+                                class="aux-delta"
+                                id="aux-tai-delta"
+                                style="color: var(--green)"
+                                >+37.0 s</span
+                            >
+                        </div>
+                        <div class="aux-readout">
+                            <span class="aux-label" style="color: #00ddff"
+                                >TCL</span
+                            >
+                            <span
+                                class="aux-value"
+                                id="aux-lun"
+                                style="color: #00ddff"
+                                >--:--:--</span
+                            >
+                            <span
+                                class="aux-delta"
+                                id="aux-lun-delta"
+                                style="color: #00ddff"
+                                >+0.0 µs</span
+                            >
+                        </div>
+                        <div class="aux-readout">
+                            <span class="aux-label" style="color: var(--gray)"
+                                >SYSTEM</span
+                            >
+                            <span
+                                class="aux-value"
+                                id="aux-ping"
+                                style="color: var(--gray)"
+                                >--:--:--</span
+                            >
+                            <span
+                                class="aux-delta"
+                                id="aux-sys-delta"
+                                style="color: var(--gray)"
+                                >--.--- s</span
+                            >
+                        </div>
+                    </div>
+                    <div class="drift-bar-container">
+                        <div class="drift-bar-track">
+                            <div class="drift-seg" id="seg-0"></div>
+                            <div class="drift-seg" id="seg-1"></div>
+                            <div class="drift-seg" id="seg-2"></div>
+                            <div class="drift-seg" id="seg-3"></div>
+                            <div class="drift-seg" id="seg-4"></div>
+                            <div class="drift-seg" id="seg-5"></div>
+                            <div class="drift-seg" id="seg-6"></div>
+                            <div class="drift-seg" id="seg-7"></div>
+                            <div class="drift-seg" id="seg-8"></div>
+                            <div class="drift-seg" id="seg-9"></div>
+                            <div class="drift-seg" id="seg-10"></div>
+                            <div class="drift-seg" id="seg-11"></div>
+                            <div class="drift-seg" id="seg-12"></div>
+                            <div class="drift-seg" id="seg-13"></div>
+                            <div class="drift-seg" id="seg-14"></div>
+                            <div class="drift-seg" id="seg-15"></div>
+                            <div class="drift-seg" id="seg-16"></div>
+                            <div class="drift-seg" id="seg-17"></div>
+                            <div class="drift-seg" id="seg-18"></div>
+                            <div class="drift-seg" id="seg-19"></div>
+                            <div class="drift-seg" id="seg-20"></div>
+                            <div class="drift-seg" id="seg-21"></div>
+                            <div class="drift-seg" id="seg-22"></div>
+                            <div class="drift-seg" id="seg-23"></div>
+                        </div>
+                        <div class="drift-bar-scale">
+                            <span>-1s</span><span>-0.5s</span><span>0</span
+                            ><span>+0.5s</span><span>+1s</span>
+                        </div>
+                    </div>
+                    <div class="deviation-display">
+                        <span class="deviation-value" id="deviation-val"
+                            >--.--- s</span
+                        >
+                    </div>
+                    <div
+                        class="deviation-qualitative"
+                        id="deviation-qualitative"
+                    >
+                        --
+                    </div>
+                    <div class="drift-row">
+                        <div class="drift-info">
+                            <div class="ntp-servers-compact">
+                                <div class="ntp-header">
+                                    <span class="ntp-name"
+                                        >NETWORK TIME SERVERS</span
+                                    >
+                                    <span class="ntp-offset">ERROR</span>
+                                    <span class="ntp-rtt">PING</span>
+                                </div>
+                                <div class="ntp-server" id="ntp-row-0">
+                                    <span class="ntp-name">---</span>
+                                    <span class="ntp-offset">--.--- s</span>
+                                    <span class="ntp-rtt">---ms</span>
+                                </div>
+                                <div class="ntp-server" id="ntp-row-1">
+                                    <span class="ntp-name">---</span>
+                                    <span class="ntp-offset">--.--- s</span>
+                                    <span class="ntp-rtt">---ms</span>
+                                </div>
+                                <div class="ntp-server" id="ntp-row-2">
+                                    <span class="ntp-name">---</span>
+                                    <span class="ntp-offset">--.--- s</span>
+                                    <span class="ntp-rtt">---ms</span>
+                                </div>
+                                <div class="ntp-server" id="ntp-row-3">
+                                    <span class="ntp-name">---</span>
+                                    <span class="ntp-offset">--.--- s</span>
+                                    <span class="ntp-rtt">---ms</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a
+                            class="sync-btn"
+                            href="https://www.time.gov/"
+                            target="_blank"
+                            rel="noopener"
+                            title="Official US time source"
+                            >Time.gov ↗</a
+                        >
                     </div>
                 </div>
-                <div class="info-row"><span class="info-l" id="info-l"></span><span class="info-r" id="info-r"></span></div>
-                <div class="aux-strip">
-                    <div class="aux-readout">
-                        <span class="aux-label" style="color: var(--utc)">UTC</span>
-                        <span class="aux-value" id="aux-utc" style="color: var(--utc)">--:--:--</span>
+
+                <!-- Divider -->
+                <div class="divider"></div>
+                <div class="signup-prompt">Get the whitepaper</div>
+                <!-- Email Signup -->
+                <div class="signup" id="signup">
+                    <div class="form-row">
+                        <input
+                            type="email"
+                            name="email"
+                            id="email-input"
+                            placeholder="you@example.com"
+                            required
+                            autocomplete="email"
+                        />
+                        <input
+                            type="text"
+                            name="_gotcha"
+                            tabindex="-1"
+                            autocomplete="off"
+                        />
+                        <button
+                            type="button"
+                            id="submit-btn"
+                            onclick="doSignup()"
+                        >
+                            Download
+                        </button>
                     </div>
-                    <div class="aux-readout">
-                        <span class="aux-label" style="color: var(--tai)">TAI</span>
-                        <span class="aux-value" id="aux-tai" style="color: var(--tai)">--:--:--</span>
+                    <div class="signup-prompt">
+                        <em
+                            >Space Time Card: a near-term bridge and long-term
+                            resilience layer for lunar time &amp;
+                            coordination</em
+                        >
                     </div>
-                    <div class="aux-readout">
-                        <span class="aux-label" style="color: var(--lun)">LUNAR</span>
-                        <span class="aux-value" id="aux-lun" style="color: var(--lun)">--:--:--</span>
-                    </div>
-                </div>
-                <div class="drift-bar-container">
-                    <div class="drift-bar-label">LUNAR DRIFT TODAY</div>
-                    <div class="drift-bar-track">
-                        <div class="drift-seg" id="seg-0"></div>
-                        <div class="drift-seg" id="seg-1"></div>
-                        <div class="drift-seg" id="seg-2"></div>
-                        <div class="drift-seg" id="seg-3"></div>
-                        <div class="drift-seg" id="seg-4"></div>
-                        <div class="drift-seg" id="seg-5"></div>
-                        <div class="drift-seg" id="seg-6"></div>
-                        <div class="drift-seg" id="seg-7"></div>
-                        <div class="drift-seg" id="seg-8"></div>
-                        <div class="drift-seg" id="seg-9"></div>
-                        <div class="drift-seg" id="seg-10"></div>
-                        <div class="drift-seg" id="seg-11"></div>
-                        <div class="drift-seg" id="seg-12"></div>
-                        <div class="drift-seg" id="seg-13"></div>
-                        <div class="drift-seg" id="seg-14"></div>
-                        <div class="drift-seg" id="seg-15"></div>
-                        <div class="drift-seg" id="seg-16"></div>
-                        <div class="drift-seg" id="seg-17"></div>
-                        <div class="drift-seg" id="seg-18"></div>
-                        <div class="drift-seg" id="seg-19"></div>
-                        <div class="drift-seg" id="seg-20"></div>
-                        <div class="drift-seg" id="seg-21"></div>
-                        <div class="drift-seg" id="seg-22"></div>
-                        <div class="drift-seg" id="seg-23"></div>
-                    </div>
-                    <div class="drift-bar-scale">
-                        <span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span>
+                    <div class="signup-prompt">Linden, Kosak 2026</div>
+                    <div class="dl-sec">
+                        <div class="dl-chk">✓ Check your inbox</div>
+                        <a class="dl-a" href="epoch-whitepaper.pdf" download
+                            >↓ Download White Paper</a
+                        >
                     </div>
                 </div>
-                <div class="drift-row">
-                    <div class="drift-info">
-                        <div class="drift-lbl">Lunar drift since midnight UTC</div>
-                        <div class="drift-val" id="dt-rate">+0.000 µs</div>
-                        <div class="drift-lbl" style="margin-top:4px">Lunar drift since J2000.0</div>
-                        <div class="rate-val" id="dt-total">+0.000 ms</div>
-                    </div>
-                    <a class="sync-btn" href="https://www.time.gov/" target="_blank" rel="noopener" title="Official US time source">Time.gov ↗</a>
+
+                <!-- Bottom Badge -->
+                <div class="badge">
+                    <a
+                        href="https://github.com/epoch-lunar"
+                        target="_blank"
+                        rel="noopener"
+                        >github.com/epoch-lunar</a
+                    >
                 </div>
-                <div class="citation">Ashby &amp; Patla (2024) — <a href="https://arxiv.org/abs/2402.11150" target="_blank" rel="noopener">arXiv:2402.11150</a></div>
             </div>
-
-            <!-- Divider -->
-            <div class="divider"></div>
-            <div class="signup-prompt">Get the whitepaper</div>
-            <!-- Email Signup -->
-            <div class="signup" id="signup">
-                <div class="form-row">
-                    <input type="email" name="email" id="email-input" placeholder="you@example.com" required autocomplete="email">
-                    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
-                    <button type="button" id="submit-btn" onclick="doSignup()">Download</button>
-                </div>
-                <div class="signup-prompt"><em>Space Time Card: a near-term bridge and long-term resilience layer for lunar time &amp; coordination</em></div>
-                <div class="signup-prompt">Linden, Kosak 2026</div>
-                <div class="dl-sec"><div class="dl-chk">✓ Check your inbox</div><a class="dl-a" href="epoch-whitepaper.pdf" download>↓ Download White Paper</a></div>
-            </div>
-
-            <!-- Bottom Badge -->
-            <div class="badge"><a href="https://github.com/epoch-lunar" target="_blank" rel="noopener">github.com/epoch-lunar</a></div>
-
         </div>
-    </div>
 
-    <script>
-// =================================================================
-//  SHARED CONSTANTS
-// =================================================================
-const $=id=>document.getElementById(id);
-const T_SID=27.321661*86400, E_MOON=0.0549;
-const RATE_M=56.0199, RATE_E=0.10843417;
-const J2000=Date.UTC(2000,0,1,12), PERIGEE=Date.UTC(2024,0,13,10,35);
-const TAI_OFF=37, GPS_OFF=TAI_OFF-19;
-const GPS_EP=Date.UTC(1980,0,6), GPS_WK_S=604800;
-const L_B=1.550519768e-8;
+        <script>
+            // =================================================================
+            //  SHARED CONSTANTS
+            // =================================================================
+            const $ = (id) => document.getElementById(id);
+            const T_SID = 27.321661 * 86400,
+                E_MOON = 0.0549;
+            const RATE_M = 56.0199,
+                RATE_E = 0.10843417;
+            const J2000 = Date.UTC(2000, 0, 1, 12),
+                PERIGEE = Date.UTC(2024, 0, 13, 10, 35);
+            const TAI_OFF = 37,
+                GPS_OFF = TAI_OFF - 19;
+            const GPS_EP = Date.UTC(1980, 0, 6),
+                GPS_WK_S = 604800;
+            const L_B = 1.550519768e-8;
+            const TT_TAI = 32.184;
 
-function pad(n,w=2){return n.toString().padStart(w,'0');}
-function toMJD(d){return(d.getTime()/86400000)+40587;}
-function trueAnom(d){const M=(2*Math.PI*((d.getTime()-PERIGEE)/1000)/T_SID)%(2*Math.PI);return M+2*E_MOON*Math.sin(M)+1.25*E_MOON*E_MOON*Math.sin(2*M);}
-function instRate(f){return RATE_M-RATE_E*Math.cos(f);}
-function lunarDriftUs(d){const days=(d.getTime()-J2000)/86400000;return days*RATE_M-RATE_E*(T_SID/86400/(2*Math.PI))*Math.sin(trueAnom(d));}
-function lunarDate(u){return new Date(u.getTime()+lunarDriftUs(u)/1000);}
-function taiDate(u){return new Date(u.getTime()+TAI_OFF*1000);}
-function gpsDate(u){return new Date(u.getTime()+GPS_OFF*1000);}
-function fmtYMD(d){return`${d.getUTCFullYear()}.${pad(d.getUTCMonth()+1)}.${pad(d.getUTCDate())}`;}
-function fmtISO(d){return`${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;}
-function getTZ(){const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;try{const short=new Date().toLocaleString('en-US',{timeZoneName:'short'}).split(' ').pop();return short;}catch(e){return tz;}}
+            function pad(n, w = 2) {
+                return n.toString().padStart(w, "0");
+            }
+            function toMJD(d) {
+                return d.getTime() / 86400000 + 40587;
+            }
+            function trueAnom(d) {
+                const M =
+                    ((2 * Math.PI * ((d.getTime() - PERIGEE) / 1000)) / T_SID) %
+                    (2 * Math.PI);
+                return (
+                    M +
+                    2 * E_MOON * Math.sin(M) +
+                    1.25 * E_MOON * E_MOON * Math.sin(2 * M)
+                );
+            }
+            function instRate(f) {
+                return RATE_M - RATE_E * Math.cos(f);
+            }
+            function lunarDriftUs(d) {
+                const days = (d.getTime() - J2000) / 86400000;
+                return (
+                    days * RATE_M -
+                    RATE_E *
+                        (T_SID / 86400 / (2 * Math.PI)) *
+                        Math.sin(trueAnom(d))
+                );
+            }
+            function lunarDate(u) {
+                return new Date(u.getTime() + lunarDriftUs(u) / 1000);
+            }
+            function taiDate(u) {
+                return new Date(u.getTime() + TAI_OFF * 1000);
+            }
+            function gpsDate(u) {
+                return new Date(u.getTime() + GPS_OFF * 1000);
+            }
+            function fmtYMD(d) {
+                return `${d.getUTCFullYear()}.${pad(d.getUTCMonth() + 1)}.${pad(d.getUTCDate())}`;
+            }
+            function fmtISO(d) {
+                return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+            }
+            function getTZ() {
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                try {
+                    const short = new Date()
+                        .toLocaleString("en-US", { timeZoneName: "short" })
+                        .split(" ")
+                        .pop();
+                    return short;
+                } catch (e) {
+                    return tz;
+                }
+            }
+            function tcbDate(u) {
+                const secsSinceJ2000 = (u.getTime() - J2000) / 1000;
+                const tcbOffset =
+                    TAI_OFF * 1000 +
+                    TT_TAI * 1000 +
+                    L_B * secsSinceJ2000 * 1000;
+                return new Date(u.getTime() + tcbOffset);
+            }
 
-// =================================================================
-//  PANEL 1: CLOCK
-// =================================================================
-const SCALES=[
-    {key:'lunar',c:'#ffaa00',d:'#332200',name:'Lunar Coordinate Time'},
-    {key:'utc',c:'#ff1a1a',d:'#330808',name:'UTC'},
-    {key:'local',c:'#00ddff',d:'#002a33',name:'Local Time'},
-    {key:'tai',c:'#33ff66',d:'#0a330a',name:'TAI'},
-    {key:'gps',c:'#ffaa66',d:'#331a00',name:'GPS Time'},
-    {key:'unix',c:'#cccccc',d:'#222222',name:'UNIX / POSIX'},
-];
-let cur=0;
+            // =================================================================
+            //  PANEL 1: CLOCK
+            // =================================================================
+            const SCALES = [
+                { key: "tcb", c: "#cc66ff", d: "#220033", name: "TCB" },
+                { key: "lunar", c: "#00ddff", d: "#002a33", name: "TCL" },
+                { key: "tai", c: "#33ff66", d: "#0a330a", name: "TAI" },
+                { key: "utc", c: "#ffaa00", d: "#332200", name: "UTC" },
+                { key: "gps", c: "#ff1a1a", d: "#330808", name: "GPS" },
+                { key: "unix", c: "#cccccc", d: "#222222", name: "UNIX" },
+            ];
+            const SCALE_INFO = {
+                utc: "Coordinated Universal Time",
+                tai: "International Atomic Time",
+                gps: "GPS Time",
+                unix: "UNIX / POSIX",
+                lunar: "Lunar Coordinate Time",
+                tcb: "Barycentric Coordinate Time",
+            };
+            let cur = 0;
 
-function buildTimeHTML(now){
-    const ms=now.getUTCMilliseconds();
-    switch(SCALES[cur].key){
-    case'lunar':{const d=lunarDate(now);return`<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    case'utc':{const d=now;return`<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    case'local':{const d=now;return`<span class="t-main">${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    case'tai':{const d=taiDate(now);return`<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    case'gps':{const g=gpsDate(now);const tot=(g.getTime()-GPS_EP)/1000;const tow=tot%GPS_WK_S;const towW=Math.floor(tow);return`<span class="t-main">${towW}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    case'unix':{const s=Math.floor(now.getTime()/1000);return`<span class="t-main">${s}</span><span class="t-frac">.${pad(ms,3)}</span>`;}
-    }
-}
-function buildGhostHTML(){
-    switch(SCALES[cur].key){
-    case'lunar':case'utc':case'local':case'tai':return`<span class="t-main">88:88:88</span><span class="t-frac">.888</span>`;
-    case'gps':return`<span class="t-main">888888</span><span class="t-frac">.888</span>`;
-    case'unix':return`<span class="t-main">8888888888</span><span class="t-frac">.888</span>`;
-    }
-}
-function tickClock(){
-    const now=new Date(),f=trueAnom(now),sc=SCALES[cur];
-    const tv=$('tval'),gh=$('ghost');
-    tv.innerHTML=buildTimeHTML(now);gh.innerHTML=buildGhostHTML();
-    tv.style.color=sc.c;tv.style.textShadow=`0 0 8px ${sc.c},0 0 20px ${sc.c}40`;
-    gh.style.color=sc.d;
-    $('sname').textContent=sc.name;$('sname').style.color=sc.c;
-    const il=$('info-l'),ir=$('info-r');
-    il.style.color=sc.c;il.style.textShadow=`0 0 4px ${sc.c}`;
-    ir.style.color=sc.c;ir.style.textShadow=`0 0 4px ${sc.c}`;
-    switch(sc.key){\n    case'lunar':il.textContent=fmtISO(lunarDate(now));ir.textContent=`MJD ${toMJD(lunarDate(now)).toFixed(4)}`;break;
-    case'utc':il.textContent=fmtISO(now);ir.textContent=`MJD ${toMJD(now).toFixed(4)}`;break;
-    case'local':il.textContent=`${now.toLocaleDateString('en-CA')} ${getTZ()}`;ir.textContent='Local Time Zone';break;
-    case'tai':il.textContent=fmtISO(taiDate(now));ir.textContent=`TAI − UTC = +${TAI_OFF}s`;break;
-    case'gps':{const g=gpsDate(now);const tot=(g.getTime()-GPS_EP)/1000;const wk=Math.floor(tot/GPS_WK_S);il.textContent=`Week ${wk}`;ir.textContent=`GPS − UTC = +${GPS_OFF}s`;break;}
-    case'unix':{const s=Math.floor(now.getTime()/1000);il.textContent=`Epoch ${s}`;ir.textContent='POSIX / IEEE Std 1003.1';break;}
-    }
-    const dMs=lunarDriftUs(now)/1000;
-    $('dt-total').textContent=dMs>=1000?`+${(dMs/1000).toFixed(4)} s`:`+${dMs.toFixed(3)} ms`;
-    const midnightUTC=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
-    const secsSinceMidnight=(now.getTime()-midnightUTC.getTime())/1000;
-    const driftSinceMidnight=secsSinceMidnight*RATE_M/86400;
-    $('dt-rate').textContent=`+${driftSinceMidnight.toFixed(3)} µs`;
-    // Auxiliary readouts (always visible)
-    const auxUtc = now;
-    const auxTai = taiDate(now);
-    const auxLun = lunarDate(now);
-    $('aux-utc').textContent = `${pad(auxUtc.getUTCHours())}:${pad(auxUtc.getUTCMinutes())}:${pad(auxUtc.getUTCSeconds())}`;
-    $('aux-tai').textContent = `${pad(auxTai.getUTCHours())}:${pad(auxTai.getUTCMinutes())}:${pad(auxTai.getUTCSeconds())}`;
-    $('aux-lun').textContent = `${pad(auxLun.getUTCHours())}:${pad(auxLun.getUTCMinutes())}:${pad(auxLun.getUTCSeconds())}`;
-    // Drift bar segments
-    const currentHour = now.getUTCHours() + now.getUTCMinutes()/60;
-    for(let i=0; i<24; i++){
-        const seg = document.getElementById('seg-'+i);
-        if(i < Math.floor(currentHour)){
-            seg.className = 'drift-seg lit';
-        } else if(i < currentHour){
-            seg.className = 'drift-seg lit-bright';
-        } else {
-            seg.className = 'drift-seg';
-        }
-    }
-}
-function setFmt(i){
-    cur=i;const sc=SCALES[i];
-    document.querySelectorAll('.sw-slot').forEach(el=>{
-        const idx=parseInt(el.dataset.i),on=idx===i;
-        el.classList.toggle('on',on);
-        el.style.color=on?sc.c:'';el.style.textShadow=on?`0 0 6px ${sc.c}`:''
-    });
-    $('sw-thumb').style.top=`${i*100/6}%`;
-    tickClock();
-}
+            function buildTimeHTML(now) {
+                const ms = now.getUTCMilliseconds();
+                switch (SCALES[cur].key) {
+                    case "lunar": {
+                        const d = lunarDate(now);
+                        return `<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                    case "utc": {
+                        return `<span class="t-main">${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                    case "tai": {
+                        const d = taiDate(now);
+                        return `<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                    case "gps": {
+                        const g = gpsDate(now);
+                        const tot = (g.getTime() - GPS_EP) / 1000;
+                        const tow = tot % GPS_WK_S;
+                        const towW = Math.floor(tow);
+                        return `<span class="t-main">${towW}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                    case "unix": {
+                        const s = Math.floor(now.getTime() / 1000);
+                        return `<span class="t-main">${s}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                    case "tcb": {
+                        const d = tcbDate(now);
+                        return `<span class="t-main">${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}</span><span class="t-frac">.${pad(ms, 3)}</span>`;
+                    }
+                }
+            }
+            function buildGhostHTML() {
+                switch (SCALES[cur].key) {
+                    case "lunar":
+                    case "utc":
+                    case "tai":
+                    case "tcb":
+                    case "gps":
+                        return `<span class="t-main">888888</span><span class="t-frac">.888</span>`;
+                    case "unix":
+                        return `<span class="t-main">8888888888</span><span class="t-frac">.888</span>`;
+                }
+            }
+            async function tickClock() {
+                const now = new Date(),
+                    f = trueAnom(now),
+                    sc = SCALES[cur];
+                const tv = $("tval"),
+                    gh = $("ghost");
+                tv.innerHTML = buildTimeHTML(now);
+                gh.innerHTML = buildGhostHTML();
+                tv.style.color = sc.c;
+                tv.style.textShadow = `0 0 8px ${sc.c},0 0 20px ${sc.c}40`;
+                gh.style.color = sc.d;
+                $("sname").textContent = SCALE_INFO[sc.key];
+                $("sname").style.color = sc.c;
+                // Show citation for Lunar time
+                if (sc.key === "lunar") {
+                    $("scale-citation").innerHTML =
+                        'Ashby & Patla (2024) — <a href="https://arxiv.org/abs/2402.11150" target="_blank" rel="noopener" style="color: #666;">arXiv:2402.11150</a>';
+                } else {
+                    $("scale-citation").textContent = "";
+                }
+                const il = $("info-l"),
+                    ir = $("info-r");
+                il.style.color = sc.c;
+                il.style.textShadow = `0 0 4px ${sc.c}`;
+                ir.style.color = sc.c;
+                ir.style.textShadow = `0 0 4px ${sc.c}`;
+                switch (sc.key) {
+                    case "lunar":
+                        il.textContent = fmtISO(lunarDate(now));
+                        ir.textContent = `MJD ${toMJD(lunarDate(now)).toFixed(4)}`;
+                        break;
+                    case "utc":
+                        il.textContent = fmtISO(now);
+                        ir.textContent = `MJD ${toMJD(now).toFixed(4)}`;
+                        break;
+                    case "tai":
+                        il.textContent = fmtISO(taiDate(now));
+                        ir.textContent = `TAI − UTC = +${TAI_OFF}s`;
+                        break;
+                    case "gps": {
+                        const g = gpsDate(now);
+                        const tot = (g.getTime() - GPS_EP) / 1000;
+                        const wk = Math.floor(tot / GPS_WK_S);
+                        il.textContent = `Week ${wk}`;
+                        ir.textContent = `GPS − UTC = +${GPS_OFF}s`;
+                        break;
+                    }
+                    case "unix": {
+                        const s = Math.floor(now.getTime() / 1000);
+                        il.textContent = `Epoch ${s}`;
+                        ir.textContent = "POSIX / IEEE Std 1003.1";
+                        break;
+                    }
+                    case "tcb": {
+                        const d = tcbDate(now);
+                        il.textContent = fmtISO(d);
+                        ir.textContent = `TT − TCB = −${TT_TAI.toFixed(3)}s`;
+                        break;
+                    }
+                }
+                const midnightUTC = new Date(
+                    Date.UTC(
+                        now.getUTCFullYear(),
+                        now.getUTCMonth(),
+                        now.getUTCDate(),
+                    ),
+                );
+                const secsSinceMidnight =
+                    (now.getTime() - midnightUTC.getTime()) / 1000;
+                const driftSinceMidnight = (secsSinceMidnight * RATE_M) / 86400;
+                // Auxiliary readouts (always visible)
+                const auxUtc = now;
+                const auxTai = taiDate(now);
+                const auxLun = lunarDate(now);
+                $("aux-utc").textContent =
+                    `${pad(auxUtc.getUTCHours())}:${pad(auxUtc.getUTCMinutes())}:${pad(auxUtc.getUTCSeconds())}`;
+                $("aux-tai").textContent =
+                    `${pad(auxTai.getUTCHours())}:${pad(auxTai.getUTCMinutes())}:${pad(auxTai.getUTCSeconds())}`;
+                $("aux-lun").textContent =
+                    `${pad(auxLun.getUTCHours())}:${pad(auxLun.getUTCMinutes())}:${pad(auxLun.getUTCSeconds())}`;
+                // Delta displays (drift from UTC since midnight)
+                $("aux-utc-delta").textContent = "+0.0 µs";
+                $("aux-tai-delta").textContent = "+37.0 s";
+                $("aux-lun-delta").textContent =
+                    `+${driftSinceMidnight.toFixed(3)} µs`;
+                // Drift bar segments
+                const currentHour =
+                    now.getUTCHours() + now.getUTCMinutes() / 60;
+                for (let i = 0; i < 24; i++) {
+                    const seg = document.getElementById("seg-" + i);
+                    if (i < Math.floor(currentHour)) {
+                        seg.className = "drift-seg lit";
+                    } else if (i < currentHour) {
+                        seg.className = "drift-seg lit-bright";
+                    } else {
+                        seg.className = "drift-seg";
+                    }
+                }
+            }
+            function setFmt(i) {
+                cur = i;
+                const sc = SCALES[i];
+                document.querySelectorAll(".sw-slot").forEach((el) => {
+                    const idx = parseInt(el.dataset.i),
+                        on = idx === i;
+                    el.classList.toggle("on", on);
+                    el.style.color = on ? sc.c : "";
+                    el.style.textShadow = on ? `0 0 6px ${sc.c}` : "";
+                });
+                $("sw-thumb").style.top = `${(i * 100) / 6}%`;
+                tickClock();
+            }
 
-// =================================================================
-//  INIT
-// =================================================================
-tickClock();
-setInterval(tickClock,60);
-setFmt(0);
+            // =================================================================
+            //  INIT - Smooth clock with requestAnimationFrame
+            // =================================================================
+            let lastFrameTime = 0;
 
-// FORMSPREE
-const FORMSPREE='https://formspree.io/f/YOUR_FORM_ID';
-async function doSignup(){
-    const inp=$('email-input'),btn=$('submit-btn'),email=inp.value.trim();
-    if(!email||!inp.checkValidity()){inp.focus();return;}
-    btn.textContent='...';btn.disabled=true;
-    try{await fetch(FORMSPREE,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email,_subject:'Epoch White Paper Download'})});}catch(e){}
-    $('signup').classList.add('done');
-}
-$('email-input').addEventListener('keydown',e=>{if(e.key==='Enter')doSignup();});
-    </script>
+            // Network time tracking
+            let networkTimeData = null;
+            let networkTimePending = false;
+            let networkTimeError = false;
+            let ntpServers = [
+                {
+                    name: "pool.ntp.org",
+                    offset: null,
+                    rtt: null,
+                    lastUpdate: 0,
+                },
+                {
+                    name: "time.nist.gov",
+                    offset: null,
+                    rtt: null,
+                    lastUpdate: 0,
+                },
+                {
+                    name: "0.de.pool.ntp.org",
+                    offset: null,
+                    rtt: null,
+                    lastUpdate: 0,
+                },
+                {
+                    name: "time.google.com",
+                    offset: null,
+                    rtt: null,
+                    lastUpdate: 0,
+                },
+            ];
 
-</body>
+            async function fetchNetworkTime() {
+                if (networkTimePending) return;
+                networkTimePending = true;
+
+                try {
+                    // Fetch from local Python NTP server
+                    const response = await fetch("http://localhost:8765/ntp", {
+                        cache: "no-store",
+                    });
+                    const data = await response.json();
+
+                    // Update ntpServers with real NTP data
+                    for (let i = 0; i < 4 && i < data.servers.length; i++) {
+                        const server = data.servers[i];
+                        ntpServers[i] = {
+                            name: server.name,
+                            offset: server.offset,
+                            rtt: server.rtt,
+                            lastUpdate: Date.now(),
+                        };
+                    }
+
+                    // Set primary deviation from average
+                    if (data.averageOffset !== null) {
+                        networkTimeData = {
+                            networkTime: new Date(
+                                Date.now() - data.averageOffset * 1000,
+                            ),
+                            deviation: data.averageOffset,
+                            rtt: data.servers[0]?.rtt || 0,
+                            source: "NTP Average",
+                        };
+                        networkTimeError = false;
+                    } else {
+                        networkTimeError = true;
+                    }
+                } catch (e) {
+                    console.error("NTP fetch error:", e);
+                    networkTimeError = true;
+                }
+
+                networkTimePending = false;
+            }
+
+            function updateDeviationDisplay() {
+                if (!networkTimeData || networkTimeError) {
+                    $("deviation-val").textContent = "--.--- s";
+                    $("deviation-val").className = "deviation-value";
+                    $("deviation-qualitative").innerHTML =
+                        "ERROR FETCHING NETWORK TIME";
+                    // Dim all segments
+                    for (let i = 0; i < 24; i++) {
+                        document.getElementById("seg-" + i).className =
+                            "drift-seg";
+                    }
+                    return;
+                }
+
+                const deviation = networkTimeData.deviation;
+                const absDeviation = Math.abs(deviation);
+                const isFast = deviation > 0;
+
+                // Update numeric display
+                const sign = deviation >= 0 ? "+" : "";
+                $("deviation-val").textContent =
+                    `${sign}${deviation.toFixed(3)} s`;
+
+                // Update qualitative text
+                if (isFast) {
+                    $("deviation-qualitative").innerHTML =
+                        "YOUR SYSTEM IS <span class='highlight'>AHEAD</span> OF UTC";
+                } else {
+                    $("deviation-qualitative").innerHTML =
+                        "YOUR SYSTEM IS <span class='highlight'>BEHIND</span> UTC";
+                }
+
+                // Update system delta in aux strip
+                $("aux-sys-delta").textContent =
+                    `${sign}${Math.abs(deviation).toFixed(3)} s`;
+
+                // Update color based on deviation magnitude
+                const devEl = $("deviation-val");
+                if (absDeviation > 1.0) {
+                    devEl.className = "deviation-value error";
+                } else if (absDeviation > 0.25) {
+                    devEl.className = "deviation-value warning";
+                } else {
+                    devEl.className = "deviation-value";
+                }
+
+                // Update gauge segments (stereo meter: left = slow, right = fast)
+                // Scale: ±0.5 seconds = 24 segments = ~42ms per segment
+                const MAX_DEV = 1.0;
+                const segmentsLit = Math.min(
+                    12,
+                    Math.floor((absDeviation / MAX_DEV) * 12),
+                );
+
+                for (let i = 0; i < 24; i++) {
+                    const seg = document.getElementById("seg-" + i);
+                    if (deviation >= 0) {
+                        // Positive deviation = fast = right side (segments 12-23)
+                        const rightIndex = i - 12;
+                        if (rightIndex >= 0 && rightIndex < segmentsLit) {
+                            // Color based on how many segments lit
+                            if (segmentsLit <= 2) {
+                                seg.className = "drift-seg lit";
+                            } else if (segmentsLit <= 6) {
+                                seg.className = "drift-seg lit warning-lit";
+                            } else {
+                                seg.className = "drift-seg lit error-lit";
+                            }
+                        } else if (
+                            rightIndex === segmentsLit &&
+                            segmentsLit > 0
+                        ) {
+                            seg.className = "drift-seg lit-bright";
+                        } else {
+                            seg.className = "drift-seg";
+                        }
+                    } else {
+                        // Negative deviation = slow = left side (segments 0-11)
+                        if (i < segmentsLit) {
+                            if (segmentsLit <= 2) {
+                                seg.className = "drift-seg lit";
+                            } else if (segmentsLit <= 6) {
+                                seg.className = "drift-seg lit warning-lit";
+                            } else {
+                                seg.className = "drift-seg lit error-lit";
+                            }
+                        } else if (i === segmentsLit && segmentsLit > 0) {
+                            seg.className = "drift-seg lit-bright";
+                        } else {
+                            seg.className = "drift-seg";
+                        }
+                    }
+                }
+
+                // Update NTP server displays in drift-row
+                for (let i = 0; i < 4; i++) {
+                    const server = ntpServers[i];
+                    const serverEl = document.getElementById("ntp-row-" + i);
+                    const nameEl = serverEl.querySelector(".ntp-name");
+                    const offsetEl = serverEl.querySelector(".ntp-offset");
+                    const rttEl = serverEl.querySelector(".ntp-rtt");
+
+                    nameEl.textContent = server.name;
+
+                    if (server.offset !== null) {
+                        const sign = server.offset >= 0 ? "+" : "-";
+                        offsetEl.textContent = `${sign}${server.offset.toFixed(3)} s`;
+                        rttEl.textContent = `${server.rtt}ms`;
+
+                        // Color based on deviation
+                        const absOff = Math.abs(server.offset);
+                        offsetEl.className = "ntp-offset";
+                        if (absOff > 1.0) {
+                            offsetEl.classList.add("error");
+                        } else if (absOff > 0.25) {
+                            offsetEl.classList.add("warning");
+                        }
+                    } else {
+                        offsetEl.textContent = "--.--- s";
+                        rttEl.textContent = "---ms";
+                        offsetEl.className = "ntp-offset";
+                    }
+                }
+            }
+            function showTooltip(i) {
+                const key = SCALES[i].key;
+                const name = SCALE_INFO[key];
+                const color = SCALES[i].c;
+                const gl = $("tooltip-gutter-l"),
+                    gr = $("tooltip-gutter-r");
+                gl.innerHTML = `<div class="tooltip-box" style="--tooltip-color:${color}">${name}</div>`;
+                gr.innerHTML = `<div class="tooltip-box" style="--tooltip-color:${color}">${name}</div>`;
+            }
+            function hideTooltip() {
+                $("tooltip-gutter-l").innerHTML = "";
+                $("tooltip-gutter-r").innerHTML = "";
+            }
+            function tick() {
+                const now = performance.now();
+                const delta = now - lastFrameTime;
+                lastFrameTime = now;
+                const realTime = new Date();
+                const tv = $("tval"),
+                    gh = $("ghost");
+                tv.innerHTML = buildTimeHTML(realTime);
+                gh.innerHTML = buildGhostHTML();
+                const sc = SCALES[cur];
+                tv.style.color = sc.c;
+                tv.style.textShadow = `0 0 8px ${sc.c},0 0 20px ${sc.c}40`;
+                gh.style.color = sc.d;
+                $("sname").textContent = SCALE_INFO[sc.key];
+                $("sname").style.color = sc.c;
+                const il = $("info-l"),
+                    ir = $("info-r");
+                il.style.color = sc.c;
+                il.style.textShadow = `0 0 4px ${sc.c}`;
+                ir.style.color = sc.c;
+                ir.style.textShadow = `0 0 4px ${sc.c}`;
+                switch (sc.key) {
+                    case "lunar":
+                        il.textContent = fmtISO(lunarDate(realTime));
+                        ir.textContent = `MJD ${toMJD(lunarDate(realTime)).toFixed(4)}`;
+                        break;
+                    case "utc":
+                        il.textContent = fmtISO(realTime);
+                        ir.textContent = `MJD ${toMJD(realTime).toFixed(4)}`;
+                        break;
+                    case "tai":
+                        il.textContent = fmtISO(taiDate(realTime));
+                        ir.textContent = `TAI − UTC = +${TAI_OFF}s`;
+                        break;
+                    case "gps": {
+                        const g = gpsDate(realTime);
+                        const tot = (g.getTime() - GPS_EP) / 1000;
+                        const wk = Math.floor(tot / GPS_WK_S);
+                        il.textContent = `Week ${wk}`;
+                        ir.textContent = `GPS − UTC = +${GPS_OFF}s`;
+                        break;
+                    }
+                    case "unix": {
+                        const s = Math.floor(realTime.getTime() / 1000);
+                        il.textContent = `Epoch ${s}`;
+                        ir.textContent = "POSIX / IEEE Std 1003.1";
+                        break;
+                    }
+                    case "tcb": {
+                        const d = tcbDate(realTime);
+                        il.textContent = fmtISO(d);
+                        ir.textContent = `TT − TCB = −${TT_TAI.toFixed(3)}s`;
+                        break;
+                    }
+                }
+                const midnightUTC = new Date(
+                    Date.UTC(
+                        realTime.getUTCFullYear(),
+                        realTime.getUTCMonth(),
+                        realTime.getUTCDate(),
+                    ),
+                );
+                const secsSinceMidnight =
+                    (realTime.getTime() - midnightUTC.getTime()) / 1000;
+                const driftSinceMidnight = (secsSinceMidnight * RATE_M) / 86400;
+                const auxUtc = realTime;
+                const auxTai = taiDate(realTime);
+                const auxLun = lunarDate(realTime);
+                $("aux-utc").textContent =
+                    `${pad(auxUtc.getUTCHours())}:${pad(auxUtc.getUTCMinutes())}:${pad(auxUtc.getUTCSeconds())}`;
+                $("aux-tai").textContent =
+                    `${pad(auxTai.getUTCHours())}:${pad(auxTai.getUTCMinutes())}:${pad(auxTai.getUTCSeconds())}`;
+                $("aux-lun").textContent =
+                    `${pad(auxLun.getUTCHours())}:${pad(auxLun.getUTCMinutes())}:${pad(auxLun.getUTCSeconds())}`;
+                $("aux-ping").textContent =
+                    `${pad(realTime.getUTCHours())}:${pad(realTime.getUTCMinutes())}:${pad(realTime.getUTCSeconds())}`;
+                // Update delta displays (drift from UTC since midnight)
+                $("aux-utc-delta").textContent = "+0.0 µs";
+                $("aux-tai-delta").textContent = "+37.0 s";
+                $("aux-lun-delta").textContent =
+                    `+${driftSinceMidnight.toFixed(3)} µs`;
+                // Update system error gauge based on network time deviation
+                updateDeviationDisplay();
+                requestAnimationFrame(tick);
+            }
+            fetchNetworkTime();
+            setInterval(fetchNetworkTime, 5000);
+            lastFrameTime = performance.now();
+            setFmt(1);
+            requestAnimationFrame(tick);
+
+            // FORMSPREE
+            const FORMSPREE = "https://formspree.io/f/YOUR_FORM_ID";
+            async function doSignup() {
+                const inp = $("email-input"),
+                    btn = $("submit-btn"),
+                    email = inp.value.trim();
+                if (!email || !inp.checkValidity()) {
+                    inp.focus();
+                    return;
+                }
+                btn.textContent = "...";
+                btn.disabled = true;
+                try {
+                    await fetch(FORMSPREE, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                        },
+                        body: JSON.stringify({
+                            email,
+                            _subject: "Epoch White Paper Download",
+                        }),
+                    });
+                } catch (e) {}
+                $("signup").classList.add("done");
+            }
+            $("email-input").addEventListener("keydown", (e) => {
+                if (e.key === "Enter") doSignup();
+            });
+        </script>
+    </body>
 </html>

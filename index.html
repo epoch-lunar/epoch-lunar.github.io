@@ -93,7 +93,8 @@
             html,
             body {
                 height: 100%;
-                overflow: hidden;
+                overflow-x: hidden;
+                overflow-y: auto;
             }
 
             body {
@@ -1531,16 +1532,32 @@
             .substack-embed {
                 margin: 14px 0 0;
                 overflow: hidden;
-                opacity: 0.85;
-                border: 1px solid #333;
+                opacity: 0.9;
+                border: 1px solid #2a2a2a;
                 border-radius: 4px;
-                box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+                background: #0a0a0a;
+                box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08);
+                position: relative;
             }
+            .rivet {
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: radial-gradient(circle at 30% 30%, #444, #111);
+                border-radius: 50%;
+                box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.5);
+                z-index: 10;
+            }
+            .rivet:nth-child(1) { top: 8px; left: 8px; }
+            .rivet:nth-child(2) { top: 8px; right: 8px; }
+            .rivet:nth-child(3) { bottom: 8px; left: 8px; }
+            .rivet:nth-child(4) { bottom: 8px; right: 8px; }
             .substack-embed iframe {
                 display: block;
                 width: 100%;
                 border: none;
                 border-radius: 4px;
+                filter: brightness(0.85) saturate(0.7);
             }
             .dl-sec {
                 margin-top: 16px;
@@ -1554,44 +1571,60 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 6px;
-                background: #1a1a1a;
-                border: 1px solid #333;
+                background: #0a0a0a;
+                border: 1px solid #1a1a1a;
                 border-radius: 4px;
                 padding: 14px 16px;
                 font-family: "Share Tech Mono", monospace;
-                color: #888;
+                color: #3a3a3a;
                 text-decoration: none;
-                transition: all 0.2s;
+                transition: all 0.15s ease-out;
+                box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), inset 0 0 15px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.03);
+                position: relative;
+                overflow: hidden;
+            }
+            .dl-a::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(0,0,0,0.15) 100%);
+                pointer-events: none;
             }
             .dl-a:hover {
-                border-color: currentColor;
+                color: #7a7a7a;
+                border-color: #444;
+                box-shadow: inset 0 0 20px rgba(100,180,255,0.12), inset 0 0 0 1px rgba(100,180,255,0.25), 0 1px 0 rgba(255,255,255,0.03);
             }
             .dl-a.dl-paper:hover {
-                background: #081a08;
-                border-color: #33cc33;
-                color: #33cc33;
+                color: #66cc66;
+                border-color: #33aa33;
+                box-shadow: inset 0 0 20px rgba(51,204,51,0.15), inset 0 0 0 1px rgba(51,204,51,0.35), 0 1px 0 rgba(255,255,255,0.03);
             }
             .dl-a.dl-paper:hover .dl-a-sub {
-                color: #1a8a1a;
+                color: #339933;
+                text-shadow: 0 0 8px rgba(51,153,51,0.5);
             }
             .dl-a.dl-openlunar:hover {
-                background: #0d0d1f;
-                border-color: #5b6fd6;
-                color: #8090e8;
+                color: #8899dd;
+                border-color: #5566bb;
+                box-shadow: inset 0 0 20px rgba(91,111,214,0.15), inset 0 0 0 1px rgba(91,111,214,0.35), 0 1px 0 rgba(255,255,255,0.03);
             }
             .dl-a.dl-openlunar:hover .dl-a-sub {
-                color: #3a4899;
+                color: #5a6ecc;
+                text-shadow: 0 0 8px rgba(90,110,204,0.5);
             }
             .dl-a-action {
                 font-size: 13px;
                 letter-spacing: 2px;
                 text-transform: uppercase;
+                text-shadow: 0 1px 0 rgba(0,0,0,0.5);
             }
             .dl-a-sub {
                 font-size: 11px;
                 letter-spacing: 1px;
-                color: #555;
+                color: #333;
                 text-transform: none;
+                text-shadow: 0 1px 0 rgba(0,0,0,0.3);
             }
             .badge {
                 margin-top: 20px;
@@ -1600,12 +1633,15 @@
             .badge a {
                 font-size: 11px;
                 letter-spacing: 3px;
-                color: #444;
+                color: #2a2a2a;
                 text-transform: uppercase;
                 text-decoration: none;
+                text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+                transition: all 0.15s ease-out;
             }
             .badge a:hover {
-                color: #666;
+                color: #555;
+                text-shadow: 0 0 8px rgba(100,140,180,0.3), 0 1px 0 rgba(0,0,0,0.5);
             }
 
             @media (max-width: 520px) {
@@ -1954,6 +1990,10 @@
                 <div class="signup-prompt">Stay in sync</div>
 
                 <div class="substack-embed">
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
                     <iframe
                         src="https://epochlunar.substack.com/embed"
                         height="150"

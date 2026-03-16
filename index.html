@@ -408,8 +408,8 @@
             .aux-value {
                 font-family: "DSEG7", monospace;
                 font-size: clamp(14px, 2.5vw, 18px);
-                opacity: 0.6;
-                text-shadow: none;
+                opacity: 0.85;
+                text-shadow: 0 0 3px currentColor;
                 letter-spacing: 1px;
             }
 
@@ -417,9 +417,16 @@
                 font-family: "Share Tech Mono", monospace;
                 font-size: 12px;
                 letter-spacing: 0.5px;
-                opacity: 0.6;
+                opacity: 0.85;
                 display: block;
                 margin-top: 2px;
+                text-shadow: 0 0 2px currentColor;
+            }
+
+            .aux-readout:last-child .aux-value,
+            .aux-readout:last-child .aux-delta {
+                color: #ffffff !important;
+                text-shadow: 0 0 3px #ffffff;
             }
 
             /* ============================================
@@ -1231,7 +1238,7 @@
                 font-family: "DSEG7", monospace;
                 font-weight: bold;
                 position: relative;
-                filter: blur(0.3px);
+                text-shadow: 0 0 4px currentColor, 0 0 8px currentColor;
             }
             .t-main {
                 font-size: 56px;
@@ -1243,7 +1250,7 @@
                 opacity: 0.75;
             }
             .drift-val {
-                filter: blur(0.2px);
+                text-shadow: 0 0 3px currentColor, 0 0 6px currentColor;
             }
             .t-lbl {
                 font-family: "Share Tech Mono", monospace;
@@ -1253,6 +1260,7 @@
                 opacity: 0.5;
                 vertical-align: middle;
                 padding: 0 4px;
+                text-shadow: 0 0 3px currentColor;
             }
             .scale-name {
                 font-size: 12px;
@@ -1260,6 +1268,7 @@
                 text-transform: uppercase;
                 opacity: 0.5;
                 margin-top: 8px;
+                text-shadow: 0 0 2px currentColor;
             }
             .scale-citation {
                 font-size: 8px;
@@ -1285,11 +1294,13 @@
                 font-family: "Share Tech Mono", monospace;
                 font-size: clamp(14px, 2.5vw, 18px);
                 letter-spacing: 2px;
+                text-shadow: 0 0 3px currentColor;
             }
             .info-r {
                 font-size: 12px;
                 letter-spacing: 2px;
                 opacity: 0.8;
+                text-shadow: 0 0 2px currentColor;
             }
 
             /* === DRIFT ROW === */
@@ -1305,7 +1316,6 @@
                 text-align: left;
             }
             .time-source-panel {
-                flex: 1;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1330,16 +1340,22 @@
             }
             .source-indicators {
                 display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                justify-content: center;
+                flex-direction: column;
+                gap: 5px;
+                width: 100%;
                 margin-bottom: 8px;
+            }
+            .source-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                width: 100%;
             }
             .indicator {
                 font-family: "Share Tech Mono", monospace;
                 font-size: 9px;
-                letter-spacing: 1px;
-                padding: 4px 8px;
+                letter-spacing: 1.5px;
+                padding: 5px 10px;
                 border-radius: 2px;
                 background: #0a0a0a;
                 border: 1px solid #1a1a1a;
@@ -1347,6 +1363,89 @@
                 text-shadow: none;
                 box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
                 transition: all 0.2s;
+                text-align: center;
+                white-space: nowrap;
+                width: 130px;
+            }
+            .source-offset {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 1px;
+                color: #333;
+                min-width: 60px;
+                text-align: right;
+                transition: color 0.2s;
+            }
+            .source-offset.ok    { color: var(--green); text-shadow: 0 0 6px rgba(51,255,102,0.3); }
+            .source-offset.warning { color: var(--amber); text-shadow: 0 0 6px rgba(255,170,0,0.3); }
+            .source-offset.error   { color: var(--red);   text-shadow: 0 0 6px rgba(255,26,26,0.3); }
+            .source-rows {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 12px;
+                position: relative;
+                z-index: 2;
+            }
+            .source-minibar {
+                display: flex;
+                gap: 1px;
+                align-items: center;
+                flex: 1;
+            }
+            .source-minibar .drift-seg {
+                width: 5px;
+                flex: none;
+                height: 10px;
+                border-radius: 1px;
+            }
+            .source-ts {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.5px;
+                color: #444;
+                min-width: 55px;
+                text-align: right;
+            }
+            .status-lights {
+                display: flex;
+                gap: 4px;
+                flex-shrink: 0;
+            }
+            .status-light {
+                font-family: "Share Tech Mono", monospace;
+                font-size: 8px;
+                letter-spacing: 1px;
+                padding: 4px 6px;
+                border-radius: 2px;
+                background: #0a0a0a;
+                border: 1px solid #111;
+                color: #222;
+                text-shadow: none;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+                transition: all 0.25s;
+                white-space: nowrap;
+            }
+            .status-light.lit-green {
+                background: #071a07;
+                border-color: var(--green);
+                color: var(--green);
+                text-shadow: 0 0 10px var(--green), 0 0 20px rgba(51, 255, 102, 0.4);
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 8px rgba(51, 255, 102, 0.35);
+            }
+            .status-light.lit-amber {
+                background: #1a1400;
+                border-color: var(--amber);
+                color: var(--amber);
+                text-shadow: 0 0 10px var(--amber), 0 0 20px rgba(255, 170, 0, 0.4);
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 170, 0, 0.35);
+            }
+            .status-light.lit-red {
+                background: #1a0000;
+                border-color: var(--red);
+                color: var(--red);
+                text-shadow: 0 0 10px var(--red), 0 0 20px rgba(255, 26, 26, 0.4);
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 26, 26, 0.35);
             }
             .indicator.active {
                 background: #0a1a0a;
@@ -1476,11 +1575,12 @@
                 white-space: nowrap;
                 align-self: flex-end;
                 margin-top: 8px;
+                text-shadow: 0 0 3px currentColor;
             }
             .sync-btn:hover {
                 color: #33ff66;
                 border-color: #0a330a;
-                text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+                text-shadow: 0 0 6px rgba(51, 255, 102, 0.6), 0 0 12px rgba(51, 255, 102, 0.3);
             }
             .citation {
                 font-size: 12px;
@@ -1888,98 +1988,48 @@
                             >
                         </div>
                     </div>
-                    <div class="drift-bar-container">
-                        <div class="drift-bar-track">
-                            <div class="drift-seg" id="seg-0"></div>
-                            <div class="drift-seg" id="seg-1"></div>
-                            <div class="drift-seg" id="seg-2"></div>
-                            <div class="drift-seg" id="seg-3"></div>
-                            <div class="drift-seg" id="seg-4"></div>
-                            <div class="drift-seg" id="seg-5"></div>
-                            <div class="drift-seg" id="seg-6"></div>
-                            <div class="drift-seg" id="seg-7"></div>
-                            <div class="drift-seg" id="seg-8"></div>
-                            <div class="drift-seg" id="seg-9"></div>
-                            <div class="drift-seg" id="seg-10"></div>
-                            <div class="drift-seg" id="seg-11"></div>
-                            <div class="drift-seg" id="seg-12"></div>
-                            <div class="drift-seg" id="seg-13"></div>
-                            <div class="drift-seg" id="seg-14"></div>
-                            <div class="drift-seg" id="seg-15"></div>
-                            <div class="drift-seg" id="seg-16"></div>
-                            <div class="drift-seg" id="seg-17"></div>
-                            <div class="drift-seg" id="seg-18"></div>
-                            <div class="drift-seg" id="seg-19"></div>
-                            <div class="drift-seg" id="seg-20"></div>
-                            <div class="drift-seg" id="seg-21"></div>
-                            <div class="drift-seg" id="seg-22"></div>
-                            <div class="drift-seg" id="seg-23"></div>
-                            <div class="drift-seg" id="seg-24"></div>
-                            <div class="drift-seg" id="seg-25"></div>
-                            <div class="drift-seg" id="seg-26"></div>
-                            <div class="drift-seg" id="seg-27"></div>
-                            <div class="drift-seg" id="seg-28"></div>
-                            <div class="drift-seg" id="seg-29"></div>
-                            <div class="drift-seg" id="seg-30"></div>
-                            <div class="drift-seg" id="seg-31"></div>
-                            <div class="drift-seg" id="seg-32"></div>
-                            <div class="drift-seg" id="seg-33"></div>
-                            <div class="drift-seg" id="seg-34"></div>
-                            <div class="drift-seg" id="seg-35"></div>
-                            <div class="drift-seg" id="seg-36"></div>
-                            <div class="drift-seg" id="seg-37"></div>
-                            <div class="drift-seg" id="seg-38"></div>
-                            <div class="drift-seg" id="seg-39"></div>
-                            <div class="drift-seg" id="seg-40"></div>
-                            <div class="drift-seg" id="seg-41"></div>
-                            <div class="drift-seg" id="seg-42"></div>
-                            <div class="drift-seg" id="seg-43"></div>
-                            <div class="drift-seg" id="seg-44"></div>
-                            <div class="drift-seg" id="seg-45"></div>
-                            <div class="drift-seg" id="seg-46"></div>
-                            <div class="drift-seg" id="seg-47"></div>
-                        </div>
-                        <div class="drift-bar-scale">
-                            <span>-1s</span><span>-0.5s</span><span>0</span
-                            ><span>+0.5s</span><span>+1s</span>
-                        </div>
-                    </div>
-                    <div class="deviation-display">
-                        <span class="deviation-value" id="deviation-val"
-                            >--.--- s</span
-                        >
-                    </div>
-                    <div
-                        class="deviation-qualitative"
-                        id="deviation-qualitative"
-                    >
-                        --
-                    </div>
-                    <div class="drift-row">
-                        <div class="drift-info">
-                            <div class="source-detail" id="source-detail">
-                                <div class="sd-row sd-header">
-                                    <span>TIME SERVER</span>
-                                    <span>DEVIATION</span>
-                                    <span>PING</span>
-                                </div>
+
+                        <div class="source-rows">
+                        <div class="source-row">
+                            <div class="indicator" id="ind-error">SYSTEM CLOCK</div>
+                            <span class="source-offset" id="off-error">---</span>
+                            <div class="source-minibar" id="bar-error">
+                                <div class="drift-seg" id="mseg-error-0"></div><div class="drift-seg" id="mseg-error-1"></div><div class="drift-seg" id="mseg-error-2"></div><div class="drift-seg" id="mseg-error-3"></div><div class="drift-seg" id="mseg-error-4"></div><div class="drift-seg" id="mseg-error-5"></div><div class="drift-seg" id="mseg-error-6"></div><div class="drift-seg" id="mseg-error-7"></div><div class="drift-seg" id="mseg-error-8"></div><div class="drift-seg" id="mseg-error-9"></div><div class="drift-seg" id="mseg-error-10"></div><div class="drift-seg" id="mseg-error-11"></div><div class="drift-seg" id="mseg-error-12"></div><div class="drift-seg" id="mseg-error-13"></div><div class="drift-seg" id="mseg-error-14"></div><div class="drift-seg" id="mseg-error-15"></div><div class="drift-seg" id="mseg-error-16"></div><div class="drift-seg" id="mseg-error-17"></div><div class="drift-seg" id="mseg-error-18"></div><div class="drift-seg" id="mseg-error-19"></div><div class="drift-seg" id="mseg-error-20"></div><div class="drift-seg" id="mseg-error-21"></div><div class="drift-seg" id="mseg-error-22"></div><div class="drift-seg" id="mseg-error-23"></div>
+                            </div>
+                            <span class="source-ts" id="ts-error">--:--:--</span>
+                            <div class="status-lights">
+                                <span class="status-light" id="sl-error-behind">BEHIND</span>
+                                <span class="status-light" id="sl-error-ontime">ON TIME</span>
+                                <span class="status-light" id="sl-error-ahead">AHEAD</span>
+                                <span class="status-light" id="sl-error-error">ERROR</span>
                             </div>
                         </div>
-                        <div class="time-source-panel">
-                            <div class="source-label">TIME SOURCE</div>
-                            <div class="source-indicators">
-                                <div class="indicator" id="ind-local">
-                                    TIMEAPI
-                                </div>
-                                <div class="indicator" id="ind-timeapi">
-                                    CF CDN
-                                </div>
-                                <div class="indicator" id="ind-error">
-                                    SYSTEM
-                                </div>
+                        <div class="source-row">
+                            <div class="indicator" id="ind-local">TIME API</div>
+                            <span class="source-offset" id="off-local">---</span>
+                            <div class="source-minibar" id="bar-local">
+                                <div class="drift-seg" id="mseg-local-0"></div><div class="drift-seg" id="mseg-local-1"></div><div class="drift-seg" id="mseg-local-2"></div><div class="drift-seg" id="mseg-local-3"></div><div class="drift-seg" id="mseg-local-4"></div><div class="drift-seg" id="mseg-local-5"></div><div class="drift-seg" id="mseg-local-6"></div><div class="drift-seg" id="mseg-local-7"></div><div class="drift-seg" id="mseg-local-8"></div><div class="drift-seg" id="mseg-local-9"></div><div class="drift-seg" id="mseg-local-10"></div><div class="drift-seg" id="mseg-local-11"></div><div class="drift-seg" id="mseg-local-12"></div><div class="drift-seg" id="mseg-local-13"></div><div class="drift-seg" id="mseg-local-14"></div><div class="drift-seg" id="mseg-local-15"></div><div class="drift-seg" id="mseg-local-16"></div><div class="drift-seg" id="mseg-local-17"></div><div class="drift-seg" id="mseg-local-18"></div><div class="drift-seg" id="mseg-local-19"></div><div class="drift-seg" id="mseg-local-20"></div><div class="drift-seg" id="mseg-local-21"></div><div class="drift-seg" id="mseg-local-22"></div><div class="drift-seg" id="mseg-local-23"></div>
                             </div>
-                            <div class="source-rtt" id="source-rtt">
-                                QUERYING…
+                            <span class="source-ts" id="ts-local">--:--:--</span>
+                            <div class="status-lights">
+                                <span class="status-light" id="sl-local-behind">BEHIND</span>
+                                <span class="status-light" id="sl-local-ontime">ON TIME</span>
+                                <span class="status-light" id="sl-local-ahead">AHEAD</span>
+                                <span class="status-light" id="sl-local-error">ERROR</span>
+                            </div>
+                        </div>
+                        <div class="source-row">
+                            <div class="indicator" id="ind-timeapi">CLOUDFLARE CDN</div>
+                            <span class="source-offset" id="off-timeapi">---</span>
+                            <div class="source-minibar" id="bar-timeapi">
+                                <div class="drift-seg" id="mseg-timeapi-0"></div><div class="drift-seg" id="mseg-timeapi-1"></div><div class="drift-seg" id="mseg-timeapi-2"></div><div class="drift-seg" id="mseg-timeapi-3"></div><div class="drift-seg" id="mseg-timeapi-4"></div><div class="drift-seg" id="mseg-timeapi-5"></div><div class="drift-seg" id="mseg-timeapi-6"></div><div class="drift-seg" id="mseg-timeapi-7"></div><div class="drift-seg" id="mseg-timeapi-8"></div><div class="drift-seg" id="mseg-timeapi-9"></div><div class="drift-seg" id="mseg-timeapi-10"></div><div class="drift-seg" id="mseg-timeapi-11"></div><div class="drift-seg" id="mseg-timeapi-12"></div><div class="drift-seg" id="mseg-timeapi-13"></div><div class="drift-seg" id="mseg-timeapi-14"></div><div class="drift-seg" id="mseg-timeapi-15"></div><div class="drift-seg" id="mseg-timeapi-16"></div><div class="drift-seg" id="mseg-timeapi-17"></div><div class="drift-seg" id="mseg-timeapi-18"></div><div class="drift-seg" id="mseg-timeapi-19"></div><div class="drift-seg" id="mseg-timeapi-20"></div><div class="drift-seg" id="mseg-timeapi-21"></div><div class="drift-seg" id="mseg-timeapi-22"></div><div class="drift-seg" id="mseg-timeapi-23"></div>
+                            </div>
+                            <span class="source-ts" id="ts-timeapi">--:--:--</span>
+                            <div class="status-lights">
+                                <span class="status-light" id="sl-timeapi-behind">BEHIND</span>
+                                <span class="status-light" id="sl-timeapi-ontime">ON TIME</span>
+                                <span class="status-light" id="sl-timeapi-ahead">AHEAD</span>
+                                <span class="status-light" id="sl-timeapi-error">ERROR</span>
                             </div>
                         </div>
                     </div>
@@ -2259,19 +2309,6 @@
                 $("aux-tai-delta").textContent = "+37.0 s";
                 $("aux-lun-delta").textContent =
                     `+${driftSinceMidnight.toFixed(3)} µs`;
-                // Drift bar segments
-                const currentHour =
-                    now.getUTCHours() + now.getUTCMinutes() / 60;
-                for (let i = 0; i < 24; i++) {
-                    const seg = document.getElementById("seg-" + i);
-                    if (i < Math.floor(currentHour)) {
-                        seg.className = "drift-seg lit";
-                    } else if (i < currentHour) {
-                        seg.className = "drift-seg lit-bright";
-                    } else {
-                        seg.className = "drift-seg";
-                    }
-                }
             }
             function setFmt(i) {
                 cur = i;
@@ -2451,67 +2488,33 @@
             }
 
             function updateDeviationDisplay() {
-                const TOTAL_SEGS = 48;
-                const HALF_SEGS = 24;
-
                 if (!networkTimeData) {
                     // Initial load — sources are being queried
-                    $("deviation-val").textContent = "--.--- s";
-                    $("deviation-val").className = "deviation-value";
-                    $("deviation-qualitative").innerHTML =
-                        "CONTACTING TIME SOURCES";
-                    for (let i = 0; i < TOTAL_SEGS; i++) {
-                        document.getElementById("seg-" + i).className =
-                            "drift-seg";
-                    }
                     document.querySelectorAll(".indicator").forEach((el) => {
                         el.className = "indicator querying";
                     });
-                    $("source-rtt").textContent = "QUERYING\u2026";
-                    $("source-detail").innerHTML = "";
+                    document.querySelectorAll(".source-offset").forEach((el) => {
+                        el.textContent = "---";
+                        el.className = "source-offset";
+                    });
+                    document.querySelectorAll(".source-ts").forEach((el) => { el.textContent = "--:--:--"; });
+                    document.querySelectorAll(".status-light").forEach((el) => { el.className = "status-light"; });
                     return;
                 }
 
                 if (networkTimeError) {
-                    $("deviation-val").textContent = "--.--- s";
-                    $("deviation-val").className = "deviation-value";
-                    $("deviation-qualitative").innerHTML =
-                        "NO TIME SOURCES AVAILABLE";
-                    for (let i = 0; i < TOTAL_SEGS; i++) {
-                        document.getElementById("seg-" + i).className =
-                            "drift-seg";
-                    }
                     document.querySelectorAll(".indicator").forEach((el) => {
                         el.classList.remove("active", "warning", "querying");
                         el.classList.add("active", "error");
                     });
-                    $("source-rtt").textContent = "--";
-                    $("source-detail").innerHTML = "";
                     return;
                 }
 
                 const deviation = networkTimeData.deviation;
                 const absDeviation = Math.abs(deviation);
-                const isFast = deviation > 0;
-
-                // Update numeric display
-                const sign = deviation >= 0 ? "+" : "";
-                $("deviation-val").textContent =
-                    `${sign}${deviation.toFixed(3)} s`;
-
-                // Update qualitative text
-                if (absDeviation < 0.25) {
-                    $("deviation-qualitative").innerHTML =
-                        "YOUR SYSTEM IS <span class='highlight'>ON TIME</span>";
-                } else if (isFast) {
-                    $("deviation-qualitative").innerHTML =
-                        "YOUR SYSTEM IS <span class='highlight'>AHEAD</span> OF UTC";
-                } else {
-                    $("deviation-qualitative").innerHTML =
-                        "YOUR SYSTEM IS <span class='highlight'>BEHIND</span> UTC";
-                }
 
                 // Update system delta in aux strip
+                const sign = deviation >= 0 ? "+" : "";
                 $("aux-sys-delta").textContent =
                     `${sign}${Math.abs(deviation).toFixed(3)} s`;
 
@@ -2526,92 +2529,84 @@
                 // One indicator light per source: green = ok, amber = high offset, red = failed
                 ["ind-local", "ind-timeapi", "ind-error"].forEach((id, i) => {
                     const el = $(id);
-                    el.className = "indicator active";
+                    const offEl = $(id.replace("ind-", "off-"));
                     const s = ntpServers[i];
                     if (!s || s.offset === null) {
-                        el.classList.add("error");
-                    } else if (Math.abs(s.offset) > 1.0) {
-                        el.classList.add("error");
-                    } else if (Math.abs(s.offset) > 0.25) {
-                        el.classList.add("warning");
+                        el.className = "indicator active error";
+                        offEl.textContent = "---";
+                        offEl.className = "source-offset";
+                    } else {
+                        const sign = s.offset >= 0 ? "+" : "";
+                        offEl.textContent = `${sign}${s.offset.toFixed(3)}s`;
+                        if (Math.abs(s.offset) > 1.0) {
+                            el.className = "indicator active error";
+                            offEl.className = "source-offset error";
+                        } else if (Math.abs(s.offset) > 0.25) {
+                            el.className = "indicator active warning";
+                            offEl.className = "source-offset warning";
+                        } else {
+                            el.className = "indicator active";
+                            offEl.className = "source-offset ok";
+                        }
                     }
                 });
-                $("source-rtt").textContent =
-                    `${networkTimeData.source} SOURCES \u2022 ${Math.round(networkTimeData.rtt || 0)}ms RTT`;
-
-                // Per-source detail table
-                const hdr = `<div class="sd-row sd-header"><span>TIME SERVER</span><span>DEVIATION</span><span>PING</span></div>`;
-                const rows = ntpServers
-                    .map((s) => {
-                        if (s.offset === null) {
-                            return `<div class="sd-row"><span>${s.name}</span><span class="sd-fail">NO RESPONSE</span><span>---</span></div>`;
-                        }
-                        const sign = s.offset >= 0 ? "+" : "";
-                        const cls =
-                            Math.abs(s.offset) > 1.0
-                                ? "sd-fail"
-                                : Math.abs(s.offset) > 0.25
-                                  ? "sd-warn"
-                                  : "sd-ok";
-                        const rttStr =
-                            s.rtt !== null ? `${Math.round(s.rtt)}ms` : "---";
-                        return `<div class="sd-row"><span>${s.name}</span><span class="${cls}">${sign}${s.offset.toFixed(3)}s</span><span>${rttStr}</span></div>`;
-                    })
-                    .join("");
-                $("source-detail").innerHTML = hdr + rows;
-
-                // Update color based on deviation magnitude
-                const devEl = $("deviation-val");
-                if (absDeviation > 1.0) {
-                    devEl.className = "deviation-value error";
-                } else if (absDeviation > 0.25) {
-                    devEl.className = "deviation-value warning";
-                } else {
-                    devEl.className = "deviation-value";
-                }
-
-                // VU meter: emanates from center outward on both sides
-                // Thresholds match indicator text: amber ≥ 0.25s, red ≥ 1.0s
+                // Per-source mini bars + timestamps
+                const MINI_SEGS = 24;
+                const HALF_MINI = 12;
                 const MAX_DEV = 1.5;
                 const WARN_S = 0.25;
                 const ERR_S = 1.0;
-                const segmentsLit = Math.min(
-                    HALF_SEGS,
-                    Math.floor((absDeviation / MAX_DEV) * HALF_SEGS),
-                );
-                const segColor = (dist) => {
-                    const devAtDist = (dist / HALF_SEGS) * MAX_DEV;
+                const miniSegColor = (dist) => {
+                    const devAtDist = (dist / HALF_MINI) * MAX_DEV;
                     if (devAtDist >= ERR_S) return " error-lit";
                     if (devAtDist >= WARN_S) return " warning-lit";
                     return "";
                 };
-
-                for (let i = 0; i < TOTAL_SEGS; i++) {
-                    const seg = document.getElementById("seg-" + i);
-                    if (deviation >= 0) {
-                        // Fast: right side emanates from seg 24 outward
-                        const dist = i - HALF_SEGS;
-                        if (dist >= 0 && dist < segmentsLit) {
-                            seg.className = "drift-seg lit" + segColor(dist);
-                        } else if (dist === segmentsLit && segmentsLit > 0) {
-                            seg.className =
-                                "drift-seg lit-bright" + segColor(dist);
-                        } else {
-                            seg.className = "drift-seg";
-                        }
+                const suffixes = ["local", "timeapi", "error"];
+                suffixes.forEach((sfx, i) => {
+                    const s = ntpServers[i];
+                    const tsEl = $("ts-" + sfx);
+                    if (s && s.lastUpdate > 0) {
+                        const d = new Date(s.lastUpdate);
+                        tsEl.textContent = d.toISOString().slice(11, 19) + "Z";
                     } else {
-                        // Slow: left side emanates from seg 23 outward
-                        const dist = HALF_SEGS - 1 - i;
-                        if (dist >= 0 && dist < segmentsLit) {
-                            seg.className = "drift-seg lit" + segColor(dist);
-                        } else if (dist === segmentsLit && segmentsLit > 0) {
-                            seg.className =
-                                "drift-seg lit-bright" + segColor(dist);
+                        tsEl.textContent = "--:--:--";
+                    }
+                    // Status lights
+                    const hasData = s && s.offset !== null;
+                    const rawOffset = hasData ? s.offset : null;
+                    $("sl-" + sfx + "-behind").className = "status-light" + (hasData && rawOffset < -0.25 ? " lit-amber" : "");
+                    $("sl-" + sfx + "-ontime").className = "status-light" + (hasData && Math.abs(rawOffset) <= 0.25 ? " lit-green" : "");
+                    $("sl-" + sfx + "-ahead").className  = "status-light" + (hasData && rawOffset > 0.25  ? " lit-amber" : "");
+                    $("sl-" + sfx + "-error").className  = "status-light" + (!hasData ? " lit-red" : "");
+
+                    const srcOffset = hasData ? rawOffset : 0;
+                    const srcAbs = Math.abs(srcOffset);
+                    const segsLit = Math.min(HALF_MINI, Math.floor((srcAbs / MAX_DEV) * HALF_MINI));
+                    for (let j = 0; j < MINI_SEGS; j++) {
+                        const seg = document.getElementById("mseg-" + sfx + "-" + j);
+                        if (!seg) continue;
+                        if (srcOffset >= 0) {
+                            const dist = j - HALF_MINI;
+                            if (dist >= 0 && dist < segsLit) {
+                                seg.className = "drift-seg lit" + miniSegColor(dist);
+                            } else if (dist === segsLit && segsLit > 0) {
+                                seg.className = "drift-seg lit-bright" + miniSegColor(dist);
+                            } else {
+                                seg.className = "drift-seg";
+                            }
                         } else {
-                            seg.className = "drift-seg";
+                            const dist = HALF_MINI - 1 - j;
+                            if (dist >= 0 && dist < segsLit) {
+                                seg.className = "drift-seg lit" + miniSegColor(dist);
+                            } else if (dist === segsLit && segsLit > 0) {
+                                seg.className = "drift-seg lit-bright" + miniSegColor(dist);
+                            } else {
+                                seg.className = "drift-seg";
+                            }
                         }
                     }
-                }
+                });
                 return;
             }
 

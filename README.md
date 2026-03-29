@@ -190,7 +190,6 @@ The clocks shown on this site are derived from the best available network time u
 Coordinate time for all bodies in the solar system use TCB as the reference time, and the human time scales (UTC, GPS, UNIX) use TAI as the reference.
 
 ```mermaid
-```mermaid
 graph TD
 
 SYS[System Clock UTC]
@@ -258,3 +257,25 @@ This project is intended to make modern scientific timekeeping visible and under
 Most people interact only with UTC, but spacecraft navigation, relativistic astronomy, and future lunar infrastructure rely on multiple time scales that run at slightly different rates.
 
 This clock demonstrates those relationships in real time.
+
+## Build
+This is a Cloudflare Worker written in Rust (using `worker-build`). To run it locally:
+
+```bash
+cd worker
+npx wrangler dev
+```
+
+This starts the worker at `http://localhost:8787`. Your `script.js` already has the comment pointing to `http://localhost:8787/api/time` for local dev.
+
+To test the full site with the local worker:
+1. Run `npx wrangler dev` in the `worker/` directory (keep it running)
+2. Temporarily change `WORKER_URL` in `script.js` to `'http://localhost:8787/api/time'`
+3. Open `index.html` in a browser (or use a simple static server like `python3 -m http.server`)
+
+**First time only** — you may need to build the Rust first:
+```bash
+cd worker
+cargo install worker-build  # if not already installed
+npx wrangler dev             # this triggers worker-build automatically
+```

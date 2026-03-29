@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>EPOCH — Open-Source Lunar Timekeeping</title>
+        <meta
+            name="description"
+            content="Precision timing infrastructure for lunar and cislunar missions."
+        />
+        <meta
+            property="og:title"
+            content="EPOCH — Open-Source Lunar Timekeeping"
+        />
+        <meta
+            property="og:description"
+            content="Precision timing infrastructure for lunar and cislunar missions."
+        />
+        <meta property="og:type" content="website" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div class="clock-housing">
+            <div class="clock-inner">
+                <div class="brand">
+                    <span class="brand-name">Epoch</span>
+                    <span class="brand-tag">Open-Source Lunar Timekeeping</span>
+                </div>
+
+                <div class="divider"></div>
+                <div class="panel-label">REALIZED ATOMIC TIME</div>
+                <div class="scale-selector" id="atomic-selector">
+                    <div class="scale-btn-row">
+                        <div class="scale-btn" data-i="0">UTC</div>
+                        <div class="scale-btn" data-i="1">TAI</div>
+                        <div class="scale-btn" data-i="2">GPS</div>
+                        <div class="scale-btn" data-i="3">UNIX</div>
+                    </div>
+                </div>
+                <div class="lcd">
+                    <div class="clock-row">
+                        <div class="clock-face">
+                            <div class="time-line">
+                                <span
+                                    class="time-ghost"
+                                    id="ghost-atomic"
+                                ></span>
+                                <span class="time-val" id="tval-atomic"></span>
+                            </div>
+                            <div class="scale-name" id="sname-atomic">UTC</div>
+                            <div
+                                class="scale-citation"
+                                id="scale-citation-atomic"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="panel-label">RELATIVISTIC COORDINATE TIME</div>
+                <div class="scale-selector" id="coord-selector">
+                    <div class="scale-btn-row">
+                        <div class="scale-btn" data-i="0">TCB</div>
+                        <div class="scale-btn" data-i="1">TCG</div>
+                        <div class="scale-btn on" data-i="2">TCL</div>
+                    </div>
+                </div>
+                <div class="lcd">
+                    <div class="clock-row">
+                        <div class="clock-face">
+                            <div class="time-line">
+                                <span
+                                    class="time-ghost"
+                                    id="ghost-coord"
+                                ></span>
+                                <span class="time-val" id="tval-coord"></span>
+                            </div>
+                            <div class="scale-name" id="sname-coord">TCL</div>
+                            <div
+                                class="scale-citation"
+                                id="scale-citation-coord"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="panel-label">TIME DIFFERENCE</div>
+                <div class="lcd delta-display">
+                    <div class="delta-val" id="delta-val">+0.000000 s</div>
+                </div>
+
+                <div class="divider"></div>
+            </div>
+        </div>
+        <div class="clock-housing">
+            <div class="clock-inner">
+                <div class="panel-label">NETWORK TIME</div>
+                <div class="source-rows">
+                    <div class="source-row">
+                        <div class="indicator" id="ind-worker">
+                            EPOCH WORKER
+                        </div>
+                        <span class="source-offset" id="off-worker">---</span>
+                        <span class="source-km" id="off-worker-km"></span>
+                        <div class="status-lights">
+                            <span class="status-light" id="sl-worker"
+                                >OFFLINE</span
+                            >
+                        </div>
+                    </div>
+                    <div class="worker-meta-row">
+                        <span class="worker-meta" id="worker-meta"
+                            >AWAITING SYNC</span
+                        >
+                        <button class="holdover-btn" id="holdover-btn">
+                            SIMULATE HOLDOVER
+                        </button>
+                    </div>
+                    <div class="sparkline-container">
+                        <svg
+                            id="sparkline"
+                            viewBox="0 0 300 48"
+                            preserveAspectRatio="none"
+                            width="100%"
+                            height="48"
+                        ></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clock-housing">
+            <div class="clock-inner">
+                <div class="substack-embed">
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
+                    <span class="rivet"></span>
+                    <iframe
+                        src="https://epochlunar.substack.com/embed"
+                        height="150"
+                        scrolling="no"
+                    ></iframe>
+                </div>
+
+                <div class="dl-sec">
+                    <a
+                        class="dl-a dl-paper"
+                        href="https://epochlunar.substack.com/"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <span class="dl-a-action">↗ Read White Paper</span>
+                        <span class="dl-a-sub"
+                            >Space Time Card — Linden, Kosak 2026</span
+                        >
+                    </a>
+                    <a
+                        class="dl-a dl-openlunar"
+                        href="https://openlunar.org"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <span class="dl-a-action">↗ Open Lunar Foundation</span>
+                        <span class="dl-a-sub">openlunar.org</span>
+                    </a>
+                </div>
+
+                <div class="badge">
+                    <a
+                        href="https://github.com/epoch-lunar"
+                        target="_blank"
+                        rel="noopener"
+                        >github.com/epoch-lunar</a
+                    >
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

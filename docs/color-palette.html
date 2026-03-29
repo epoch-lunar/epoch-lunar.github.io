@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPOCH DESIGN SYSTEM</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- DSEG Fonts -->
+<style>
+  @font-face {
+    font-family: 'DSEG7';
+    src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'DSEG7';
+    src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'DSEG14';
+    src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'DSEG14';
+    src: url('https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+</style>
+
+<style>
+  /* ═══════════════════════════════════════════ */
+  /* CSS VARIABLES — THE ACTUAL DESIGN TOKENS   */
+  /* ═══════════════════════════════════════════ */
+  :root {
+    /* Structural */
+    --bg: #0A0A0A;
+    --surface: #141414;
+    --housing: #1A1A1A;
+    --border: #2A2A2A;
+    --cream: #E9DCC4;
+    --dim: #555555;
+
+    /* Screen surfaces */
+    --lcd: #080404;
+    --lcd-panel: #0C0808;
+    --crt: #060810;
+    --screen-border: #1A0505;
+
+    /* Accent hierarchy */
+    --cyan: #00DDFF;
+    --cyan-d: #002A33;
+    --amber: #FFAA00;
+    --amber-d: #332200;
+    --white: #FFFFFF;
+    --red: #FF1A1A;
+    --red-d: #330808;
+
+    /* Supporting */
+    --green: #33FF66;
+    --green-d: #0A330A;
+    --magenta: #CC66FF;
+    --magenta-d: #220033;
+    --pink: #FF6688;
+    --pink-d: #331018;
+    --gray: #CCCCCC;
+    --gray-d: #222222;
+
+    /* Timescale aliases */
+    --lun: var(--cyan);
+    --lun-d: var(--cyan-d);
+    --utc: var(--amber);
+    --utc-d: var(--amber-d);
+    --tai: var(--green);
+    --tai-d: var(--green-d);
+    --gps: var(--red);
+    --gps-d: var(--red-d);
+    --tcb: var(--magenta);
+    --tcb-d: var(--magenta-d);
+    --unix: var(--white);
+    --unix-d: var(--gray-d);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 40px;
+    max-width: 900px;
+  }
+
+  h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 4px;
+    color: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    margin-bottom: 12px;
+    margin-top: 40px;
+  }
+
+  .section-label-accent {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 4px;
+    margin-top: 40px;
+  }
+
+  .section-note {
+    font-size: 8px;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0 8px 0;
+  }
+
+  /* ═══════════════════════════════════════════ */
+  /* SWATCH GRIDS                               */
+  /* ═══════════════════════════════════════════ */
+  .swatch-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .swatch {
+    width: 120px;
+    height: 60px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 8px;
+  }
+  .swatch-name { font-size: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .swatch-hex { font-size: 9px; }
+  .swatch-var { font-size: 7px; opacity: 0.6; }
+
+  .accent-card {
+    width: 170px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .accent-bright {
+    height: 70px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .accent-bright .label { font-size: 11px; font-weight: bold; }
+  .accent-bright .hex { font-size: 10px; }
+  .accent-bright .role { font-size: 7px; }
+  .accent-dim {
+    height: 24px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .supporting-card {
+    width: 140px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .supporting-bright {
+    height: 50px;
+    padding: 8px;
+  }
+  .supporting-bright .label { font-size: 10px; }
+  .supporting-bright .hex { font-size: 9px; }
+  .supporting-dim {
+    height: 20px;
+    padding: 2px 8px;
+    font-size: 8px;
+  }
+
+  /* Timescale list */
+  .timescale-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 22px;
+  }
+  .timescale-pip {
+    width: 8px;
+    height: 16px;
+    border-radius: 1px;
+  }
+  .timescale-name { font-size: 10px; width: 70px; }
+  .timescale-note { font-size: 9px; color: var(--dim); }
+
+  /* ═══════════════════════════════════════════ */
+  /* TYPOGRAPHY SAMPLES                         */
+  /* ═══════════════════════════════════════════ */
+  .font-source {
+    font-size: 7px;
+    color: #333;
+    margin-bottom: 16px;
+  }
+
+  .font-description {
+    font-size: 8px;
+    color: var(--dim);
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  .dseg7 { font-family: 'DSEG7', monospace; }
+  .dseg14 { font-family: 'DSEG14', monospace; }
+  .share-tech { font-family: 'Share Tech Mono', monospace; }
+  .space-grotesk { font-family: 'Space Grotesk', sans-serif; }
+  .space-mono { font-family: 'Space Mono', monospace; }
+
+  .sample-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+
+  /* Ghost segment effect */
+  .ghost-container {
+    position: relative;
+    display: inline-block;
+  }
+  .ghost-bg {
+    color: var(--amber-d);
+  }
+  .ghost-fg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--amber);
+  }
+
+  /* ═══════════════════════════════════════════ */
+  /* PHOSPHOR GLOW — LIVE DEMOS                 */
+  /* ═══════════════════════════════════════════ */
+  .glow-cyan {
+    color: var(--cyan);
+    text-shadow:
+      0 0 8px var(--cyan),
+      0 0 20px rgba(0, 221, 255, 0.4),
+      0 0 40px rgba(0, 221, 255, 0.1);
+  }
+  .glow-amber {
+    color: var(--amber);
+    text-shadow:
+      0 0 8px var(--amber),
+      0 0 20px rgba(255, 170, 0, 0.4),
+      0 0 40px rgba(255, 170, 0, 0.1);
+  }
+  .glow-green {
+    color: var(--green);
+    text-shadow:
+      0 0 8px var(--green),
+      0 0 20px rgba(51, 255, 102, 0.4),
+      0 0 40px rgba(51, 255, 102, 0.1);
+  }
+  .glow-red {
+    color: var(--red);
+    text-shadow:
+      0 0 8px var(--red),
+      0 0 20px rgba(255, 26, 26, 0.4),
+      0 0 40px rgba(255, 26, 26, 0.1);
+  }
+
+  /* Status lights */
+  .status-row {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+  }
+  .status-light {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .status-locked {
+    background: #071a07;
+    border: 1px solid var(--green);
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green), 0 0 20px rgba(51,255,102,0.4);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(51,255,102,0.35);
+  }
+  .status-locked .status-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .status-holdover {
+    background: #1a1a07;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    text-shadow: 0 0 10px var(--amber), 0 0 20px rgba(255,170,0,0.4);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(255,170,0,0.35);
+  }
+  .status-holdover .status-dot {
+    background: var(--amber);
+    box-shadow: 0 0 6px var(--amber);
+  }
+  .status-fault {
+    background: #1a0707;
+    border: 1px solid var(--red);
+    color: var(--red);
+    text-shadow: 0 0 10px var(--red), 0 0 20px rgba(255,26,26,0.4);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(255,26,26,0.35);
+  }
+  .status-fault .status-dot {
+    background: var(--red);
+    box-shadow: 0 0 6px var(--red);
+  }
+  .status-off {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--dim);
+  }
+  .status-off .status-dot {
+    background: #333;
+  }
+
+  /* ═══════════════════════════════════════════ */
+  /* CRT / SCANLINE DEMO                        */
+  /* ═══════════════════════════════════════════ */
+  .lcd-panel {
+    position: relative;
+    background: var(--lcd);
+    border: 1px solid var(--screen-border);
+    border-radius: 3px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .lcd-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  .lcd-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      rgba(0,0,0,0.2) 80%,
+      rgba(0,0,0,0.5) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  .lcd-panel > * {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    font-size: 11px;
+    color: #666;
+    line-height: 1.6;
+    margin: 8px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block .comment { color: #444; }
+  .code-block .prop { color: var(--cream); }
+  .code-block .val { color: var(--cyan); }
+
+  /* Tuning notes */
+  .tuning-note {
+    font-size: 7px;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  /* Two-column layout for code blocks */
+  .code-columns {
+    display: flex;
+    gap: 16px;
+  }
+  .code-columns > * {
+    flex: 1;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>EPOCH DESIGN SYSTEM</h1>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- STRUCTURAL COLORS                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section-label">STRUCTURAL &mdash; HOUSING + ENCLOSURE</div>
+
+<div class="swatch-row">
+  <div class="swatch" style="background:#0A0A0A;">
+    <span class="swatch-name" style="color:#666;">Background</span>
+    <span class="swatch-hex" style="color:#888;">#0A0A0A</span>
+    <span class="swatch-var" style="color:#555;">--bg</span>
+  </div>
+  <div class="swatch" style="background:#141414;">
+    <span class="swatch-name" style="color:#666;">Surface</span>
+    <span class="swatch-hex" style="color:#888;">#141414</span>
+    <span class="swatch-var" style="color:#555;">--surface</span>
+  </div>
+  <div class="swatch" style="background:#1A1A1A;">
+    <span class="swatch-name" style="color:#666;">Housing</span>
+    <span class="swatch-hex" style="color:#888;">#1A1A1A</span>
+    <span class="swatch-var" style="color:#555;">--housing</span>
+  </div>
+  <div class="swatch" style="background:#2A2A2A; border-color:#444;">
+    <span class="swatch-name" style="color:#666;">Border</span>
+    <span class="swatch-hex" style="color:#888;">#2A2A2A</span>
+    <span class="swatch-var" style="color:#555;">--border</span>
+  </div>
+  <div class="swatch" style="background:#E9DCC4;">
+    <span class="swatch-name" style="color:#1A1A1A;">Text Primary</span>
+    <span class="swatch-hex" style="color:#333;">#E9DCC4</span>
+    <span class="swatch-var" style="color:#444;">--cream</span>
+  </div>
+  <div class="swatch" style="background:#555555;">
+    <span class="swatch-name" style="color:#222;">Text Dim</span>
+    <span class="swatch-hex" style="color:#333;">#555555</span>
+    <span class="swatch-var" style="color:#333;">--dim</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN SURFACES                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section-label">SCREENS &mdash; LCD + CRT DISPLAY SURFACES</div>
+
+<div class="swatch-row">
+  <div class="swatch" style="background:#080404; border-color:#1a0505; width:160px;">
+    <span class="swatch-name" style="color:#553333;">LCD Dark</span>
+    <span class="swatch-hex" style="color:#664444;">#080404</span>
+    <span class="swatch-var" style="color:#553333;">--lcd / warm black</span>
+  </div>
+  <div class="swatch" style="background:#0C0808; border-color:#1a0a0a; width:160px;">
+    <span class="swatch-name" style="color:#554444;">LCD Panel</span>
+    <span class="swatch-hex" style="color:#665555;">#0C0808</span>
+    <span class="swatch-var" style="color:#554444;">--lcd-panel</span>
+  </div>
+  <div class="swatch" style="background:#060810; border-color:#0a1020; width:160px;">
+    <span class="swatch-name" style="color:#334466;">CRT Cool</span>
+    <span class="swatch-hex" style="color:#445577;">#060810</span>
+    <span class="swatch-var" style="color:#334466;">--crt / cool blue-black</span>
+  </div>
+  <div class="swatch" style="background:#1a0505; width:160px;">
+    <span class="swatch-name" style="color:#553333;">Screen Border</span>
+    <span class="swatch-hex" style="color:#664444;">#1A0505</span>
+    <span class="swatch-var" style="color:#553333;">--screen-border</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ACCENT HIERARCHY                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section-label">ACCENT HIERARCHY &mdash; CRT PHOSPHOR COLORS</div>
+
+<div class="swatch-row">
+  <div class="accent-card">
+    <div class="accent-bright" style="background:#00DDFF; color:#002A33;">
+      <span class="label">&starf; HERO: CYAN</span>
+      <span class="hex">#00DDFF</span>
+      <span class="role">Primary accent, highlights, active</span>
+    </div>
+    <div class="accent-dim" style="background:#002A33; color:#00DDFF;">#002A33 dim</div>
+  </div>
+  <div class="accent-card">
+    <div class="accent-bright" style="background:#FFAA00; color:#332200;">
+      <span class="label">AMBER</span>
+      <span class="hex">#FFAA00</span>
+      <span class="role">Secondary accent, warmth</span>
+    </div>
+    <div class="accent-dim" style="background:#332200; color:#FFAA00;">#332200 dim</div>
+  </div>
+  <div class="accent-card">
+    <div class="accent-bright" style="background:#FFFFFF; color:#222;">
+      <span class="label">WHITE</span>
+      <span class="hex">#FFFFFF</span>
+      <span class="role">Emphasis, pure highlights</span>
+    </div>
+    <div class="accent-dim" style="background:#E9DCC4; color:#333;">#E9DCC4 cream</div>
+  </div>
+  <div class="accent-card">
+    <div class="accent-bright" style="background:#FF1A1A; color:#330808;">
+      <span class="label">RED</span>
+      <span class="hex">#FF1A1A</span>
+      <span class="role">Tertiary accent, alerts</span>
+    </div>
+    <div class="accent-dim" style="background:#330808; color:#FF1A1A;">#330808 dim</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SUPPORTING ACCENTS                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section-label">SUPPORTING ACCENTS</div>
+
+<div class="swatch-row">
+  <div class="supporting-card">
+    <div class="supporting-bright" style="background:#33FF66; color:#0A330A;">
+      <div class="label">GREEN</div>
+      <div class="hex">#33FF66 &nbsp; P1 phosphor</div>
+    </div>
+    <div class="supporting-dim" style="background:#0A330A; color:#33FF66;">#0A330A</div>
+  </div>
+  <div class="supporting-card">
+    <div class="supporting-bright" style="background:#CC66FF; color:#220033;">
+      <div class="label">MAGENTA</div>
+      <div class="hex">#CC66FF</div>
+    </div>
+    <div class="supporting-dim" style="background:#220033; color:#CC66FF;">#220033</div>
+  </div>
+  <div class="supporting-card">
+    <div class="supporting-bright" style="background:#FF6688; color:#330818;">
+      <div class="label">PINK</div>
+      <div class="hex">#FF6688</div>
+    </div>
+    <div class="supporting-dim" style="background:#331018; color:#FF6688;">#331018</div>
+  </div>
+  <div class="supporting-card">
+    <div class="supporting-bright" style="background:#CCCCCC; color:#222;">
+      <div class="label">GRAY</div>
+      <div class="hex">#CCCCCC</div>
+    </div>
+    <div class="supporting-dim" style="background:#222222; color:#CCCCCC;">#222222</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TIMESCALE MAPPING                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section-label">CURRENT TIMESCALE MAPPING (WEBSITE)</div>
+<div class="section-note">THESE ASSIGNMENTS MAY EVOLVE &mdash; STAY CONSISTENT WITHIN A GIVEN CONTEXT</div>
+
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--cyan);"></div><span class="timescale-name" style="color:var(--cyan);">LUNAR</span><span class="timescale-note">Cyan &mdash; hero color for the hero timescale</span></div>
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--amber);"></div><span class="timescale-name" style="color:var(--amber);">UTC</span><span class="timescale-note">Amber</span></div>
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--green);"></div><span class="timescale-name" style="color:var(--green);">TAI</span><span class="timescale-note">Green</span></div>
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--red);"></div><span class="timescale-name" style="color:var(--red);">GPS</span><span class="timescale-note">Red</span></div>
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--magenta);"></div><span class="timescale-name" style="color:var(--magenta);">TCB</span><span class="timescale-note">Magenta</span></div>
+<div class="timescale-row"><div class="timescale-pip" style="background:var(--white);"></div><span class="timescale-name" style="color:var(--white);">UNIX</span><span class="timescale-note">White</span></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TYPOGRAPHY                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<hr class="divider">
+<h1>TYPOGRAPHY</h1>
+
+<!-- DSEG7 -->
+<div class="section-label-accent">DSEG7 CLASSIC &mdash; BOLD + REGULAR</div>
+<div style="font-size:8px; color:var(--dim); margin-bottom:4px;">CLOCK READOUTS, TIME VALUES, NUMERICAL DATA</div>
+<div class="font-source">cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/ &mdash; Bold.woff2 + Regular.woff2</div>
+
+<div class="sample-row">
+  <span class="dseg7" style="font-weight:bold; font-size:36px; color:var(--cyan);">12:34:56.789</span>
+  <span class="ghost-container">
+    <span class="dseg7 ghost-bg" style="font-weight:bold; font-size:36px;">88:88:88.888</span>
+    <span class="dseg7 ghost-fg" style="font-weight:bold; font-size:36px;">23:07:41</span>
+  </span>
+</div>
+<div class="sample-row" style="margin-bottom:4px;">
+  <span class="font-description">Bold &mdash; primary time display</span>
+  <span class="font-description" style="margin-left:auto;">Ghost segments (dim color behind) for LCD realism</span>
+</div>
+
+<div class="sample-row">
+  <span class="dseg7" style="font-weight:normal; font-size:22px; color:var(--green);">00:00:37.018</span>
+  <span class="dseg7" style="font-weight:normal; font-size:22px; color:var(--dim);">+0.847</span>
+</div>
+<div class="font-description">Regular &mdash; secondary/auxiliary readouts, smaller displays</div>
+
+<!-- DSEG14 -->
+<div class="section-label-accent">DSEG14 CLASSIC &mdash; BOLD + REGULAR</div>
+<div style="font-size:8px; color:var(--dim); margin-bottom:4px;">DELTAS, ERRORS, STATUS TEXT, ALPHANUMERIC READOUTS</div>
+<div class="font-source">cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/ &mdash; Bold.woff2 + Regular.woff2</div>
+
+<div class="sample-row">
+  <span class="dseg14" style="font-weight:bold; font-size:28px; color:var(--green);">HOLDOVER LOCKED</span>
+  <span class="dseg14" style="font-weight:bold; font-size:28px; color:var(--red);">NO FIX</span>
+</div>
+<div class="sample-row">
+  <span class="dseg14" style="font-weight:normal; font-size:20px; color:var(--amber);">+56.02 us/day</span>
+  <span class="dseg14" style="font-weight:normal; font-size:20px; color:var(--red);">ERR -0.003 ms</span>
+</div>
+<div class="font-description">14-segment &mdash; use for alphanumeric text on instrument panels: status labels, delta values, error readouts</div>
+<div class="font-description">DSEG7 = clock digits only (0-9, :, .) &nbsp;|&nbsp; DSEG14 = full alphanumeric (A-Z, 0-9, symbols)</div>
+
+<!-- Share Tech Mono -->
+<div class="section-label-accent">SHARE TECH MONO</div>
+<div style="font-size:8px; color:var(--dim); margin-bottom:4px;">TERMINAL &mdash; UI LABELS, NAVIGATION, CAPTIONS, BUTTONS</div>
+<div class="font-source">Google Fonts &mdash; primary UI typeface for all non-segment screen text</div>
+
+<div class="share-tech" style="font-size:18px; color:var(--cream); margin-bottom:4px;">LUNAR COORDINATE TIME</div>
+<div class="share-tech" style="font-size:14px; color:var(--dim); margin-bottom:4px;">Drift since midnight UTC: +0.847 &micro;s</div>
+<div class="share-tech" style="font-size:11px; color:#333; margin-bottom:4px;">ashby &amp; patla (2024) &mdash; arxiv:2402.11150</div>
+<div class="share-tech" style="font-size:9px; color:#222;">EPOCH &mdash; LUNAR TIMEKEEPING &mdash; GITHUB.COM/EPOCH-LUNAR</div>
+
+<!-- Space Grotesk + Space Mono side by side -->
+<div style="display:flex; gap:60px; margin-top:32px;">
+  <div style="flex:1;">
+    <div class="section-label-accent">SPACE GROTESK 400/700</div>
+    <div style="font-size:8px; color:var(--dim); margin-bottom:4px;">BODY &mdash; HEADINGS, BODY TEXT, PRINT DOCUMENTS</div>
+    <div class="font-source">Google Fonts / Colophon Foundry &mdash; geometric sans-serif, same skeleton as Space Mono</div>
+    <div class="space-grotesk" style="font-weight:700; font-size:20px; color:var(--cream); margin-bottom:8px;">Lunar Timekeeping</div>
+    <div class="space-grotesk" style="font-weight:400; font-size:13px; color:#888; line-height:1.5;">The SA.65 CSAC provides 1&times;10&minus;10 short-term stability at &tau;&nbsp;=&nbsp;1s, sufficient for sub-microsecond holdover.</div>
+  </div>
+  <div style="flex:1;">
+    <div class="section-label-accent">SPACE MONO 400/700</div>
+    <div class="font-source">Code blocks, specs, data tables</div>
+    <div class="space-mono" style="font-weight:400; font-size:13px; color:var(--cream); margin-bottom:8px;">const RATE = 56.02;</div>
+    <div class="space-mono" style="font-weight:700; font-size:13px; color:#888;">fn holdover() {}</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CRT EFFECTS                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<hr class="divider">
+<h1>CRT EFFECTS</h1>
+
+<!-- Phosphor glow -->
+<div class="section-label-accent">PHOSPHOR GLOW &mdash; LIVE</div>
+<div style="font-size:8px; color:var(--dim); margin-bottom:16px;">TEXT-SHADOW LAYERING &mdash; INNER SHARP GLOW + OUTER SOFT BLOOM</div>
+
+<div style="display:flex; gap:32px; flex-wrap:wrap; margin-bottom:16px;">
+  <span class="dseg7 glow-cyan" style="font-weight:bold; font-size:32px;">12:34:56</span>
+  <span class="dseg7 glow-amber" style="font-weight:bold; font-size:32px;">23:07:41</span>
+  <span class="dseg7 glow-green" style="font-weight:normal; font-size:24px;">00:37.018</span>
+  <span class="dseg14 glow-red" style="font-weight:bold; font-size:24px;">NO FIX</span>
+</div>
+
+<div class="code-block"><span class="comment">/* Base glow pattern &mdash; adapt color per accent */</span>
+<span class="prop">color:</span> <span class="val">var(--cyan)</span>;
+<span class="prop">text-shadow:</span>
+  <span class="val">0 0 8px  var(--cyan)</span>,             <span class="comment">/* tight inner glow */</span>
+  <span class="val">0 0 20px rgba(0, 221, 255, 0.4)</span>,  <span class="comment">/* medium bloom */</span>
+  <span class="val">0 0 40px rgba(0, 221, 255, 0.1)</span>;  <span class="comment">/* wide ambient (optional) */</span></div>
+
+<!-- Status lights -->
+<div class="section-label-accent">STATUS LIGHTS &mdash; LIVE</div>
+
+<div class="status-row">
+  <div class="status-light status-locked"><div class="status-dot"></div>LOCKED</div>
+  <div class="status-light status-holdover"><div class="status-dot"></div>HOLDOVER</div>
+  <div class="status-light status-fault"><div class="status-dot"></div>FAULT</div>
+  <div class="status-light status-off"><div class="status-dot"></div>OFF</div>
+</div>
+
+<div class="code-block"><span class="comment">/* Status light &mdash; lit state (green example) */</span>
+<span class="prop">background:</span> <span class="val">#071a07</span>;
+<span class="prop">border-color:</span> <span class="val">var(--green)</span>;
+<span class="prop">color:</span> <span class="val">var(--green)</span>;
+<span class="prop">text-shadow:</span> <span class="val">0 0 10px var(--green), 0 0 20px rgba(51,255,102,0.4)</span>;
+<span class="prop">box-shadow:</span> <span class="val">inset 0 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(51,255,102,0.35)</span>;</div>
+
+<!-- Scanline demo -->
+<div class="section-label-accent">SCANLINES &mdash; IBM TERMINAL EMULATION &mdash; LIVE</div>
+<div style="font-size:8px; color:var(--dim); margin-bottom:12px;">HORIZONTAL SCAN LINES + VIGNETTE &mdash; APPLIED VIA ::BEFORE / ::AFTER PSEUDO-ELEMENTS</div>
+
+<div class="lcd-panel">
+  <div class="dseg7 glow-cyan" style="font-weight:bold; font-size:42px; margin-bottom:8px;">12:34:56.789012</div>
+  <div style="display:flex; gap:24px;">
+    <span class="dseg14 glow-amber" style="font-size:16px;">+56.02 us/day</span>
+    <span class="dseg14 glow-green" style="font-size:16px;">LOCKED</span>
+  </div>
+</div>
+
+<div class="code-columns">
+<div class="code-block"><span class="comment">/* Scanlines &mdash; ::before on .lcd */</span>
+<span class="prop">content:</span> <span class="val">''</span>;
+<span class="prop">position:</span> <span class="val">absolute</span>; <span class="prop">inset:</span> <span class="val">0</span>;
+<span class="prop">background:</span> <span class="val">repeating-linear-gradient(
+  0deg,
+  transparent,       transparent 2px,
+  rgba(0,0,0,0.15)  2px,
+  rgba(0,0,0,0.15)  4px
+)</span>;
+<span class="prop">pointer-events:</span> <span class="val">none</span>;
+<span class="prop">z-index:</span> <span class="val">1</span>;</div>
+<div class="code-block"><span class="comment">/* Vignette &mdash; ::after on .lcd */</span>
+<span class="prop">content:</span> <span class="val">''</span>;
+<span class="prop">position:</span> <span class="val">absolute</span>; <span class="prop">inset:</span> <span class="val">0</span>;
+<span class="prop">background:</span> <span class="val">radial-gradient(
+  ellipse at center,
+  transparent 0%,
+  transparent 60%,
+  rgba(0,0,0,0.2) 80%,
+  rgba(0,0,0,0.5) 100%
+)</span>;
+<span class="prop">pointer-events:</span> <span class="val">none</span>;
+<span class="prop">z-index:</span> <span class="val">10</span>;</div>
+</div>
+
+<div class="tuning-note" style="margin-top:12px;">
+  SCANLINE TUNING: 2px/4px period mimics ~640&times;480 CRT. For denser look (IBM 3278 style) use 1px/3px.<br>
+  Opacity 0.15 is subtle. Increase to 0.25 for visible scan lines. Never exceed 0.3 or text becomes hard to read.<br>
+  SCREEN-ON FLICKER: animation screenOn 0.8s ease-out &mdash; rapid opacity 0&rarr;0.8&rarr;0.3&rarr;0.9&rarr;0.5&rarr;1 simulates CRT warmup.
+</div>
+
+</body>
+</html>

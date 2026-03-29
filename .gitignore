@@ -1,1 +1,13 @@
+# Claude
 .claude/
+CLAUDE.md
+
+# Backend (Rust + Node)
+backend/node_modules/
+backend/package-lock.json
+backend/target/
+backend/.wrangler/
+backend/build/
+
+# Misc
+*.local

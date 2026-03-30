@@ -2,7 +2,7 @@
 
 A technical reference for engineering and design decisions across the Epoch project.
 
-**Visual reference:** See [color-palette.html](./color-palette.html) for live color swatches, font samples, and CRT effect demos.
+**Visual reference:** See [color-palette.html](./color-palette.html) for live color swatches, font samples, and VFD effect demos.
 
 ---
 
@@ -20,23 +20,78 @@ A technical reference for engineering and design decisions across the Epoch proj
 
 ### Logo
 
-**Status: In exploration.** The text wordmark is the baseline. Mark concepts are under active development.
+The primary mark is a wordmark: **EPOCH** in a light-weight geometric sans-serif, all caps, with generous letter-spacing. The O is replaced by a crescent moon eclipse mark. This is the decided, in-use logo.
 
-**Text wordmark (baseline):** EPOCH in Space Grotesk Bold, ALL CAPS, generous letter-spacing. Subtitle "LUNAR TIMEKEEPING" in Share Tech Mono, sized to match the width of EPOCH above it.
+**Reference file:** `docs/epoch_logo.png`
 
-**Active mark concepts:**
+#### Wordmark construction
 
-*Crescent O (concepts 5a–5d):* The letter O in EPOCH is replaced with a waning crescent moon shape. Variants range from a thin sliver to a full-weight O with a dark crescent bite.
+- **Typeface:** Light-weight geometric sans-serif. Thin, even strokes — not bold, not condensed. Futura Light or equivalent; Space Grotesk at a lighter weight is an acceptable substitute.
+- **Case:** All caps, no exceptions.
+- **Letter-spacing:** Wide — approximately 0.35em between characters. The letters read as individual glyphs with breathing room, not as a tight block.
+- **Color:** Cream `#E9DCC4` on near-black `#09090B`. The cream is warm, not pure white.
 
-*Wireframe globe (concepts 6a–6c, 6-lockup):* A wireframe globe mark — meridian and equator ellipses — with a CRT phosphor fade that cuts off sharply on the right edge. Used standalone or in lockup with EPOCH + LUNAR TIMEKEEPING text. Green phosphor variant also explored.
+#### The crescent-O
 
-**Rendering rules:**
+The O is not a letterform — it is a partial eclipse mark composed of two overlapping circles:
 
-- Screen: White or cream (#E9DCC4) on dark background (#0A0A0A)
-- Print: Black on white/near-white (#FAFAF6)
-- Header band: White (#FFFFFF) on accent color (varies by document type)
+1. **Ring:** A thin circle stroke in cream, the same weight as the surrounding letterstrokes. This is the "full moon" base.
+2. **Eclipse disk:** A filled circle in the background color (`#09090B`), offset to the right of center, slightly smaller than the ring's outer diameter. It overlaps the right portion of the ring, occluding it.
+3. **Result:** The left arc of the ring remains visible as a crescent. The right side disappears into the background. The crescent opens to the right — a waning crescent as seen from the northern hemisphere.
 
-**Favicon:** Undecided. Candidates: moon emoji (🌙) placeholder, "E" in Space Grotesk Bold at 32×32px, wireframe globe mark.
+The crescent width (the visible arc) is approximately one-third of the full circle diameter. The eclipse disk is positioned so its left edge falls near the horizontal centerline of the ring, creating a deep, narrow crescent rather than a half-moon.
+
+The mark sits at the same optical cap-height as the surrounding letters. Its width matches a standard O in the chosen typeface.
+
+#### Wordmark typeface
+
+Space Grotesk at 300 (Light) weight. Not Bold — the thin, even strokes are the point. Share Tech Mono is ruled out by the proportional letter spacing visible in the mark (P is narrower than E; monospaced fonts prevent this).
+
+#### Screen rendering — backlit silkscreen + phosphor pilot light
+
+The logo uses two distinct treatments on screen, applied to different parts of the mark:
+
+**E, P, C, H — backlit silkscreen label**
+
+The letterforms are rendered as a matte panel label with soft warm-white backlight diffusion. This mimics silkscreened text on a front panel — light coming through frosted ink, not a VFD element. Wide, low-intensity bloom; no sharp inner glow; warm color, not teal.
+
+```css
+.logo-text {
+  color: #E9DCC4;
+  text-shadow:
+    0 0 20px rgba(233, 220, 196, 0.25),   /* wide diffuse backlight */
+    0 0 60px rgba(233, 220, 196, 0.08);   /* ambient warmth */
+}
+```
+
+**Crescent O — phosphor pilot light**
+
+The visible arc of the crescent is treated as a lit VFD element — the one glowing thing on an otherwise matte panel. Tight VFD teal bloom on the arc only. Implemented in SVG: the ring stroke gets the glow filter; the eclipse disk and letter strokes do not.
+
+```css
+/* Applied to the crescent ring stroke via SVG filter or box-shadow */
+.logo-crescent {
+  filter:
+    drop-shadow(0 0 2px #00E5CC)
+    drop-shadow(0 0 6px rgba(0, 229, 204, 0.50))
+    drop-shadow(0 0 14px rgba(0, 229, 204, 0.20));
+}
+```
+
+The result reads as: *matte instrument panel label with one glowing pilot light.* The text identifies the instrument; the crescent signals it is running. This is how real hardware works — silkscreened "TACH" labels, glowing VFD bars inside.
+
+**Do not apply VFD teal glow to the full wordmark.** The letters are panel labels, not display elements. Glowing the whole logo reads as a decorative effect; glowing only the crescent arc reads as a functioning indicator.
+
+#### Print rendering rules
+
+- **Screen:** Cream `#E9DCC4` + silkscreen/pilot light treatment above
+- **Print:** Black on white/near-white `#FAFAF6`. No glow effects. Ring is a black stroke, eclipse disk is white fill.
+- **Reversed (light background):** Near-black `#09090B` on cream — eclipse disk becomes cream, ring stroke is dark
+- **Minimum size:** The crescent detail requires at least 24px cap-height to be legible; below that, use plain text wordmark
+
+#### Favicon
+
+The crescent arc alone (no letters, no ring — just the lit arc) at 32×32px, VFD teal `#00E5CC` on `#09090B`. It reads as a thin glowing curve — a moon sliver, a pilot light.
 
 ### Open Lunar Foundation Co-branding
 
@@ -63,7 +118,7 @@ The Epoch brand operates in two distinct visual modes. Each mode has its own aes
 
 **Where it applies:** Website, web dashboards, interactive demos, slide presentations, social media cards, GitHub READMEs, web-based visualizations
 
-**Substrate:** Dark background, #0A0A0A or near-black
+**Substrate:** Dark background, `#09090B` or near-black
 
 **Display font:** DSEG7 segment font for all numerical time readouts and clock displays
 
@@ -71,16 +126,21 @@ The Epoch brand operates in two distinct visual modes. Each mode has its own aes
 
 **Body font:** Space Grotesk for longer text passages if needed (blog posts, detailed README prose)
 
-**Color system:** Timescale-specific color coding (see Color System section below). Information density is the aesthetic. No decorative elements.
+**Color system:** VFD teal as the dominant instrument color. Timescale-specific color coding used in multi-timescale contexts (labels, legends, charts). See Color System section.
 
 **Visual vocabulary:**
-- 1980s/early-90s retro-futurism aesthetic
-- Inspiration sources: Nissan digital dashboards, Pioneer/Kenwood/Alpine LCD stereo displays, phosphor CRT terminals, hi-fi receiver front panels, PCB layout art, AutoCAD on dark screens
-- Color warmth: the amber/green/cyan palette of nighttime car dashboards and stereo EQ displays. Institutional confidence of Kodak yellow and Fuji green — warm, trustworthy, analog-era.
-- Permitted effects: CRT scanline texture and subtle glow effects on main clock display
-- Corner rivets/screws on housing elements (as shown on website)
-- Ghost segments (dim "888" behind active display on segment displays) for visual continuity
-- Segmented bar graphs (like a stereo EQ or Nissan tachometer) for data like drift accumulation, holdover quality, phase error
+
+The screen aesthetic is modeled specifically on late-1980s VFD (Vacuum Fluorescent Display) automotive instrument clusters — Honda and Acura digital dashboards circa 1988. Not a generic retro-tech look; a specific, referential aesthetic built from the actual hardware's constraints and characteristics.
+
+VFD hardware produces light, not reflected color. Every lit element emits phosphor glow. The visual language follows from that physics:
+
+- Segmented bar columns (EQ/VU-meter style) for accumulating values like drift and holdover error — not sweep needles, not line charts
+- 7-segment digit geometry for all numerical readouts — crisp axis-aligned rectangles, no curves
+- Ghost segments (unlit segments visible at low opacity) showing the full digit skeleton behind active values — a characteristic of real VFD hardware that egui and HTML canvas can both replicate
+- Phosphor bloom radiating outward from every lit element — achieved by layering semi-transparent shapes, not blur filters
+- Subtle grid crosshatch behind instrument panels — the crosshatch visible on real VFD displays behind bar graphs
+- Small rectangular indicator lights for status — not circular LEDs, not pill shapes; filled rectangles
+- Panel zone borders as thin low-opacity lines — instruments live in distinct bordered zones, not floating on a blank background
 
 **Design principle:** Beauty comes from precision and information density, not decoration.
 
@@ -88,7 +148,7 @@ The Epoch brand operates in two distinct visual modes. Each mode has its own aes
 
 The screen-mode brand draws from 1980s sci-fi corporate identity — Weyland-Yutani (Alien), Tyrell Corporation (Blade Runner), Nakatomi Corporation (Die Hard) — but inverted. These fictional companies projected institutional confidence through instrumentation aesthetics, dense technical displays, and serious hardware design. Epoch borrows that visual authority while serving the opposite purpose: open infrastructure, cooperative standards, public commons.
 
-This means the screen aesthetic is **warm, multi-colored, and alive** — not cold, sterile, or monochrome.
+The screen aesthetic is **warm, technically specific, and alive** — not cold, sterile, or generically dark-mode.
 
 ### Print Mode
 
@@ -165,66 +225,66 @@ Four typefaces, each assigned to a specific function. All are open source (Googl
 
 ### Screen Palette
 
-All screen-mode colors derive from CRT phosphor colors — the bright, saturated hues of analog display technology. Color encodes information, never serves decoration.
+Screen-mode colors are grounded in VFD and CRT phosphor hardware — the specific hues of analog display technology, not approximations of them. Color encodes information; it does not serve decoration.
 
 #### Structural Colors (always present)
 
 | Role | Hex | CSS Variable | Notes |
 |------|-----|-------------|-------|
-| Background | #0A0A0A | `--bg` | Near-black, the void behind the display |
-| Surface | #141414 | `--surface` | Panels, cards, elevated elements |
-| Housing | #1A1A1A | `--housing` | Instrument enclosure, bezel |
-| Border | #2A2A2A | `--border` | Dividers, panel edges |
-| Text primary | #E9DCC4 | `--cream` | Warm white, labels, body text |
-| Text dim | #555555 | `--dim` | Secondary labels, captions |
+| Background | `#09090B` | `--bg` | Near-black with slight cool cast — the void behind the display |
+| Surface | `#111113` | `--surface` | Panels, instrument zone interiors |
+| Housing | `#1A1A1C` | `--housing` | Instrument enclosure, bezel |
+| Border | `#00E5CC` at 20% | `--border` | Panel zone edges — use VFD teal at low opacity, not gray |
+| Text primary | `#E9DCC4` | `--cream` | Warm white, labels, body text |
+| Text dim | `#555558` | `--dim` | Secondary labels, captions |
 
-#### Accent Hierarchy (CRT phosphor colors)
+#### Accent Hierarchy
 
-Ordered by prominence. When in doubt, reach for Cyan first.
+**VFD teal is the hero color.** It is the primary instrument display color in sundial and the dominant accent on the website. All other colors are secondary — used for timescale coding in multi-timescale contexts and for status/warning states.
 
-| Rank | Color | Bright | Dim | Phosphor ref | Role |
-|------|-------|--------|-----|-------------|------|
-| **★ Hero** | Cyan | #00DDFF | #002A33 | Blue-white phosphor | Primary accent, highlights, active states |
-| **2nd** | Amber | #FFAA00 | #332200 | P3 amber phosphor | Secondary accent, warmth |
-| **3rd** | White | #FFFFFF | #E9DCC4 | P4 white phosphor | Pure emphasis, flash highlights |
-| **4th** | Red | #FF1A1A | #330808 | Red phosphor | Tertiary accent, alerts |
+| Rank | Name | Bright | Dim | Role |
+|------|------|--------|-----|------|
+| **★ Hero** | VFD Teal | `#00E5CC` | `#00251F` | Instrument displays, active elements, primary accent. Slightly blue-shifted — not `#00FF00` (LCD green), not `#00FFFF` (pure cyan). |
+| **2nd** | Amber | `#FFAA00` | `#332200` | Holdover/caution state, secondary accent, warmth |
+| **3rd** | Warning Red | `#FF2255` | `#330A18` | Fault/error indicator lights. Hot pink-red — not pure `#FF0000`. |
+| **4th** | Cream | `#E9DCC4` | — | Labels, body text |
 
-#### Supporting Accents
+#### Supporting Accents (multi-timescale contexts only)
+
+Used on the website and in documentation when multiple timescales appear together. Not used in instrument display panels, which are monochromatic VFD teal.
 
 | Color | Bright | Dim | Role |
 |-------|--------|-----|------|
-| Green | #33FF66 | #0A330A | P1 green phosphor |
-| Magenta | #CC66FF | #220033 | Special accent |
-| Pink | #FF6688 | — | Secondary alert |
-| Gray | #CCCCCC | #222222 | Neutral |
+| Green | `#33FF66` | `#0A330A` | TAI |
+| Magenta | `#CC66FF` | `#220033` | TCB |
+| Pink | `#FF6688` | `#331018` | Secondary alert |
+| Gray | `#CCCCCC` | `#222222` | Neutral |
 
-#### Current Timescale → Color Mapping
-
-These are the current assignments used on the website. They may evolve as the product develops, but should stay consistent within any single context (a page, an app, a document).
+#### Timescale → Color Mapping
 
 | Timescale | Color | CSS vars |
 |-----------|-------|----------|
-| Lunar TCL | Cyan #00DDFF | `--lun`, `--lun-d` |
-| UTC | Amber #FFAA00 | `--utc`, `--utc-d` |
-| TAI | Green #33FF66 | `--tai`, `--tai-d` |
-| GPS | Red #FF1A1A | `--gps`, `--gps-d` |
-| TCB | Magenta #CC66FF | `--tcb`, `--tcb-d` |
-| UNIX | White #FFFFFF | `--unix`, `--unix-d` |
+| Lunar TCL | VFD Teal `#00E5CC` | `--lun`, `--lun-d` |
+| UTC | Amber `#FFAA00` | `--utc`, `--utc-d` |
+| TAI | Green `#33FF66` | `--tai`, `--tai-d` |
+| GPS | Warning Red `#FF2255` | `--gps`, `--gps-d` |
+| TCB | Magenta `#CC66FF` | `--tcb`, `--tcb-d` |
+| UNIX | Cream `#E9DCC4` | `--unix`, `--unix-d` |
 
-**The principle:** Color carries data, not decoration. Within a given context, be consistent — don't switch mappings mid-page. But the specific assignments aren't sacred across the whole brand.
+**The principle:** Color carries data, not decoration. In instrument panels (sundial), all displays are VFD teal; red and amber appear only for status lights. In multi-timescale web contexts, the full palette applies.
 
-### Print Palette—Document Type Classification (CCSDS Convention)
+### Print Palette — Document Type Classification (CCSDS Convention)
 
 The header accent band color classifies the document type. This follows CCSDS (Consultative Committee for Space Data Systems) conventions for technical documentation.
 
 | Color | Hex | Document Type | Use Case |
 |-------|-----|---------------|----------|
-| **Blue** | #1A3A5C | Standards, specifications, interface definitions | Protocol specs, API docs, format definitions |
-| **Magenta** | #8B2252 | Recommended practices, architecture documents | Design rationale, system architecture, best practices |
-| **Green** | #2D6A2E | Informational, primers, rationale | Explainers, "why we made this" docs, FAQs |
-| **Orange** | #C05A1C | Experimental, research & development | R&D findings, preliminary results, unproven concepts |
-| **Yellow** | #B8960F | Administrative, procedures | Process docs, checklists, operational procedures |
-| **Red** | #B22222 | Draft (any type, pre-release) | Pre-publication, internal review, "not final" status |
+| **Blue** | `#1A3A5C` | Standards, specifications, interface definitions | Protocol specs, API docs, format definitions |
+| **Magenta** | `#8B2252` | Recommended practices, architecture documents | Design rationale, system architecture, best practices |
+| **Green** | `#2D6A2E` | Informational, primers, rationale | Explainers, "why we made this" docs, FAQs |
+| **Orange** | `#C05A1C` | Experimental, research & development | R&D findings, preliminary results, unproven concepts |
+| **Yellow** | `#B8960F` | Administrative, procedures | Process docs, checklists, operational procedures |
+| **Red** | `#B22222` | Draft (any type, pre-release) | Pre-publication, internal review, "not final" status |
 
 **Document numbering convention:** `EPOCH [NNN.N]-[C]-[V]`
 - Example: `EPOCH 100.0-B-1` = Blue Book (standards), topic 100.0, version 1
@@ -263,9 +323,220 @@ A typical block diagram shows:
 
 ---
 
+## VFD RENDERING SPECIFICATION
+
+This section defines how to implement the screen-mode aesthetic in code. An agent working from this section alone should produce output consistent with the rest of the brand without needing a visual reference.
+
+### Bloom / Phosphor Glow
+
+VFD elements emit light — they are not flat pixels. Every lit element is drawn three times:
+
+1. **Core:** Shape at full color, full opacity
+2. **Inner glow:** Same shape expanded 2px on all sides, same color at 40% opacity
+3. **Outer glow:** Same shape expanded 6px on all sides, same color at 15% opacity
+
+No blur filter required. Layered semi-transparent rects produce authentic phosphor spread. Ghost (unlit) segments receive no bloom layers.
+
+In CSS, approximate with `text-shadow` or `box-shadow`:
+```css
+/* VFD teal element */
+color: #00E5CC;
+text-shadow:
+  0 0 4px  #00E5CC,
+  0 0 12px rgba(0, 229, 204, 0.4),
+  0 0 28px rgba(0, 229, 204, 0.15);
+```
+
+### Segmented Bar Columns
+
+The primary instrument display element. Used for drift accumulation, holdover error, and relative rate gauges.
+
+**Geometry (main panel):**
+- Segment size: 8px wide × 4px tall
+- Gap between segments (vertical): 1px
+- Gap between columns (horizontal): 2px
+- Minimum column height: always draw all segments (lit + ghost) — never a blank column
+
+**Geometry (narrow gauge panels):**
+- Segment size: 6px wide × 3px tall
+- Gaps: 1px vertical, 2px horizontal
+
+**Fill behavior:**
+- Lit segments: VFD teal, full bloom applied
+- Unlit segments: VFD teal at 10% opacity, no bloom
+- Columns fill from bottom up; data value maps to number of lit segments
+
+**In egui (Rust):** Use `painter.rect_filled()` for each segment. Draw ghost rects first, then lit rects, then bloom layers on top of lit rects only.
+
+### 7-Segment Digits
+
+- Each segment is a thin axis-aligned filled rectangle
+- Unlit segments: 10% opacity (ghost), no bloom — the full digit skeleton is always visible
+- Lit segments: full color + bloom
+- No anti-aliasing — crisp integer pixel boundaries
+- Large readout: ~40px digit height; small readout: ~14px digit height
+
+### Indicator Lights
+
+Status lights are small filled rectangles — not circles, not pills.
+
+- Size: 12px wide × 8px tall
+- Active: solid fill at status color + bloom
+- Inactive: same color at 15% opacity, no bloom
+- Labels: 9px Share Tech Mono, uppercase, below the light
+
+Status color assignments:
+- LOCKED: VFD teal `#00E5CC`
+- HOLDOVER: Amber `#FFAA00`
+- FAULT: Warning red `#FF2255`
+- OFFLINE: Dim (`#555558`, no bloom)
+
+### Grid Crosshatch
+
+Appears behind segmented bar panels only. Does not appear behind digit displays or indicator lights.
+
+- Line spacing: 12px both axes
+- Line color: VFD teal at 8% opacity
+- Line width: 1px
+- Draw before (behind) all other panel content
+
+### Panel Zones
+
+Each instrument group lives in a bordered zone:
+- Border: 1px, VFD teal at 20% opacity
+- Corner radius: 3px
+- Interior fill: `#09090B` (same as background — zones are defined by border, not fill contrast)
+- Zone label: 11px Share Tech Mono, uppercase, VFD teal, positioned below or above the zone
+
+---
+
+## CSS IMPLEMENTATION REFERENCE
+
+### CSS Variables
+
+```css
+:root {
+  /* Structural */
+  --bg: #09090B;
+  --surface: #111113;
+  --housing: #1A1A1C;
+  --cream: #E9DCC4;
+  --dim: #555558;
+
+  /* VFD primary */
+  --vfd: #00E5CC;
+  --vfd-ghost: rgba(0, 229, 204, 0.10);
+  --vfd-glow-inner: rgba(0, 229, 204, 0.40);
+  --vfd-glow-outer: rgba(0, 229, 204, 0.15);
+  --vfd-border: rgba(0, 229, 204, 0.20);
+  --vfd-grid: rgba(0, 229, 204, 0.08);
+  --vfd-d: #00251F;
+
+  /* Status colors */
+  --amber: #FFAA00;
+  --amber-d: #332200;
+  --warning: #FF2255;
+  --warning-d: #330A18;
+
+  /* Timescale accents */
+  --lun: var(--vfd);
+  --lun-d: var(--vfd-d);
+  --utc: var(--amber);
+  --utc-d: var(--amber-d);
+  --tai: #33FF66;
+  --tai-d: #0A330A;
+  --gps: var(--warning);
+  --gps-d: var(--warning-d);
+  --tcb: #CC66FF;
+  --tcb-d: #220033;
+  --unix: var(--cream);
+  --unix-d: #222222;
+}
+```
+
+### VFD Glow (CSS)
+
+```css
+/* Lit VFD element */
+.vfd-lit {
+  color: var(--vfd);
+  text-shadow:
+    0 0 4px  var(--vfd),
+    0 0 12px var(--vfd-glow-inner),
+    0 0 28px var(--vfd-glow-outer);
+}
+
+/* Ghost (unlit) VFD element */
+.vfd-ghost {
+  color: var(--vfd-ghost);
+  /* no text-shadow */
+}
+```
+
+### Grid Crosshatch (CSS)
+
+```css
+.instrument-panel {
+  background-image:
+    linear-gradient(var(--vfd-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--vfd-grid) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+```
+
+### Indicator Lights (CSS)
+
+```css
+.status-light {
+  width: 12px;
+  height: 8px;
+  border-radius: 1px;
+}
+
+.status-light--locked {
+  background: var(--vfd);
+  box-shadow: 0 0 4px var(--vfd), 0 0 12px var(--vfd-glow-inner);
+}
+
+.status-light--holdover {
+  background: var(--amber);
+  box-shadow: 0 0 4px var(--amber), 0 0 12px rgba(255, 170, 0, 0.40);
+}
+
+.status-light--fault {
+  background: var(--warning);
+  box-shadow: 0 0 4px var(--warning), 0 0 12px rgba(255, 34, 85, 0.40);
+}
+
+.status-light--offline {
+  background: var(--dim);
+  /* no box-shadow */
+}
+```
+
+### Panel Zone (CSS)
+
+```css
+.panel-zone {
+  border: 1px solid var(--vfd-border);
+  border-radius: 3px;
+  background: var(--bg);
+}
+
+.panel-zone__label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--vfd);
+  letter-spacing: 0.08em;
+}
+```
+
+---
+
 ## VOICE AND TONE
 
-Epoch communicates like an instrument manual—precise, objective, but approachable.
+Epoch communicates like an instrument manual — precise, objective, but approachable.
 
 ### Brand Personality
 
@@ -282,7 +553,7 @@ Epoch communicates like an instrument manual—precise, objective, but approacha
 | **Warm** — analog nostalgia, inviting color, human materiality | **Cold** — not sterile, not clinical, not minimalist-for-minimalism's-sake |
 | **Open** — commons-oriented, cooperative, interoperable by default | **Territorial** — never proprietary-first, never "our ecosystem" |
 | **Purposeful** — everything carries information, every element earns its place | **Decorative** — no ornament without function, no gradients for vibes |
-| **Nostalgic** — 80s/90s warmth, analog-era trust, Kodak/Fuji confidence | **Retro for retro's sake** — the aesthetic serves legibility and character, not cosplay |
+| **Nostalgic** — 80s/90s warmth, analog-era trust, instrument-grade authority | **Retro for retro's sake** — the aesthetic serves legibility and character, not cosplay |
 
 ### Voice Registers
 
@@ -320,7 +591,7 @@ Epoch uses three distinct voice registers depending on context.
 - Numbers are still required; vivid language is permitted
 
 **Example:**
-> Clocks on the Moon run 56 microseconds faster per day than clocks on Earth. That's about 20 milliseconds per year—enough to put your navigation fix 6 kilometers off target.
+> Clocks on the Moon run 56 microseconds faster per day than clocks on Earth. That's about 20 milliseconds per year — enough to put your navigation fix 6 kilometers off target.
 
 ### Writing Rules (All Registers)
 
@@ -349,114 +620,6 @@ Every claim should contain:
 - A specific number, or
 - A named system (SA.65 CSAC, STM32, Zynq 7020, etc.), or
 - A concrete technical fact (phase drift, Allan deviation, holdover time, etc.)
-
----
-
-## CSS IMPLEMENTATION REFERENCE
-
-### CSS Variables
-
-```css
-:root {
-  /* Structural */
-  --bg: #0A0A0A;
-  --surface: #141414;
-  --housing: #1A1A1A;
-  --border: #2A2A2A;
-  --cream: #E9DCC4;
-  --dim: #555555;
-
-  /* Screen surfaces */
-  --lcd: #080404;
-  --lcd-panel: #0C0808;
-  --crt: #060810;
-  --screen-border: #1A0505;
-
-  /* Accents */
-  --cyan: #00DDFF;
-  --cyan-d: #002A33;
-  --amber: #FFAA00;
-  --amber-d: #332200;
-  --white: #FFFFFF;
-  --red: #FF1A1A;
-  --red-d: #330808;
-  --green: #33FF66;
-  --green-d: #0A330A;
-  --magenta: #CC66FF;
-  --magenta-d: #220033;
-  --pink: #FF6688;
-  --pink-d: #331018;
-  --gray: #CCCCCC;
-  --gray-d: #222222;
-
-  /* Timescale aliases */
-  --lun: var(--cyan);
-  --lun-d: var(--cyan-d);
-  --utc: var(--amber);
-  --utc-d: var(--amber-d);
-  --tai: var(--green);
-  --tai-d: var(--green-d);
-  --gps: var(--red);
-  --gps-d: var(--red-d);
-  --tcb: var(--magenta);
-  --tcb-d: var(--magenta-d);
-  --unix: var(--white);
-  --unix-d: var(--gray-d);
-}
-```
-
-### Phosphor Glow Effect
-
-```css
-/* Base glow pattern — adapt color per accent */
-color: var(--cyan);
-text-shadow:
-  0 0 8px  var(--cyan),              /* tight inner glow */
-  0 0 20px rgba(0, 221, 255, 0.4),  /* medium bloom */
-  0 0 40px rgba(0, 221, 255, 0.1);  /* wide ambient */
-```
-
-### Scanlines Effect
-
-```css
-/* Scanlines — ::before pseudo-element on .lcd */
-content: '';
-position: absolute;
-inset: 0;
-background: repeating-linear-gradient(
-  0deg,
-  transparent,       transparent 2px,
-  rgba(0,0,0,0.15)  2px,
-  rgba(0,0,0,0.15)  4px
-);
-pointer-events: none;
-z-index: 1;
-
-/* Vignette — ::after pseudo-element on .lcd */
-content: '';
-position: absolute;
-inset: 0;
-background: radial-gradient(
-  ellipse at center,
-  transparent 0%,
-  transparent 60%,
-  rgba(0,0,0,0.2) 80%,
-  rgba(0,0,0,0.5) 100%
-);
-pointer-events: none;
-z-index: 10;
-```
-
-### Status Lights
-
-```css
-/* Status light — lit state (green example) */
-background: #071a07;
-border: 1px solid var(--green);
-color: var(--green);
-text-shadow: 0 0 10px var(--green), 0 0 20px rgba(51,255,102,0.4);
-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(51,255,102,0.35);
-```
 
 ---
 
@@ -489,4 +652,4 @@ These words carry the Epoch aesthetic:
 
 ---
 
-*Last updated: 2026-03-14*
+*Last updated: 2026-03-29*

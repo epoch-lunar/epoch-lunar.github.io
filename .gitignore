@@ -14,3 +14,10 @@ backend/build/
 
 # Frontend runtime config (generated at deploy / local dev)
 frontend/config.js
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example

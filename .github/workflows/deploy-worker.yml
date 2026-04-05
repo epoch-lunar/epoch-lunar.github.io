@@ -30,7 +30,7 @@ jobs:
         run: cargo install worker-build
 
       - name: Install wrangler
-        run: npm install
+        run: npm ci
 
       - name: Deploy
         run: npx wrangler deploy

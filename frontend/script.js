@@ -11,10 +11,15 @@ import {
   formatDelta,
 } from "./time-scales.js";
 
-// Worker URL — override via window.EPOCH_CONFIG.workerUrl (see config.js)
+// Production API is the Rust Worker (backend/wrangler.toml → epoch-worker).
+// Local dev: serve frontend over http://localhost and run `npx wrangler dev` in backend/.
+const PRODUCTION_WORKER_TIME_URL =
+  "https://epoch-worker.philiplinden.workers.dev/api/time";
 const WORKER_URL =
-  (window.EPOCH_CONFIG && window.EPOCH_CONFIG.workerUrl) ||
-  "http://localhost:8787/api/time";
+  typeof location !== "undefined" &&
+  (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://localhost:8787/api/time"
+    : PRODUCTION_WORKER_TIME_URL;
 
 // Magic numbers
 const MAX_HISTORY_POINTS = 60;

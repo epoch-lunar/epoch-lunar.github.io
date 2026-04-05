@@ -257,24 +257,30 @@ Most people interact only with UTC, but spacecraft navigation, relativistic astr
 This clock demonstrates those relationships in real time.
 
 ## Build
-This is a Cloudflare Worker written in Rust (using `worker-build`). To run it locally:
+
+The **API** is a Cloudflare Worker written in Rust (`worker-build`) in `backend/`. The **marketing site** is static files in `frontend/`, served by a separate Worker + Assets worker (`wrangler.toml` at repo root).
+
+To run the API locally:
 
 ```bash
-cd worker
+cd backend
 npx wrangler dev
 ```
 
-This starts the worker at `http://localhost:8787`. Your `script.js` already has the comment pointing to `http://localhost:8787/api/time` for local dev.
+This serves the Worker at `http://localhost:8787`. When you open the frontend from **localhost** (via a small static server), `frontend/script.js` uses `http://localhost:8787/api/time` automatically.
 
-To test the full site with the local worker:
-1. Run `npx wrangler dev` in the `worker/` directory (keep it running)
-2. Temporarily change `WORKER_URL` in `script.js` to `'http://localhost:8787/api/time'`
-3. Open `index.html` in a browser (or use a simple static server like `python3 -m http.server`)
+To test the full site with the local API:
 
-**First time only** — you may need to build the Rust first:
+1. Run `npx wrangler dev` in `backend/` (keep it running).
+2. Serve `frontend/` over HTTP (e.g. `cd frontend && python -m http.server 8080`).
+3. Open `http://localhost:8080` in a browser.
+
+**First time only** — you may need:
 
 ```bash
-cd worker
-cargo install worker-build  # if not already installed
-npx wrangler dev             # this triggers worker-build automatically
+rustup target add wasm32-unknown-unknown
+cargo install worker-build
+cd backend && npm ci   # uses committed package-lock.json (same as GitHub Actions)
 ```
+
+Use `npm install` only when you intentionally change backend Node dependencies and need to refresh the lockfile.

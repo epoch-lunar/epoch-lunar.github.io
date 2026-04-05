@@ -11,8 +11,10 @@ import {
   formatDelta,
 } from "./time-scales.js";
 
-// Worker URL — for local dev use: 'http://localhost:8787/api/time'
-const WORKER_URL = "http://localhost:8787/api/time";
+// Worker URL — override via window.EPOCH_CONFIG.workerUrl (see config.js)
+const WORKER_URL =
+  (window.EPOCH_CONFIG && window.EPOCH_CONFIG.workerUrl) ||
+  "http://localhost:8787/api/time";
 
 // Magic numbers
 const MAX_HISTORY_POINTS = 60;

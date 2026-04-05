@@ -212,8 +212,6 @@ TT -->|LB scaling + periodic| TCB
 TCB -->|lunar transform| TCL
 ```
 
-
-
 ### Leap second table
 
 The leap second offset is currently implemented as a fixed constant.
@@ -274,6 +272,7 @@ To test the full site with the local worker:
 3. Open `index.html` in a browser (or use a simple static server like `python3 -m http.server`)
 
 **First time only** — you may need to build the Rust first:
+
 ```bash
 cd worker
 cargo install worker-build  # if not already installed

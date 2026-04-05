@@ -11,3 +11,6 @@ backend/build/
 
 # Misc
 *.local
+
+# Frontend runtime config (generated at deploy / local dev)
+frontend/config.js

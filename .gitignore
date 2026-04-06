@@ -17,3 +17,6 @@ backend/build/
 !.dev.vars.example
 .env*
 !.env.example
+
+# Cargo
+.cargo/

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — VFD column meter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --vfd: #00e5cc;
+      --vfd-ghost: rgba(0, 229, 204, 0.1);
+      --vfd-border: rgba(0, 229, 204, 0.2);
+      --vfd-grid: rgba(0, 229, 204, 0.08);
+      --cream: #e9dcc5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--vfd);
+      margin: 0 0 1rem;
+    }
+    .panel {
+      border: 1px solid var(--vfd-border);
+      border-radius: 3px;
+      padding: 12px;
+      max-width: 720px;
+      background-image:
+        linear-gradient(var(--vfd-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--vfd-grid) 1px, transparent 1px);
+      background-size: 12px 12px;
+      background-color: var(--bg);
+    }
+    .panel__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--vfd);
+      margin-bottom: 10px;
+    }
+    .meter {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 2px;
+      height: 120px;
+    }
+    .col {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1px;
+    }
+    /* Segment 8×4px per ecosystem.md main panel */
+    .seg {
+      width: 8px;
+      height: 4px;
+      border-radius: 0;
+      background: var(--vfd-ghost);
+    }
+    .seg--lit {
+      background: var(--vfd);
+      box-shadow:
+        0 0 2px rgba(0, 229, 204, 0.9),
+        0 0 6px rgba(0, 229, 204, 0.4),
+        0 0 14px rgba(0, 229, 204, 0.15);
+    }
+    .controls {
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .controls label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--vfd);
+      letter-spacing: 0.06em;
+    }
+    input[type="range"] {
+      width: min(360px, 80vw);
+      accent-color: var(--vfd);
+    }
+    .note {
+      margin-top: 1rem;
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.45);
+      max-width: 640px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — segmented column meter (dash / brand spec)</h1>
+  <div class="panel">
+    <div class="panel__label">TCL drift accumulation (mock)</div>
+    <div class="meter" id="meter" aria-hidden="true"></div>
+  </div>
+  <div class="controls">
+    <label for="fill">Fill</label>
+    <input type="range" id="fill" min="0" max="100" value="35" />
+    <span id="fill-readout" style="font-size:11px;color:var(--cream)">35%</span>
+  </div>
+  <p class="note">
+    Geometry: 8×4px segments, 1px vertical gap, 2px column gap — see docs/ecosystem.md § Visual specification.
+    This page is for design review only; the real instrument cluster will be drawn in Rust (egui) with the same numbers.
+  </p>
+  <script>
+    const COLS = 32;
+    const SEGS = 20;
+    const meter = document.getElementById("meter");
+    const fill = document.getElementById("fill");
+    const readout = document.getElementById("fill-readout");
+
+    function build() {
+      meter.innerHTML = "";
+      for (let c = 0; c < COLS; c++) {
+        const col = document.createElement("div");
+        col.className = "col";
+        for (let s = 0; s < SEGS; s++) {
+          const seg = document.createElement("div");
+          seg.className = "seg";
+          seg.dataset.s = String(s);
+          col.appendChild(seg);
+        }
+        meter.appendChild(col);
+      }
+    }
+
+    function paint() {
+      const pct = Number(fill.value) / 100;
+      readout.textContent = fill.value + "%";
+      const litCols = Math.round(pct * COLS);
+      const partial = (pct * COLS) % 1;
+      const cols = meter.querySelectorAll(".col");
+      cols.forEach((col, ci) => {
+        const segs = col.querySelectorAll(".seg");
+        let litSegs = 0;
+        if (ci < litCols) litSegs = SEGS;
+        else if (ci === litCols && litCols < COLS) litSegs = Math.round(partial * SEGS);
+        segs.forEach((seg, si) => {
+          const on = si < litSegs;
+          seg.classList.toggle("seg--lit", on);
+        });
+      });
+    }
+
+    build();
+    paint();
+    fill.addEventListener("input", paint);
+  </script>
+</body>
+</html>

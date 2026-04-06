@@ -38,7 +38,7 @@
     --red-glow: #ff1a1a;
     --bg-black: #0a0a0a;
     --bg-case: #1a1a1a;
-    --cream: #e9dcc4;
+    --cream: #e9dcc5;
     --navy: #0e2a36;
 
     /* Timescale aliases — brand guide §Color System */
@@ -198,26 +198,44 @@ body {
     right: 12px;
 }
 
-/* Brand */
+/* Brand — logo: cream #e9dcc5 on black #0a0a0a (brand.md wordmark) */
 .brand {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    padding: 0 4px;
+    padding: 10px 14px;
+    background: #0a0a0a;
+    border-radius: 3px;
 }
 .brand-name {
     font-family: "Space Grotesk", sans-serif;
     font-size: 22px;
-    letter-spacing: 12px;
-    color: #999;
+    letter-spacing: 0;
+    color: #e9dcc5;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 300;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.32em;
+    text-shadow:
+        0 0 20px rgba(233, 220, 197, 0.25),
+        0 0 60px rgba(233, 220, 197, 0.08);
+}
+.brand-ch {
+    display: inline-block;
+}
+.brand-o-img {
+    display: block;
+    height: 1.12em;
+    width: auto;
+    flex-shrink: 0;
 }
 .brand-tag {
     font-size: 10px;
     letter-spacing: 3px;
-    color: #555;
+    color: rgba(233, 220, 197, 0.72);
     text-transform: uppercase;
 }
 

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — MFD-style console (A-10C–inspired)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bezel: #2a2d28;
+      --bezel-edge: #1a1c18;
+      --btn-white: linear-gradient(145deg, #f4f2ec 0%, #d8d4cc 35%, #bab6ac 100%);
+      --phosphor: #b8ff88;
+      --phosphor-dim: rgba(184, 255, 136, 0.22);
+      --face-dark: #0a100a;
+      --grid: rgba(184, 255, 136, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080908;
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.25rem;
+      color: #c4d4b8;
+    }
+    h1 {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--phosphor-dim);
+      margin: 0 0 1rem;
+    }
+    .disclaimer {
+      font-size: 9px;
+      color: rgba(196, 212, 184, 0.4);
+      max-width: 640px;
+      line-height: 1.45;
+      margin-bottom: 1rem;
+    }
+    .mfd {
+      max-width: 720px;
+      background: linear-gradient(180deg, #353830 0%, var(--bezel) 8%, var(--bezel-edge) 100%);
+      padding: 14px 12px 16px;
+      border-radius: 4px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 10px 40px rgba(0, 0, 0, 0.75);
+      border: 1px solid #0a0a08;
+    }
+    .mfd__title {
+      font-size: 8px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #5a6052;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .mfd__row {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .osb-col {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 4px 0;
+    }
+    .osb {
+      width: 36px;
+      min-height: 44px;
+      border: 1px solid rgba(0, 0, 0, 0.35);
+      border-radius: 2px;
+      background: var(--btn-white);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.12),
+        0 2px 4px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+      position: relative;
+    }
+    .osb::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 1px;
+      background: repeating-linear-gradient(
+        -12deg,
+        transparent 0px,
+        transparent 1px,
+        rgba(0, 0, 0, 0.03) 1px,
+        rgba(0, 0, 0, 0.03) 2px
+      );
+      pointer-events: none;
+    }
+    .osb:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .osb__n {
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 7px;
+      color: #4a4840;
+      letter-spacing: 0;
+    }
+    .screen {
+      flex: 1;
+      min-height: 280px;
+      background: radial-gradient(ellipse at 50% 40%, #0f1a12 0%, var(--face-dark) 65%, #050805 100%);
+      border: 2px solid #0d100d;
+      border-radius: 2px;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.85);
+      position: relative;
+      display: grid;
+      grid-template-columns: 52px 1fr 52px;
+      grid-template-rows: 1fr;
+      overflow: hidden;
+    }
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+    .screen__side {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding: 10px 4px;
+      font-size: 10px;
+      line-height: 1.15;
+      color: var(--phosphor);
+      text-shadow: 0 0 6px rgba(184, 255, 136, 0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .screen__side--left {
+      text-align: left;
+      align-items: flex-start;
+    }
+    .screen__side--right {
+      text-align: right;
+      align-items: flex-end;
+    }
+    .osb-label {
+      min-height: 2.6em;
+      opacity: 0.92;
+    }
+    .osb-label:empty::before {
+      content: "—";
+      opacity: 0.25;
+    }
+    .screen__center {
+      position: relative;
+      z-index: 1;
+      padding: 14px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .screen__center h2 {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: var(--phosphor);
+      text-shadow: 0 0 10px rgba(184, 255, 136, 0.4);
+    }
+    .screen__center p {
+      margin: 0;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--phosphor-dim);
+      max-width: 220px;
+    }
+    .tick {
+      font-size: 9px;
+      color: var(--phosphor);
+      opacity: 0.5;
+      margin-top: 12px;
+      letter-spacing: 0.15em;
+    }
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.04) 2px,
+        rgba(0, 0, 0, 0.04) 3px
+      );
+      z-index: 2;
+    }
+    .hint {
+      margin-top: 1rem;
+      font-size: 10px;
+      color: rgba(196, 212, 184, 0.35);
+      max-width: 640px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — MFD-style console (A-10C–inspired)</h1>
+  <p class="disclaimer">
+    <strong>Not</strong> an official or exact reproduction of any aircraft MFD. Loosely inspired by the “OSB strip +
+    green phosphor” multi-function display feel. Epoch branding and timing labels stand in for weapon pages.
+  </p>
+
+  <div class="mfd">
+    <div class="mfd__title">MFCD — demo / training</div>
+    <div class="mfd__row">
+      <div class="osb-col" id="osb-left"></div>
+      <div class="screen">
+        <div class="scanlines"></div>
+        <div class="screen__side screen__side--left" id="labels-left"></div>
+        <div class="screen__center">
+          <h2 id="page-title">TIME &amp; NAV</h2>
+          <p id="page-body">
+            Option Select Buttons (white) push menu labels onto the phosphor strips. Layout mimics side-mounted OSBs
+            with inward-facing legends — common on late cold-war U.S. attack jet MFCDs.
+          </p>
+          <div class="tick" id="clock-tick">TAI — --:--:--</div>
+        </div>
+        <div class="screen__side screen__side--right" id="labels-right"></div>
+      </div>
+      <div class="osb-col" id="osb-right"></div>
+    </div>
+  </div>
+
+  <p class="hint">
+    Click an OSB to cycle that row’s label. Labels are independent per side (L1–L5 / R1–R5). Inspired by MFCD menu
+    stacks, simplified for web.
+  </p>
+
+  <script>
+    const N = 5;
+    const leftPool = [
+      ["UTC", "TAI", "GPS", "LTC", "HOLD"],
+      ["SYNC", "DRIFT", "BIAS", "LOG", "TEST"],
+      ["SCALE", "TCB", "TCG", "TCL", "TT"],
+      ["SRC A", "SRC B", "NET", "PNT", "FIX"],
+      ["BRIGHT", "GRID", "SYM", "DECLUT", "NVG"],
+    ];
+    const rightPool = [
+      ["LOCK", "WARN", "MSG", "ACK", "MENU"],
+      ["OSB", "HOTAS", "TGP", "MAV", "CBU"],
+      ["UP", "DN", "STEP", "ENT", "RTN"],
+      ["PAGE 1", "PAGE 2", "PAGE 3", "PAGE 4", "PAGE 5"],
+      ["HELP", "ABOUT", "EPOCH", "OL", "EXIT"],
+    ];
+    const leftLabels = leftPool.map((row, i) => row[0]);
+    const rightLabels = rightPool.map((row, i) => row[0]);
+    const leftIdx = leftPool.map(() => 0);
+    const rightIdx = rightPool.map(() => 0);
+
+    function buildOsbCol(container, side) {
+      container.innerHTML = "";
+      for (let i = 0; i < N; i++) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "osb";
+        b.dataset.side = side;
+        b.dataset.row = String(i);
+        const n = document.createElement("span");
+        n.className = "osb__n";
+        n.textContent = side === "L" ? "L" + (i + 1) : "R" + (i + 1);
+        b.appendChild(n);
+        b.addEventListener("click", () => onOsb(side, i));
+        container.appendChild(b);
+      }
+    }
+    function buildLabelCols() {
+      const ll = document.getElementById("labels-left");
+      const lr = document.getElementById("labels-right");
+      ll.innerHTML = "";
+      lr.innerHTML = "";
+      for (let i = 0; i < N; i++) {
+        const dl = document.createElement("div");
+        dl.className = "osb-label";
+        dl.id = "ll-" + i;
+        ll.appendChild(dl);
+        const dr = document.createElement("div");
+        dr.className = "osb-label";
+        dr.id = "lr-" + i;
+        lr.appendChild(dr);
+      }
+    }
+    function paintLabels() {
+      for (let i = 0; i < N; i++) {
+        document.getElementById("ll-" + i).textContent = leftLabels[i];
+        document.getElementById("lr-" + i).textContent = rightLabels[i];
+      }
+    }
+    function onOsb(side, row) {
+      if (side === "L") {
+        leftIdx[row] = (leftIdx[row] + 1) % leftPool[row].length;
+        leftLabels[row] = leftPool[row][leftIdx[row]];
+      } else {
+        rightIdx[row] = (rightIdx[row] + 1) % rightPool[row].length;
+        rightLabels[row] = rightPool[row][rightIdx[row]];
+      }
+      paintLabels();
+    }
+    buildOsbCol(document.getElementById("osb-left"), "L");
+    buildOsbCol(document.getElementById("osb-right"), "R");
+    buildLabelCols();
+    paintLabels();
+
+    function tickClock() {
+      const d = new Date();
+      const h = String(d.getUTCHours()).padStart(2, "0");
+      const m = String(d.getUTCMinutes()).padStart(2, "0");
+      const s = String(d.getUTCSeconds()).padStart(2, "0");
+      document.getElementById("clock-tick").textContent = `UTC — ${h}:${m}:${s}`;
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+  </script>
+</body>
+</html>

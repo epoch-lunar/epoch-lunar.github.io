@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — indicator lamps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --vfd: #00e5cc;
+      --amber: #ffaa00;
+      --warning: #ff2255;
+      --dim: #555558;
+      --cream: #e9dcc5;
+      --tai-green: #33ff66;
+      /* White LED vs silkscreen: emitter is brighter; label reads as printed white ink */
+      --led-white: #eef2f8;
+      --silk-white: #b8bcc6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--vfd);
+      margin: 0 0 0.25rem;
+    }
+    .sub {
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.45);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+    .sub__filehint {
+      color: rgba(233, 220, 196, 0.35);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px 36px;
+      align-items: flex-end;
+      padding: 20px;
+      border: 1px solid rgba(0, 229, 204, 0.2);
+      border-radius: 3px;
+      max-width: 720px;
+    }
+    /* brand.md: 12×8px rectangular lamps, not circles */
+    .lamp {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .lamp--static {
+      cursor: default;
+    }
+    .lamp__bulb {
+      width: 12px;
+      height: 8px;
+      border-radius: 1px;
+      /* omit opacity — conflicts with motion-row keyframes */
+      transition: box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .lamp__label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .lamp--locked .lamp__label {
+      color: var(--vfd);
+    }
+    .lamp--hold .lamp__label {
+      color: var(--amber);
+    }
+    .lamp--fault .lamp__label {
+      color: var(--warning);
+    }
+    .lamp--locked .lamp__bulb.on {
+      background: var(--vfd);
+      box-shadow:
+        0 0 4px var(--vfd),
+        0 0 12px rgba(0, 229, 204, 0.45);
+    }
+    .lamp--locked .lamp__bulb.off {
+      background: rgba(0, 229, 204, 0.15);
+      box-shadow: none;
+    }
+    .lamp--hold .lamp__bulb.on {
+      background: var(--amber);
+      box-shadow:
+        0 0 4px var(--amber),
+        0 0 12px rgba(255, 170, 0, 0.45);
+    }
+    .lamp--hold .lamp__bulb.off {
+      background: rgba(255, 170, 0, 0.15);
+    }
+    .lamp--fault .lamp__bulb.on {
+      background: var(--warning);
+      box-shadow:
+        0 0 4px var(--warning),
+        0 0 12px rgba(255, 34, 85, 0.45);
+    }
+    .lamp--fault .lamp__bulb.off {
+      background: rgba(255, 34, 85, 0.15);
+    }
+    /* OFFLINE = single state: unlit gray lens (--dim), not toggleable like colored lamps */
+    .lamp--off .lamp__bulb {
+      background: var(--dim);
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.75);
+    }
+    .lamp--off .lamp__label {
+      color: var(--dim);
+    }
+    .lamp--green .lamp__bulb.on {
+      background: var(--tai-green);
+      box-shadow:
+        0 0 4px var(--tai-green),
+        0 0 12px rgba(51, 255, 102, 0.5);
+    }
+    .lamp--green .lamp__bulb.off {
+      background: rgba(51, 255, 102, 0.15);
+      box-shadow: none;
+    }
+    .lamp--green .lamp__label {
+      color: var(--tai-green);
+    }
+    .lamp--locked:has(.lamp__bulb.off) .lamp__label {
+      color: rgba(0, 229, 204, 0.5);
+    }
+    .lamp--hold:has(.lamp__bulb.off) .lamp__label {
+      color: rgba(255, 170, 0, 0.55);
+    }
+    .lamp--fault:has(.lamp__bulb.off) .lamp__label {
+      color: rgba(255, 34, 85, 0.55);
+    }
+    .lamp--green:has(.lamp__bulb.off) .lamp__label {
+      color: rgba(51, 255, 102, 0.5);
+    }
+    .lamp--white .lamp__bulb.on {
+      background: var(--led-white);
+      box-shadow:
+        0 0 3px rgba(255, 255, 255, 0.95),
+        0 0 10px rgba(255, 255, 255, 0.4);
+    }
+    .lamp--white .lamp__bulb.off {
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: none;
+    }
+    /* Silkscreen: fixed ink color; does not track LED on/off or motion */
+    .lamp--white .lamp__label {
+      color: var(--silk-white);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+    }
+    /*
+     * Bubble / jewel LED: small hemispherical glass nub over a die — not a flat backlit window.
+     * Legend is pad-print / etched panel text (cream), not silkscreen matched to LED hue.
+     */
+    .lamp--bubble .lamp__bulb {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .lamp--bubble .lamp__bulb::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+    }
+    .lamp--bubble .lamp__bulb::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      top: 14%;
+      width: 52%;
+      height: 38%;
+      border-radius: 50%;
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.15) 45%, transparent 72%);
+      pointer-events: none;
+      opacity: 0.65;
+    }
+    .lamp--bubble .lamp__bulb.off::after {
+      opacity: 0.22;
+    }
+    /* ON: strong bloom = light leaking through glass; keep OFF state as-is */
+    .lamp--bubble-green .lamp__bulb.on {
+      background:
+        radial-gradient(circle at 68% 70%, transparent 40%, rgba(255, 255, 255, 0.12) 52%, transparent 64%),
+        radial-gradient(circle at 30% 26%, #e8fff0 0%, #00f74a 14%, var(--tai-green) 36%, #147a3a 72%, #042210 100%);
+      box-shadow:
+        0 0 1px rgba(255, 255, 255, 0.55),
+        0 0 4px var(--tai-green),
+        0 0 12px rgba(0, 255, 64, 0.85),
+        0 0 22px rgba(25, 195, 22, 0.55),
+        0 0 34px rgba(51, 255, 102, 0.28),
+        0 0 48px rgba(51, 255, 102, 0.12),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        inset 1px 2px 3px rgba(255, 255, 255, 0.22);
+    }
+    .lamp--bubble-green .lamp__bulb.on::after {
+      opacity: 0.88;
+      background: linear-gradient(
+        152deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(255, 255, 255, 0.35) 38%,
+        rgba(255, 255, 255, 0.06) 58%,
+        transparent 76%
+      );
+    }
+    .lamp--bubble-green .lamp__bulb.off {
+      background: radial-gradient(circle at 40% 35%, rgba(51, 255, 102, 0.18) 0%, #141a16 62%, #0a0c0b 100%);
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.85),
+        inset 0 -1px 2px rgba(51, 255, 102, 0.06);
+    }
+    .lamp--bubble .lamp__label {
+      color: rgba(233, 220, 196, 0.58);
+      text-shadow: none;
+    }
+    /* Motion row: opacity driven by script (CSS @keyframes often no-op in embedded / some Firefox setups) */
+    .panel-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--vfd);
+      margin: 0 0 10px;
+    }
+    .demo-block {
+      max-width: 1080px;
+    }
+    .demo-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 720px) minmax(12rem, 1fr);
+      grid-template-rows: auto auto;
+      column-gap: 28px;
+      row-gap: 10px;
+      align-items: start;
+      margin-bottom: 1.75rem;
+    }
+    .demo-panel > .panel-title {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .demo-panel > .row {
+      grid-column: 1;
+      grid-row: 2;
+      min-width: 0;
+    }
+    .demo-panel__notes {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: start;
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.42);
+      line-height: 1.55;
+    }
+    .demo-panel__notes p {
+      margin: 0 0 0.65em;
+    }
+    .demo-panel__notes p:last-child {
+      margin-bottom: 0;
+    }
+    .demo-panel__notes strong {
+      color: rgba(233, 220, 196, 0.72);
+      font-weight: 400;
+    }
+    @media (max-width: 800px) {
+      .demo-panel {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      .demo-panel > .panel-title,
+      .demo-panel > .row,
+      .demo-panel__notes {
+        grid-column: 1;
+        grid-row: auto;
+      }
+      .demo-panel__notes {
+        max-width: 42rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — indicator lamps</h1>
+  <p class="sub">
+    docs/brand.md — Indicator lights · prototype <code>frontend/prototypes/indicator-lights.html</code>
+    <br />
+    <span class="sub__filehint">Preview with <code>http://localhost/…</code> (e.g. <code>python -m http.server</code> in this folder), not <code>file://</code> — extensions often log <code>postMessage</code> / “invalid or illegal string” on file URLs; that noise is not from this page.</span>
+  </p>
+
+  <div class="demo-block">
+    <div class="demo-panel">
+      <div class="panel-title">Status row (interactive)</div>
+      <div class="row" id="interactive">
+        <div class="lamp lamp--locked" data-on="true">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Locked</span>
+        </div>
+        <div class="lamp lamp--hold" data-on="false">
+          <div class="lamp__bulb off"></div>
+          <span class="lamp__label">Holdover</span>
+        </div>
+        <div class="lamp lamp--fault" data-on="false">
+          <div class="lamp__bulb off"></div>
+          <span class="lamp__label">Fault</span>
+        </div>
+        <div class="lamp lamp--off lamp--static" aria-label="Offline (read-only)">
+          <div class="lamp__bulb"></div>
+          <span class="lamp__label">Offline</span>
+        </div>
+        <div class="lamp lamp--green" data-on="true">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Sync OK</span>
+        </div>
+        <div class="lamp lamp--white" data-on="true">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Power</span>
+        </div>
+        <div class="lamp lamp--bubble lamp--bubble-green" data-on="true">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Run</span>
+        </div>
+      </div>
+      <div class="demo-panel__notes">
+        <p>
+          Rectangular <strong>12×8px</strong> lamps (not circles). Click any lamp except <strong>OFFLINE</strong> to toggle asserted vs ghost state.
+        </p>
+        <p>
+          Labels use the same hue as their lamp (<code>--vfd</code>, <code>--amber</code>, <code>--warning</code>, <code>--tai-green</code>); ghost “off” bulbs also soften the label.
+        </p>
+        <p>
+          <strong>OFFLINE</strong> — <code>--dim</code> <code>#555558</code>: inert gray lens (same token as secondary UI text), not a white LED. Single read-only state; inset shadow reads recessed vs emitting colors.
+        </p>
+        <p>
+          <strong>Sync OK</strong> — TAI green <code>#33FF66</code> for GPS / PNT / valid-time lock.
+        </p>
+        <p>
+          <strong>Power</strong> — cool white emitter <code>--led-white</code>; caption is <code>--silk-white</code> silkscreen ink (fixed tone + light shadow), independent of LED on/off.
+        </p>
+        <p>
+          <strong>Run</strong> (bubble) — small <strong>domed glass jewel</strong> over green LED (<code>--tai-green</code> family): radial fill, rim bezel, specular highlight. Caption is neutral <strong>panel legend</strong> (cream), not hue-linked like the flat bar lamps.
+        </p>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <div class="panel-title">Reference — all “on”</div>
+      <div class="row" aria-hidden="true">
+        <div class="lamp lamp--locked"><div class="lamp__bulb on"></div><span class="lamp__label">Locked</span></div>
+        <div class="lamp lamp--hold"><div class="lamp__bulb on"></div><span class="lamp__label">Holdover</span></div>
+        <div class="lamp lamp--fault"><div class="lamp__bulb on"></div><span class="lamp__label">Fault</span></div>
+        <div class="lamp lamp--off lamp--static"><div class="lamp__bulb"></div><span class="lamp__label">Offline</span></div>
+        <div class="lamp lamp--green"><div class="lamp__bulb on"></div><span class="lamp__label">Sync OK</span></div>
+        <div class="lamp lamp--white"><div class="lamp__bulb on"></div><span class="lamp__label">Power</span></div>
+        <div class="lamp lamp--bubble lamp--bubble-green"><div class="lamp__bulb on"></div><span class="lamp__label">Run</span></div>
+      </div>
+      <div class="demo-panel__notes">
+        <p>
+          Same lineup with every chromatic lamp in its fully asserted “on” look, plus OFFLINE, Power, and the green bubble <strong>Run</strong> jewel, for a straight comparison to the interactive row.
+        </p>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <div class="panel-title">Motion — blink, strobe, flicker</div>
+      <div class="row" id="motion-row" aria-label="Animated indicator examples">
+        <div class="lamp lamp--locked lamp--static lamp--fx-blink">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Blink</span>
+        </div>
+        <div class="lamp lamp--fault lamp--static lamp--fx-strobe">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Strobe</span>
+        </div>
+        <div class="lamp lamp--hold lamp--static lamp--fx-flicker">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Flicker</span>
+        </div>
+        <div class="lamp lamp--off lamp--static lamp--fx-blink">
+          <div class="lamp__bulb"></div>
+          <span class="lamp__label">Blink</span>
+        </div>
+        <div class="lamp lamp--green lamp--static lamp--fx-flicker">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Flicker</span>
+        </div>
+        <div class="lamp lamp--white lamp--static lamp--fx-strobe">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Strobe</span>
+        </div>
+        <div class="lamp lamp--bubble lamp--bubble-green lamp--static lamp--fx-blink">
+          <div class="lamp__bulb on"></div>
+          <span class="lamp__label">Blink</span>
+        </div>
+      </div>
+      <div class="demo-panel__notes">
+        <p>
+          Opacity is driven with <code>requestAnimationFrame</code> on each bulb (works in Firefox and embedded preview). Chromatic bar-lamp labels pulse with their lamp; <strong>Power</strong> silkscreen and <strong>bubble</strong> panel legend stay fixed while only the emitters animate.
+        </p>
+        <p>
+          <strong>Blink</strong> — ~1.1s cycle, half bright / half dim. <strong>Strobe</strong> — short flash each 0.4s. <strong>Flicker</strong> — irregular 2.4s loop.
+        </p>
+        <p>
+          Honors <code>prefers-reduced-motion</code> (animations stop; inline opacity cleared).
+        </p>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById("interactive").addEventListener("click", (e) => {
+      const lamp = e.target.closest(".lamp");
+      if (!lamp || lamp.classList.contains("lamp--off")) return;
+      const on = lamp.dataset.on === "true";
+      lamp.dataset.on = String(!on);
+      const bulb = lamp.querySelector(".lamp__bulb");
+      bulb.classList.toggle("on", !on);
+      bulb.classList.toggle("off", on);
+    });
+
+    (function motionLamps() {
+      const row = document.getElementById("motion-row");
+      if (!row) return;
+
+      const flickerStops = [
+        [0, 1],
+        [0.04, 0.35],
+        [0.06, 1],
+        [0.09, 0.5],
+        [0.11, 1],
+        [0.18, 0.2],
+        [0.2, 1],
+        [0.35, 0.85],
+        [0.38, 0.25],
+        [0.4, 1],
+        [0.52, 0.4],
+        [0.54, 1],
+        [0.71, 0.15],
+        [0.73, 1],
+        [0.88, 0.55],
+        [0.9, 1],
+        [0.96, 0.3],
+        [1, 1],
+      ];
+
+      function sampleStops(u) {
+        for (let i = flickerStops.length - 2; i >= 0; i--) {
+          if (u >= flickerStops[i][0]) {
+            const [t0, v0] = flickerStops[i];
+            const [t1, v1] = flickerStops[i + 1];
+            if (t1 <= t0) return v1;
+            const k = (u - t0) / (t1 - t0);
+            return v0 + k * (v1 - v0);
+          }
+        }
+        return 1;
+      }
+
+      function opBlink(ms) {
+        const ph = (ms % 1100) / 1100;
+        return ph < 0.5 ? 1 : 0.22;
+      }
+
+      function opStrobe(ms) {
+        const ph = (ms % 400) / 400;
+        return ph < 0.08 ? 1 : 0.12;
+      }
+
+      function opFlicker(ms) {
+        return sampleStops((ms % 2400) / 2400);
+      }
+
+      const entries = [];
+      row.querySelectorAll(".lamp").forEach((lamp) => {
+        let fn = null;
+        if (lamp.classList.contains("lamp--fx-blink")) fn = opBlink;
+        else if (lamp.classList.contains("lamp--fx-strobe")) fn = opStrobe;
+        else if (lamp.classList.contains("lamp--fx-flicker")) fn = opFlicker;
+        if (!fn) return;
+        const fixedLegend =
+          lamp.classList.contains("lamp--white") || lamp.classList.contains("lamp--bubble");
+        entries.push({
+          bulb: lamp.querySelector(".lamp__bulb"),
+          label: lamp.querySelector(".lamp__label"),
+          syncLabel: !fixedLegend,
+          fn,
+        });
+      });
+
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let reduceMotion = mq.matches;
+
+      function clearInlineOpacity() {
+        entries.forEach(({ bulb, label }) => {
+          bulb.style.removeProperty("opacity");
+          if (label) label.style.removeProperty("opacity");
+        });
+      }
+
+      function onReduceMotionChange() {
+        reduceMotion = mq.matches;
+        if (reduceMotion) clearInlineOpacity();
+      }
+      if (typeof mq.addEventListener === "function") {
+        mq.addEventListener("change", onReduceMotionChange);
+      } else if (typeof mq.addListener === "function") {
+        mq.addListener(onReduceMotionChange);
+      }
+
+      function frame(t) {
+        if (!reduceMotion) {
+          entries.forEach(({ bulb, label, syncLabel, fn }) => {
+            let o = fn(t);
+            if (typeof o !== "number" || !Number.isFinite(o)) o = 1;
+            o = Math.min(1, Math.max(0, o));
+            bulb.style.opacity = String(o);
+            if (syncLabel && label) label.style.opacity = String(o);
+          });
+        }
+        requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

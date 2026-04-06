@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — 80s dash knobs & buttons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dash-plastic: #121214;
+      --dash-top: #1e1e22;
+      --knob-body: #0a0a0c;
+      --knob-ring: linear-gradient(145deg, #5c5a55, #2a2926);
+      --chrome: linear-gradient(180deg, #d8d4c8 0%, #8a8778 45%, #c4c0b4 100%);
+      --cream: #e9dcc5;
+      --amber-glow: rgba(255, 180, 60, 0.35);
+      --btn-face: #18181c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #070708;
+      color: var(--cream);
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(233, 220, 196, 0.55);
+      margin: 0 0 1rem;
+    }
+    .bezel {
+      max-width: 720px;
+      background: linear-gradient(165deg, var(--dash-top) 0%, var(--dash-plastic) 40%, #0c0c0e 100%);
+      border-radius: 4px;
+      padding: 22px 24px 28px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 12px 40px rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(0, 0, 0, 0.6);
+    }
+    .bezel__grain {
+      position: relative;
+    }
+    .bezel__grain::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: flex-start;
+      gap: 32px 40px;
+      position: relative;
+      z-index: 1;
+    }
+    /* —— Rotary knob (Honda/Acura era: black cap + chrome skirt + white tick) —— */
+    .knob-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .knob {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--knob-ring);
+      padding: 4px;
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      cursor: grab;
+    }
+    .knob:active {
+      cursor: grabbing;
+    }
+    .knob__cap {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #2a2a30 0%, var(--knob-body) 45%, #050508 100%);
+      box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.06),
+        inset 0 -6px 12px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+    .knob__tick {
+      position: absolute;
+      left: 50%;
+      top: 6px;
+      width: 2px;
+      height: 10px;
+      margin-left: -1px;
+      background: #f5f0e6;
+      border-radius: 1px;
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+      transform-origin: 50% 22px;
+    }
+    .knob__label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(233, 220, 196, 0.55);
+    }
+    /* —— Push buttons: rectangular, slight 3D, backlit legend —— */
+    .btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-stack__title {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(233, 220, 196, 0.35);
+      margin-bottom: 4px;
+    }
+    .dash-btn {
+      position: relative;
+      min-width: 88px;
+      padding: 10px 14px 12px;
+      border: none;
+      border-radius: 2px;
+      background: var(--btn-face);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.45),
+        0 2px 0 #0a0a0c,
+        0 3px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      font-family: inherit;
+      text-align: center;
+    }
+    .dash-btn:active {
+      transform: translateY(2px);
+      box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.6),
+        0 1px 0 #0a0a0c;
+    }
+    .dash-btn__legend {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(233, 220, 196, 0.25);
+      text-shadow: 0 0 8px var(--amber-glow);
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .dash-btn--lit .dash-btn__legend {
+      color: #ffc966;
+      text-shadow:
+        0 0 6px rgba(255, 200, 100, 0.8),
+        0 0 14px rgba(255, 160, 60, 0.35);
+    }
+    /* Default small switches: lit = slight inner warmth */
+    .dash-btn--lit:not(.dash-btn--panel) {
+      box-shadow:
+        inset 0 0 12px rgba(255, 160, 60, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 2px 0 #0a0a0c;
+    }
+    /* Large HVAC panel buttons: crisp box, legend glow only — no warm border / edge bloom */
+    .dash-btn--panel {
+      min-width: 118px;
+      padding: 13px 20px 15px;
+      border-radius: 0;
+      border: 1px solid #000;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        inset 0 -4px 10px rgba(0, 0, 0, 0.55),
+        0 2px 0 #060607,
+        0 3px 5px rgba(0, 0, 0, 0.45);
+    }
+    .dash-btn--panel:active {
+      transform: translateY(2px);
+      box-shadow:
+        inset 0 3px 12px rgba(0, 0, 0, 0.7),
+        0 1px 0 #060607;
+    }
+    .dash-btn--panel.dash-btn--lit {
+      background: #141210;
+      border: 1px solid #000;
+      box-shadow:
+        inset 0 4px 14px rgba(0, 0, 0, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        0 2px 0 #060607;
+    }
+    .dash-btn--panel.dash-btn--lit:active {
+      box-shadow:
+        inset 0 5px 18px rgba(0, 0, 0, 0.82),
+        0 1px 0 #060607;
+    }
+    /* Rocker / alternate style */
+    .rocker-row {
+      display: flex;
+      gap: 0;
+      margin-top: 4px;
+      border: 1px solid #000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+    }
+    .rocker {
+      flex: 1;
+      padding: 9px 6px 10px;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #121214;
+      border: none;
+      border-right: 1px solid #000;
+      color: rgba(233, 220, 196, 0.35);
+      cursor: pointer;
+      border-radius: 0;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.4);
+      transition: transform 0.06s ease, box-shadow 0.06s ease;
+    }
+    .rocker:last-child {
+      border-right: none;
+    }
+    .rocker.on {
+      color: #ffcc80;
+      background: #0e0d0c;
+      transform: translateY(2px);
+      box-shadow:
+        inset 0 6px 14px rgba(0, 0, 0, 0.92),
+        inset 0 3px 8px rgba(0, 0, 0, 0.65),
+        inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    .rocker:active {
+      transform: translateY(3px);
+      box-shadow:
+        inset 0 8px 18px rgba(0, 0, 0, 0.95),
+        inset 0 5px 12px rgba(0, 0, 0, 0.7);
+    }
+    .rocker.on:active {
+      transform: translateY(4px);
+      box-shadow:
+        inset 0 10px 22px rgba(0, 0, 0, 0.97),
+        inset 0 6px 14px rgba(0, 0, 0, 0.75);
+    }
+    /* —— DIP switch bank (ivory / white body, piano toggles) —— */
+    .dip-bank {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dip-bank__title {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(233, 220, 196, 0.35);
+    }
+    .dip {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 6px 8px 8px;
+      background: linear-gradient(180deg, #f2efe6 0%, #dcd6c8 35%, #c9c2b2 100%);
+      border-radius: 2px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.12),
+        0 2px 6px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .dip__slot {
+      width: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      padding: 0 2px;
+    }
+    .dip__well {
+      position: relative;
+      width: 12px;
+      height: 28px;
+      background: linear-gradient(90deg, #2a2824 0%, #1a1816 50%, #252320 100%);
+      border-radius: 1px;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
+    }
+    .dip__paddle {
+      position: absolute;
+      left: 1px;
+      width: 10px;
+      height: 11px;
+      background: linear-gradient(180deg, #fefefe 0%, #e8e6e0 40%, #c8c4bc 100%);
+      border-radius: 1px;
+      box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transition: top 0.07s ease;
+    }
+    .dip__slot[data-on="true"] .dip__paddle {
+      top: 2px;
+    }
+    .dip__slot[data-on="false"] .dip__paddle {
+      top: 15px;
+    }
+    .dip__num {
+      font-size: 6px;
+      color: #6a6558;
+      margin-top: 3px;
+      letter-spacing: 0;
+    }
+    .note {
+      margin-top: 1.25rem;
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.38);
+      max-width: 640px;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — mid-80s car dash (knobs + buttons)</h1>
+  <div class="bezel">
+    <div class="bezel__grain">
+      <div class="cluster">
+        <div class="knob-unit">
+          <div class="knob" id="knob-a" title="drag horizontally">
+            <div class="knob__cap">
+              <div class="knob__tick" id="tick-a"></div>
+            </div>
+          </div>
+          <span class="knob__label">Brightness</span>
+        </div>
+        <div class="knob-unit">
+          <div class="knob" id="knob-b">
+            <div class="knob__cap">
+              <div class="knob__tick" id="tick-b"></div>
+            </div>
+          </div>
+          <span class="knob__label">Contrast</span>
+        </div>
+        <div class="btn-stack">
+          <div class="btn-stack__title">HVAC / trip — push</div>
+          <button type="button" class="dash-btn dash-btn--panel" data-btn>
+            <span class="dash-btn__legend">Defrost</span>
+          </button>
+          <button type="button" class="dash-btn dash-btn--panel dash-btn--lit" data-btn>
+            <span class="dash-btn__legend">A/C</span>
+          </button>
+          <div class="rocker-row">
+            <button type="button" class="rocker on" data-rocker>Heat</button>
+            <button type="button" class="rocker" data-rocker>Vent</button>
+          </div>
+        </div>
+        <div class="dip-bank">
+          <div class="dip-bank__title">DIP — address / config (click toggles)</div>
+          <div class="dip" id="dip-bank" aria-label="8-position DIP switch">
+            <div class="dip__slot" data-on="true" data-bit="0"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">1</span></div>
+            <div class="dip__slot" data-on="false" data-bit="1"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">2</span></div>
+            <div class="dip__slot" data-on="true" data-bit="2"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">3</span></div>
+            <div class="dip__slot" data-on="false" data-bit="3"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">4</span></div>
+            <div class="dip__slot" data-on="false" data-bit="4"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">5</span></div>
+            <div class="dip__slot" data-on="true" data-bit="5"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">6</span></div>
+            <div class="dip__slot" data-on="false" data-bit="6"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">7</span></div>
+            <div class="dip__slot" data-on="false" data-bit="7"><div class="dip__well"><div class="dip__paddle"></div></div><span class="dip__num">8</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note">
+    Reference: late-80s Japanese digital clusters — black textured fascia, chrome-ringed rotary controls with a single
+    paint tick, rectangular switches with silkscreened legends that look “backlit” when active. Includes an
+    <strong>ivory DIP</strong> strip (white paddle toggles in a dark slot) for address / config vocabulary. Not a copy
+    of any specific model.
+  </p>
+  <script>
+    function bindKnob(knobEl, tickEl, startDeg) {
+      let deg = startDeg;
+      const apply = () => {
+        tickEl.style.transform = `rotate(${deg}deg)`;
+      };
+      apply();
+      let dragging = false;
+      let lastX = 0;
+      knobEl.addEventListener("pointerdown", (e) => {
+        dragging = true;
+        lastX = e.clientX;
+        knobEl.setPointerCapture(e.pointerId);
+      });
+      knobEl.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        deg += (e.clientX - lastX) * 1.2;
+        deg = Math.max(-140, Math.min(140, deg));
+        lastX = e.clientX;
+        apply();
+      });
+      knobEl.addEventListener("pointerup", () => {
+        dragging = false;
+      });
+      knobEl.addEventListener("pointercancel", () => {
+        dragging = false;
+      });
+    }
+    bindKnob(document.getElementById("knob-a"), document.getElementById("tick-a"), -35);
+    bindKnob(document.getElementById("knob-b"), document.getElementById("tick-b"), 55);
+
+    document.querySelectorAll("[data-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => btn.classList.toggle("dash-btn--lit"));
+    });
+    document.querySelectorAll("[data-rocker]").forEach((r) => {
+      r.addEventListener("click", () => {
+        r.parentElement.querySelectorAll("[data-rocker]").forEach((x) => x.classList.remove("on"));
+        r.classList.add("on");
+      });
+    });
+    document.getElementById("dip-bank").addEventListener("click", (e) => {
+      const slot = e.target.closest(".dip__slot");
+      if (!slot) return;
+      const on = slot.dataset.on === "true";
+      slot.dataset.on = String(!on);
+    });
+  </script>
+</body>
+</html>

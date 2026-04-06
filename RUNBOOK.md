@@ -84,7 +84,7 @@ You should see the clock tick and the worker panel move toward **LOCKED** withou
 |------|-----|
 | **Static site** (`frontend/`) | Cloudflare **Workers** build from git — uses repo-root **`wrangler.toml`** (worker name `epochlunar-com`). |
 | **Rust API** (`backend/`) | **GitHub Actions** on `main` when `backend/**` changes: `wrangler deploy` from `backend/`. |
-| **Staging (full stack)** | Push to branch **`staging`** (or **Actions → Deploy staging → Run workflow**): deploys **`epochlunar-com-staging`** + **`epoch-worker-staging`**. Open **`https://epochlunar-com-staging.<subdomain>.workers.dev`** (same `<subdomain>` as production). |
+| **Staging (full stack)** | (1) **PR into `main`** — each push to the PR runs **Deploy staging** (same staging URLs; the latest deploy wins if several PRs are open). (2) **Push / merge to `staging`**. (3) **Actions → Deploy staging → Run workflow**. Open **`https://epochlunar-com-staging.<subdomain>.workers.dev`**. **Fork PRs** do not get deploy (no secrets). |
 
 GitHub secret **`CLOUDFLARE_API_TOKEN`** is for the **`deploy-worker.yml`** job only. You can remove **`WORKER_URL`**, **`CLOUDFLARE_ACCOUNT_ID`**, and any **Pages**-related secrets if they were only used by the old frontend workflow.
 

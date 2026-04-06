@@ -24,19 +24,21 @@ The primary mark is a wordmark: **EPOCH** in a light-weight geometric sans-serif
 
 **Reference file:** `docs/epoch_logo.png`
 
+**Vector sources (prototypes):** `docs/prototypes/logo-mark1.svg` — cream ring + `#0A0A0A` eclipse disk; `docs/prototypes/logo-mark1-crescent.svg` — filled crescent only. The live site uses a trimmed **`frontend/logo-o.svg`** (eclipse composition + VFD glow on cream per § Screen rendering).
+
 #### Wordmark construction
 
 - **Typeface:** Light-weight geometric sans-serif. Thin, even strokes — not bold, not condensed. Futura Light or equivalent; Space Grotesk at a lighter weight is an acceptable substitute.
 - **Case:** All caps, no exceptions.
 - **Letter-spacing:** Wide — approximately 0.35em between characters. The letters read as individual glyphs with breathing room, not as a tight block.
-- **Color:** Cream `#E9DCC4` on near-black `#09090B`. The cream is warm, not pure white.
+- **Color:** Cream `#E9DCC5` on near-black `#0A0A0A`. The cream is warm, not pure white.
 
 #### The crescent-O
 
 The O is not a letterform — it is a partial eclipse mark composed of two overlapping circles:
 
 1. **Ring:** A thin circle stroke in cream, the same weight as the surrounding letterstrokes. This is the "full moon" base.
-2. **Eclipse disk:** A filled circle in the background color (`#09090B`), offset to the right of center, slightly smaller than the ring's outer diameter. It overlaps the right portion of the ring, occluding it.
+2. **Eclipse disk:** A filled circle in the background color (`#0A0A0A`), offset to the right of center, slightly smaller than the ring's outer diameter. It overlaps the right portion of the ring, occluding it.
 3. **Result:** The left arc of the ring remains visible as a crescent. The right side disappears into the background. The crescent opens to the right — a waning crescent as seen from the northern hemisphere.
 
 The crescent width (the visible arc) is approximately one-third of the full circle diameter. The eclipse disk is positioned so its left edge falls near the horizontal centerline of the ring, creating a deep, narrow crescent rather than a half-moon.
@@ -57,10 +59,10 @@ The letterforms are rendered as a matte panel label with soft warm-white backlig
 
 ```css
 .logo-text {
-  color: #E9DCC4;
+  color: #E9DCC5;
   text-shadow:
-    0 0 20px rgba(233, 220, 196, 0.25),   /* wide diffuse backlight */
-    0 0 60px rgba(233, 220, 196, 0.08);   /* ambient warmth */
+    0 0 20px rgba(233, 220, 197, 0.25),   /* wide diffuse backlight */
+    0 0 60px rgba(233, 220, 197, 0.08);   /* ambient warmth */
 }
 ```
 
@@ -84,14 +86,14 @@ The result reads as: *matte instrument panel label with one glowing pilot light.
 
 #### Print rendering rules
 
-- **Screen:** Cream `#E9DCC4` + silkscreen/pilot light treatment above
+- **Screen:** Cream `#E9DCC5` + silkscreen/pilot light treatment above
 - **Print:** Black on white/near-white `#FAFAF6`. No glow effects. Ring is a black stroke, eclipse disk is white fill.
-- **Reversed (light background):** Near-black `#09090B` on cream — eclipse disk becomes cream, ring stroke is dark
+- **Reversed (light background):** Near-black `#0A0A0A` on cream — eclipse disk becomes cream, ring stroke is dark
 - **Minimum size:** The crescent detail requires at least 24px cap-height to be legible; below that, use plain text wordmark
 
 #### Favicon
 
-The crescent arc alone (no letters, no ring — just the lit arc) at 32×32px, VFD teal `#00E5CC` on `#09090B`. It reads as a thin glowing curve — a moon sliver, a pilot light.
+The crescent arc alone (no letters, no ring — just the lit arc) at 32×32px, VFD teal `#00E5CC` on `#0A0A0A`. It reads as a thin glowing curve — a moon sliver, a pilot light.
 
 ### Open Lunar Foundation Co-branding
 
@@ -118,7 +120,7 @@ The Epoch brand operates in two distinct visual modes. Each mode has its own aes
 
 **Where it applies:** Website, web dashboards, interactive demos, slide presentations, social media cards, GitHub READMEs, web-based visualizations
 
-**Substrate:** Dark background, `#09090B` or near-black
+**Substrate:** Dark background, `#0A0A0A` or near-black
 
 **Display font:** DSEG7 segment font for all numerical time readouts and clock displays
 
@@ -231,11 +233,11 @@ Screen-mode colors are grounded in VFD and CRT phosphor hardware — the specifi
 
 | Role | Hex | CSS Variable | Notes |
 |------|-----|-------------|-------|
-| Background | `#09090B` | `--bg` | Near-black with slight cool cast — the void behind the display |
+| Background | `#0A0A0A` | `--bg` | Near-black with slight cool cast — the void behind the display |
 | Surface | `#111113` | `--surface` | Panels, instrument zone interiors |
 | Housing | `#1A1A1C` | `--housing` | Instrument enclosure, bezel |
 | Border | `#00E5CC` at 20% | `--border` | Panel zone edges — use VFD teal at low opacity, not gray |
-| Text primary | `#E9DCC4` | `--cream` | Warm white, labels, body text |
+| Text primary | `#E9DCC5` | `--cream` | Warm white, labels, body text |
 | Text dim | `#555558` | `--dim` | Secondary labels, captions |
 
 #### Accent Hierarchy
@@ -247,7 +249,7 @@ Screen-mode colors are grounded in VFD and CRT phosphor hardware — the specifi
 | **★ Hero** | VFD Teal | `#00E5CC` | `#00251F` | Instrument displays, active elements, primary accent. Slightly blue-shifted — not `#00FF00` (LCD green), not `#00FFFF` (pure cyan). |
 | **2nd** | Amber | `#FFAA00` | `#332200` | Holdover/caution state, secondary accent, warmth |
 | **3rd** | Warning Red | `#FF2255` | `#330A18` | Fault/error indicator lights. Hot pink-red — not pure `#FF0000`. |
-| **4th** | Cream | `#E9DCC4` | — | Labels, body text |
+| **4th** | Cream | `#E9DCC5` | — | Labels, body text |
 
 #### Supporting Accents (multi-timescale contexts only)
 
@@ -269,7 +271,7 @@ Used on the website and in documentation when multiple timescales appear togethe
 | TAI | Green `#33FF66` | `--tai`, `--tai-d` |
 | GPS | Warning Red `#FF2255` | `--gps`, `--gps-d` |
 | TCB | Magenta `#CC66FF` | `--tcb`, `--tcb-d` |
-| UNIX | Cream `#E9DCC4` | `--unix`, `--unix-d` |
+| UNIX | Cream `#E9DCC5` | `--unix`, `--unix-d` |
 
 **The principle:** Color carries data, not decoration. In instrument panels (sundial), all displays are VFD teal; red and amber appear only for status lights. In multi-timescale web contexts, the full palette applies.
 
@@ -389,7 +391,7 @@ Status color assignments:
 - LOCKED: VFD teal `#00E5CC`
 - HOLDOVER: Amber `#FFAA00`
 - FAULT: Warning red `#FF2255`
-- OFFLINE: Dim (`#555558`, no bloom)
+- OFFLINE: Dim (`#555558`, no bloom) — unlit inert lens, same gray as secondary labels (`--dim`); not a white or cream LED
 
 ### Grid Crosshatch
 
@@ -405,7 +407,7 @@ Appears behind segmented bar panels only. Does not appear behind digit displays 
 Each instrument group lives in a bordered zone:
 - Border: 1px, VFD teal at 20% opacity
 - Corner radius: 3px
-- Interior fill: `#09090B` (same as background — zones are defined by border, not fill contrast)
+- Interior fill: `#0A0A0A` (same as background — zones are defined by border, not fill contrast)
 - Zone label: 11px Share Tech Mono, uppercase, VFD teal, positioned below or above the zone
 
 ---
@@ -417,10 +419,10 @@ Each instrument group lives in a bordered zone:
 ```css
 :root {
   /* Structural */
-  --bg: #09090B;
+  --bg: #0A0A0A;
   --surface: #111113;
   --housing: #1A1A1C;
-  --cream: #E9DCC4;
+  --cream: #E9DCC5;
   --dim: #555558;
 
   /* VFD primary */

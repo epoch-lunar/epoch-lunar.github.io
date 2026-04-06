@@ -1,5 +1,7 @@
 # Epoch Ecosystem
 
+**Execution order / phases:** see [roadmap.md](./roadmap.md).
+
 Three repos. Each one independently useful; together they make the website.
 
 ```
@@ -54,7 +56,7 @@ An agent implementing dash should be able to reproduce the aesthetic from this s
 | VFD glow (outer) | `#00E5CC` at 15% opacity, spread +6px | Second bloom layer, wider falloff |
 | Warning red | `#FF2255` | Hot pink-red, not pure red. Used for fault/error indicator lights. |
 | Warning amber | `#FF8C00` | Warm orange. Used for caution states (HOLDOVER). |
-| Panel background | `#09090B` | Near-black with very slight warm cast |
+| Panel background | `#0A0A0A` | Near-black (aligned with logo substrate) |
 | Panel border | `#00E5CC` at 20% opacity | Thin (1px) lines defining instrument zones |
 | Grid lines | `#00E5CC` at 8% opacity | Crosshatch behind bar graph panels |
 
@@ -104,7 +106,7 @@ Behind bar graph panels only. Regular grid, ~12px spacing, lines at VFD primary 
 
 The full display is one wide horizontal band, subdivided into bordered zones:
 - Each zone is a rounded rectangle (radius 3px) with a 1px VFD border at 20% opacity
-- Zone interior background is `#09090B`
+- Zone interior background is `#0A0A0A`
 - Zone labels (e.g. "TACH", "SPEED", "FUEL") appear below or above the zone, VFD primary, 11px uppercase
 
 #### Typography

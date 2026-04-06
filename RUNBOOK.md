@@ -8,8 +8,10 @@ Short reference for running the static site and the Rust Worker without living i
 |-------|------------|
 | **epoch-worker** | Rust API (`/api/time`, etc.) in `backend/`. Deployed with **GitHub Actions** (`deploy-worker.yml`) using `backend/wrangler.toml`. |
 | **epochlunar-com** | Static site in `frontend/`, deployed as **Worker + Assets** from repo-root `wrangler.toml` via **Cloudflare’s Workers git integration** (not GitHub Pages). |
-| **Staging** | Branch **`staging`** → GitHub Actions **`.github/workflows/deploy-staging.yml`** deploys **`epoch-worker-staging`** and **`epochlunar-com-staging`** (`wrangler deploy --env staging`). Does **not** change production or **epochlunar.com**. |
+| **Staging** | **`.github/workflows/deploy-staging.yml`**: push to **`staging`**, **PR into `main`** (after the `pull_request` trigger exists on **`main`**), or **workflow_dispatch**. Deploys **`epoch-worker-staging`** + **`epochlunar-com-staging`**. Does **not** change production. |
 | **Worker URL in the browser** | `frontend/script.js` picks the API from the page hostname: **localhost** → local Wrangler; host **`epochlunar-com-staging.*`** or **`staging.epochlunar.com`** → staging API; otherwise production. |
+
+**GitHub quirk — PRs do not use the workflow file from the PR branch.** For `pull_request`, Actions loads **`.github/workflows/deploy-staging.yml` from `main`**. If `main` does not yet include the `pull_request` trigger, open PRs will **not** run Deploy staging until that YAML is merged. Until then: merge the workflow change first, or use **Actions → Deploy staging → Run workflow** (pick your branch), or push to **`staging`**.
 
 ---
 

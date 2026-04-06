@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — CRT oscilloscope face</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --crt-face: #0c120c;
+      --crt-bezel: #1a1815;
+      --crt-chrome: #6a6558;
+      --phosphor: #4dff7a;
+      --phosphor-dim: rgba(77, 255, 122, 0.12);
+      --phosphor-glow: rgba(77, 255, 122, 0.55);
+      --graticule: rgba(77, 255, 122, 0.14);
+      --label: #b8c4a8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080807;
+      color: var(--label);
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--phosphor-dim);
+      margin: 0 0 1rem;
+    }
+    .scope {
+      max-width: 640px;
+      background: linear-gradient(145deg, #222 0%, #0d0d0c 40%, #151512 100%);
+      border-radius: 8px;
+      padding: 14px 16px 18px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 8px 32px rgba(0, 0, 0, 0.65);
+    }
+    .scope__brand {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #6a6758;
+      margin-bottom: 8px;
+    }
+    .crt {
+      position: relative;
+      border-radius: 50% / 8%;
+      background: radial-gradient(ellipse at 50% 45%, #152018 0%, var(--crt-face) 55%, #050805 100%);
+      box-shadow:
+        inset 0 0 80px rgba(0, 0, 0, 0.85),
+        inset 0 0 20px rgba(77, 255, 122, 0.03);
+      border: 3px solid #0a0a08;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+    }
+    .crt canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    /* Subtle horizontal sweep band + vignette */
+    .crt::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(0, 0, 0, 0.08) 2px,
+          rgba(0, 0, 0, 0.08) 3px
+        ),
+        radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.45) 100%);
+      mix-blend-mode: multiply;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-top: 14px;
+      align-items: center;
+    }
+    .controls label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8a8f82;
+    }
+    input[type="range"] {
+      width: 140px;
+      accent-color: var(--phosphor);
+    }
+    .note {
+      margin-top: 1rem;
+      font-size: 10px;
+      color: rgba(184, 196, 168, 0.4);
+      max-width: 640px;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — P31-style phosphor CRT (oscilloscope)</h1>
+  <div class="scope">
+    <div class="scope__brand">Analog display — mock / not calibrated</div>
+    <div class="crt" id="crt">
+      <canvas id="wave" width="800" height="600"></canvas>
+    </div>
+    <div class="controls">
+      <label>persistence <input type="range" id="persist" min="0" max="92" value="78" /></label>
+      <label>noise <input type="range" id="noise" min="0" max="100" value="25" /></label>
+    </div>
+  </div>
+  <p class="note">
+    Green trace and graticule evoke classic analog scopes (P31 phosphor). Persistence is simulated by fading
+    the framebuffer each frame; bloom uses canvas shadow. The curved “tube” is CSS (elliptical face + vignette),
+    not a physically accurate CRT model — good enough for mood and layout reference before a real renderer.
+  </p>
+  <script>
+    const canvas = document.getElementById("wave");
+    const ctx = canvas.getContext("2d");
+    const persist = document.getElementById("persist");
+    const noise = document.getElementById("noise");
+
+    let t0 = performance.now();
+
+    function resize() {
+      const crt = document.getElementById("crt");
+      const w = crt.clientWidth;
+      const h = crt.clientHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function drawGraticule(w, h) {
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--graticule").trim();
+      ctx.lineWidth = 1;
+      const mx = 10;
+      const my = 8;
+      for (let i = 0; i <= mx; i++) {
+        const x = (i / mx) * w;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let j = 0; j <= my; j++) {
+        const y = (j / my) * h;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = "rgba(77,255,122,0.28)";
+      ctx.beginPath();
+      ctx.moveTo(0, h / 2);
+      ctx.lineTo(w, h / 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 0);
+      ctx.lineTo(w / 2, h);
+      ctx.stroke();
+    }
+
+    function frame(now) {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const t = (now - t0) * 0.001;
+      const fade = Number(persist.value) / 100;
+      ctx.fillStyle = `rgba(8, 14, 10, ${fade})`;
+      ctx.fillRect(0, 0, w, h);
+
+      drawGraticule(w, h);
+
+      const nScale = Number(noise.value) / 100;
+      ctx.save();
+      ctx.shadowColor = "rgba(77, 255, 122, 0.9)";
+      ctx.shadowBlur = 14;
+      ctx.strokeStyle = "#7dff9a";
+      ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      const samples = Math.floor(w * 0.85);
+      const x0 = w * 0.075;
+      const yc = h * 0.5;
+      const amp = h * 0.32;
+      for (let i = 0; i <= samples; i++) {
+        const x = x0 + (i / samples) * (w * 0.85);
+        const f1 = Math.sin(t * 1.7 + i * 0.02) * 0.35;
+        const f2 = Math.sin(t * 4.2 + i * 0.08) * 0.18;
+        const f3 = Math.sin(t * 0.35 + i * 0.003) * 0.5;
+        const rnd = (Math.sin(i * 12.9898 + t * 99) * 43758.5453) % 1;
+        const n = (rnd * 2 - 1) * nScale * 0.06 * amp;
+        const y = yc + amp * (f1 + f2 + f3) + n;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

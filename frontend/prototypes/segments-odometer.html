@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPOCH prototype — 7 / 14-segment (DSEG)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    @font-face {
+      font-family: "DSEG7";
+      src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2")
+        format("woff2");
+      font-weight: bold;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "DSEG7";
+      src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2")
+        format("woff2");
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "DSEG14";
+      src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Bold.woff2")
+        format("woff2");
+      font-weight: bold;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "DSEG14";
+      src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff2")
+        format("woff2");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --vfd: #00e5cc;
+      --ghost: rgba(0, 229, 204, 0.1);
+      --cream: #e9dcc5;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: "Share Tech Mono", monospace;
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--vfd);
+      margin: 0 0 0.25rem;
+    }
+    .sub {
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.45);
+      margin-bottom: 1.5rem;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+    section {
+      margin-bottom: 2rem;
+      max-width: 760px;
+    }
+    .panel-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--vfd);
+      margin-bottom: 12px;
+    }
+    .panel {
+      border: 1px solid rgba(0, 229, 204, 0.2);
+      border-radius: 3px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 28px 36px;
+    }
+
+    /* DSEG stack: ghost “8” shows segment skeleton; foreground digit is lit */
+    .dseg-stack {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.15em;
+      line-height: 1;
+    }
+    .dseg-stack > * {
+      grid-area: 1 / 1;
+    }
+    .dseg-stack__ghost {
+      font-weight: bold;
+      color: var(--ghost);
+      user-select: none;
+    }
+    .dseg-stack__lit {
+      position: relative;
+      z-index: 1;
+      font-weight: bold;
+      color: var(--vfd);
+      text-shadow:
+        0 0 4px rgba(0, 229, 204, 0.95),
+        0 0 12px rgba(0, 229, 204, 0.4),
+        0 0 24px rgba(0, 229, 204, 0.15);
+    }
+    .dseg-stack--7 {
+      font-family: "DSEG7", monospace;
+      font-size: 72px;
+    }
+    .dseg-stack--14 {
+      font-family: "DSEG14", monospace;
+      font-size: 64px;
+      font-weight: normal;
+    }
+    .dseg-stack--14 .dseg-stack__ghost,
+    .dseg-stack--14 .dseg-stack__lit {
+      font-weight: normal;
+    }
+
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .controls label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(0, 229, 204, 0.7);
+    }
+
+    .hint {
+      font-size: 10px;
+      color: rgba(233, 220, 196, 0.35);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    code {
+      color: rgba(0, 229, 204, 0.55);
+    }
+  </style>
+</head>
+<body>
+  <h1>Prototype — 7-segment &amp; 14-segment (DSEG)</h1>
+  <p class="sub">
+    <strong>DSEG7</strong> / <strong>DSEG14</strong> from
+    <code>dseg</code> on jsDelivr (same sources as <code>frontend/styles.css</code>).
+    Ghost effect: dim <code>8</code> behind the lit glyph (per-segment ghost like brand §7-seg is only exact with SVG).
+  </p>
+
+  <section>
+    <div class="panel-title">7-segment (DSEG7 Classic Bold)</div>
+    <div class="panel">
+      <div class="row">
+        <div class="dseg-stack dseg-stack--7" aria-label="7-segment digit demo">
+          <span class="dseg-stack__ghost" aria-hidden="true">8</span>
+          <span class="dseg-stack__lit" id="d7">8</span>
+        </div>
+        <div class="dseg-stack dseg-stack--7" aria-hidden="true">
+          <span class="dseg-stack__ghost">8</span>
+          <span class="dseg-stack__lit">8</span>
+        </div>
+      </div>
+      <p class="hint">
+        Left: slider 0–9. Right: reference “8” (all segments). Fonts:
+        <code>DSEG7Classic-Bold.woff2</code> + Regular from the package.
+      </p>
+      <div class="controls">
+        <label>digit <input type="range" id="r7" min="0" max="9" value="8" /></label>
+        <span id="r7v" style="font-size: 11px; color: var(--cream)">8</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel-title">14-segment (DSEG14 Classic)</div>
+    <div class="panel">
+      <div class="row">
+        <div class="dseg-stack dseg-stack--14" aria-label="14-segment letter demo">
+          <span class="dseg-stack__ghost" aria-hidden="true">8</span>
+          <span class="dseg-stack__lit" id="d14">E</span>
+        </div>
+        <div class="dseg-stack dseg-stack--14" aria-hidden="true">
+          <span class="dseg-stack__ghost">8</span>
+          <span class="dseg-stack__lit">8</span>
+        </div>
+      </div>
+      <p class="hint">
+        Left: cycles <strong>E O C H R</strong> when “cycle letters” is on. Right: full “8”. Font:
+        <code>DSEG14Classic-Regular.woff2</code> (Bold available for weight 700).
+      </p>
+      <div class="controls">
+        <label>cycle letters <input type="checkbox" id="cycle14" /></label>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const d7 = document.getElementById("d7");
+    const r7 = document.getElementById("r7");
+    const r7v = document.getElementById("r7v");
+    r7.addEventListener("input", () => {
+      d7.textContent = r7.value;
+      r7v.textContent = r7.value;
+    });
+
+    const d14 = document.getElementById("d14");
+    const letters14 = ["E", "O", "C", "H", "R"];
+    let li = 0;
+    let cycleId;
+    document.getElementById("cycle14").addEventListener("change", (e) => {
+      if (cycleId) clearInterval(cycleId);
+      if (e.target.checked) {
+        cycleId = setInterval(() => {
+          li = (li + 1) % letters14.length;
+          d14.textContent = letters14[li];
+        }, 700);
+      }
+    });
+  </script>
+</body>
+</html>

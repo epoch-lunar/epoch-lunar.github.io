@@ -938,6 +938,37 @@ body {
         0 0 8px rgba(255, 170, 0, 0.2);
 }
 
+.prototypes-btn-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 4px;
+    margin-top: 8px;
+}
+
+a.prototypes-btn {
+    display: inline-block;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 8px 18px;
+    background: #0a0a0a;
+    border: 1px solid #2a2a2a;
+    border-radius: 2px;
+    color: #666;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: color 0.15s ease-out, border-color 0.15s ease-out,
+        text-shadow 0.15s ease-out, background 0.15s ease-out;
+}
+
+a.prototypes-btn:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(0, 221, 255, 0.45);
+    background: #0a1518;
+}
+
 /* Position uncertainty readout */
 .source-km {
     font-family: "Share Tech Mono", monospace;

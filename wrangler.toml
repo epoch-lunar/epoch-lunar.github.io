@@ -10,3 +10,7 @@ directory = "frontend"
 
 [observability]
 enabled = true
+
+# Deploy: `wrangler deploy --env staging` from repo root (see deploy-staging workflow)
+[env.staging]
+name = "epochlunar-com-staging"

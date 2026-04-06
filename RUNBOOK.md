@@ -8,7 +8,8 @@ Short reference for running the static site and the Rust Worker without living i
 |-------|------------|
 | **epoch-worker** | Rust API (`/api/time`, etc.) in `backend/`. Deployed with **GitHub Actions** (`deploy-worker.yml`) using `backend/wrangler.toml`. |
 | **epochlunar-com** | Static site in `frontend/`, deployed as **Worker + Assets** from repo-root `wrangler.toml` via **Cloudflare’s Workers git integration** (not GitHub Pages). |
-| **Worker URL in the browser** | `frontend/script.js` calls **`https://epoch-worker.philiplinden.workers.dev/api/time`** in production; on **`localhost` / `127.0.0.1`** it uses **`http://localhost:8787/api/time`** (local Wrangler). |
+| **Staging** | Branch **`staging`** → GitHub Actions **`.github/workflows/deploy-staging.yml`** deploys **`epoch-worker-staging`** and **`epochlunar-com-staging`** (`wrangler deploy --env staging`). Does **not** change production or **epochlunar.com**. |
+| **Worker URL in the browser** | `frontend/script.js` picks the API from the page hostname: **localhost** → local Wrangler; host **`epochlunar-com-staging.*`** or **`staging.epochlunar.com`** → staging API; otherwise production. |
 
 ---
 
@@ -83,6 +84,7 @@ You should see the clock tick and the worker panel move toward **LOCKED** withou
 |------|-----|
 | **Static site** (`frontend/`) | Cloudflare **Workers** build from git — uses repo-root **`wrangler.toml`** (worker name `epochlunar-com`). |
 | **Rust API** (`backend/`) | **GitHub Actions** on `main` when `backend/**` changes: `wrangler deploy` from `backend/`. |
+| **Staging (full stack)** | Push to branch **`staging`** (or **Actions → Deploy staging → Run workflow**): deploys **`epochlunar-com-staging`** + **`epoch-worker-staging`**. Open **`https://epochlunar-com-staging.<subdomain>.workers.dev`** (same `<subdomain>` as production). |
 
 GitHub secret **`CLOUDFLARE_API_TOKEN`** is for the **`deploy-worker.yml`** job only. You can remove **`WORKER_URL`**, **`CLOUDFLARE_ACCOUNT_ID`**, and any **Pages**-related secrets if they were only used by the old frontend workflow.
 
@@ -96,6 +98,15 @@ npx wrangler deploy
 # Static site (same as Cloudflare CI; requires wrangler logged in)
 cd ..
 npx wrangler deploy
+```
+
+**Staging (from your machine)**
+
+```bash
+cd backend
+npm ci
+npx wrangler deploy --env staging
+npx wrangler deploy --config ../wrangler.toml --env staging
 ```
 
 You must be logged in (`npx wrangler login`) or use an API token as Wrangler expects.
@@ -119,7 +130,7 @@ You must be logged in (`npx wrangler login`) or use an API token as Wrangler exp
 | Path | Role |
 |------|------|
 | `frontend/index.html` | Site entry |
-| `frontend/script.js` | Clock + worker sync (ES module); production API URL baked in |
+| `frontend/script.js` | Clock + worker sync; API URL from hostname (prod / staging / localhost) |
 | `wrangler.toml` (repo root) | Static Worker + assets (`epochlunar-com`) |
 | `backend/src/lib.rs` | API Worker implementation |
 | `backend/wrangler.toml` | API Worker name (`epoch-worker`), build command, deploy settings |

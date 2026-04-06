@@ -11,15 +11,33 @@ import {
   formatDelta,
 } from "./time-scales.js";
 
-// Production API is the Rust Worker (backend/wrangler.toml → epoch-worker).
-// Local dev: serve frontend over http://localhost and run `npx wrangler dev` in backend/.
+// Production API — backend/wrangler.toml → epoch-worker
+// Staging API — same config, env.staging → epoch-worker-staging (workers.dev host below)
+// Local dev — `npx wrangler dev` in backend/
 const PRODUCTION_WORKER_TIME_URL =
   "https://epoch-worker.philiplinden.workers.dev/api/time";
-const WORKER_URL =
-  typeof location !== "undefined" &&
-  (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-    ? "http://localhost:8787/api/time"
-    : PRODUCTION_WORKER_TIME_URL;
+const STAGING_WORKER_TIME_URL =
+  "https://epoch-worker-staging.philiplinden.workers.dev/api/time";
+const LOCAL_WORKER_TIME_URL = "http://localhost:8787/api/time";
+
+function workerTimeUrlForPage() {
+  if (typeof location === "undefined") {
+    return PRODUCTION_WORKER_TIME_URL;
+  }
+  const h = location.hostname;
+  if (h === "localhost" || h === "127.0.0.1") {
+    return LOCAL_WORKER_TIME_URL;
+  }
+  if (
+    /^epochlunar-com-staging\./.test(h) ||
+    h === "staging.epochlunar.com"
+  ) {
+    return STAGING_WORKER_TIME_URL;
+  }
+  return PRODUCTION_WORKER_TIME_URL;
+}
+
+const WORKER_URL = workerTimeUrlForPage();
 
 // Magic numbers
 const MAX_HISTORY_POINTS = 60;
